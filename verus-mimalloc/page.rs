@@ -30,12 +30,12 @@ pub fn find_page(heap_ptr: HeapPtr, size: usize, huge_alignment: usize, Tracked(
         heap_ptr.wf(),
         heap_ptr.is_in(*old(local)),
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
-        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*local)
-            && page.is_used_and_primary(*local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
+        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*final(local))
+            && page.is_used_and_primary(*final(local)),
         page.page_ptr.addr() != 0 ==> 
-            local.pages.index(page.page_id@).inner.value().xblock_size >= size,
+            final(local).pages.index(page.page_id@).inner.value().xblock_size >= size,
 {
     proof { const_facts(); }
 
@@ -58,12 +58,12 @@ fn find_free_page(heap_ptr: HeapPtr, size: usize, Tracked(local): Tracked<&mut L
         heap_ptr.is_in(*old(local)),
         size <= MEDIUM_OBJ_SIZE_MAX,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
-        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*local)
-            && page.is_used_and_primary(*local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
+        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*final(local))
+            && page.is_used_and_primary(*final(local)),
         page.page_ptr.addr() != 0 ==> 
-            local.pages.index(page.page_id@).inner.value().xblock_size >= size,
+            final(local).pages.index(page.page_id@).inner.value().xblock_size >= size,
 {
     proof { const_facts(); }
     let pq = bin(size) as usize;
@@ -94,12 +94,12 @@ fn page_queue_find_free_ex(heap_ptr: HeapPtr, pq: usize, first_try: bool, Tracke
         valid_bin_idx(pq as int),
         size_of_bin(pq as int) <= MEDIUM_OBJ_SIZE_MAX,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
-        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*local)
-            && page.is_used_and_primary(*local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
+        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*final(local))
+            && page.is_used_and_primary(*final(local)),
         page.page_ptr.addr() != 0 ==> 
-            local.pages.index(page.page_id@).inner.value().xblock_size == size_of_bin(pq as int)
+            final(local).pages.index(page.page_id@).inner.value().xblock_size == size_of_bin(pq as int)
 {
     let mut page = PagePtr { page_ptr: heap_ptr.get_pages(Tracked(&*local))[pq].first, page_id: Ghost(local.page_organization.used_dlist_headers[pq as int].first.unwrap()) };
     let ghost mut list_idx = 0;
@@ -189,12 +189,12 @@ fn page_fresh(heap_ptr: HeapPtr, pq: usize, Tracked(local): Tracked<&mut Local>)
         valid_bin_idx(pq as int),
         size_of_bin(pq as int) <= MEDIUM_OBJ_SIZE_MAX,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
-        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*local)
-            && page.is_used_and_primary(*local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
+        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*final(local))
+            && page.is_used_and_primary(*final(local)),
         page.page_ptr.addr() != 0 ==> 
-            local.pages.index(page.page_id@).inner.value().xblock_size == size_of_bin(pq as int)
+            final(local).pages.index(page.page_id@).inner.value().xblock_size == size_of_bin(pq as int)
 
 {
     proof { size_of_bin_bounds(pq as int); }
@@ -212,12 +212,12 @@ fn page_fresh_alloc(heap_ptr: HeapPtr, pq: usize, block_size: usize, page_alignm
         block_size == size_of_bin(pq as int),
         block_size <= MEDIUM_OBJ_SIZE_MAX,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
-        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*local)
-            && page.is_used_and_primary(*local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
+        page.page_ptr.addr() != 0 ==> page.wf() && page.is_in(*final(local))
+            && page.is_used_and_primary(*final(local)),
         page.page_ptr.addr() != 0 ==> 
-            local.pages.index(page.page_id@).inner.value().xblock_size == block_size,
+            final(local).pages.index(page.page_id@).inner.value().xblock_size == block_size,
 {
     let tld_ptr = heap_ptr.get_ref(Tracked(&*local)).tld_ptr;
     let page_ptr = crate::segment::segment_page_alloc(heap_ptr, block_size, page_alignment, tld_ptr, Tracked(&mut *local));
@@ -267,11 +267,11 @@ fn page_init(heap_ptr: HeapPtr, page_ptr: PagePtr, block_size: usize, tld_ptr: T
         good_count_for_block_size(block_size as int,
               old(local).page_organization.pages[page_ptr.page_id@].count.unwrap() as int),
     ensures
-        local.wf_main(),
-        common_preserves(*old(local), *local),
-        page_ptr.is_used(*local),
-        local.page_organization.popped == Popped::Used(page_ptr.page_id@, true),
-        local.page_organization.pages[page_ptr.page_id@].page_header_kind == Some(PageHeaderKind::Normal(pq as int, block_size as int)),
+        final(local).wf_main(),
+        common_preserves(*old(local), *final(local)),
+        page_ptr.is_used(*final(local)),
+        final(local).page_organization.popped == Popped::Used(page_ptr.page_id@, true),
+        final(local).page_organization.pages[page_ptr.page_id@].page_header_kind == Some(PageHeaderKind::Normal(pq as int, block_size as int)),
 {
     let ghost mut next_state;
     proof {
@@ -561,8 +561,8 @@ pub fn page_retire(page: PagePtr, Tracked(local): Tracked<&mut Local>)
         page.is_used_and_primary(*old(local)),
         old(local).pages[page.page_id@].inner.value().used == 0,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
 {
     let (heap, pq, Ghost(list_idx)) = page_queue_of(page, Tracked(&*local));
     if likely(
@@ -600,8 +600,8 @@ fn page_free(page: PagePtr, pq: usize, force: bool, Tracked(local): Tracked<&mut
         old(local).page_organization.valid_used_page(page.page_id@, pq as int, list_idx),
         old(local).pages[page.page_id@].inner.value().used == 0,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
 {
     page_get_mut_inner!(page, local, inner => {
         inner.set_has_aligned(false);
@@ -623,10 +623,10 @@ fn page_to_full(page: PagePtr, heap: HeapPtr, pq: usize, Tracked(local): Tracked
         valid_bin_idx(pq as int),
         old(local).page_organization.valid_used_page(page.page_id@, pq as int, list_idx),
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
         old(local).page_organization.valid_used_page(next_id, pq as int, list_idx + 1) ==>
-            local.page_organization.valid_used_page(next_id, pq as int, list_idx),
+            final(local).page_organization.valid_used_page(next_id, pq as int, list_idx),
 {
     page_queue_enqueue_from(heap, BIN_FULL as usize, pq, page, Tracked(&mut *local),
         Ghost(list_idx), Ghost(next_id));
@@ -637,8 +637,8 @@ pub fn page_unfull(page: PagePtr, Tracked(local): Tracked<&mut Local>)
     requires old(local).wf(), page.wf(), page.is_in(*old(local)),
         page.is_used_and_primary(*old(local)),
         old(local).pages[page.page_id@].inner.value().in_full(),
-    ensures local.wf(),
-        common_preserves(*old(local), *local),
+    ensures final(local).wf(),
+        common_preserves(*old(local), *final(local)),
 {
     let heap = page.get_heap(Tracked(&*local));
     proof {
@@ -666,11 +666,11 @@ fn page_queue_enqueue_from(heap: HeapPtr, to: usize, from: usize, page: PagePtr,
             None => false,
           })
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
         old(local).page_organization.valid_used_page(next_id, from as int, list_idx + 1) ==>
-            local.page_organization.valid_used_page(next_id, from as int, list_idx),
-        page.is_used_and_primary(*local),
+            final(local).page_organization.valid_used_page(next_id, from as int, list_idx),
+        page.is_used_and_primary(*final(local)),
 {
     page_queue_remove(heap, from, page, Tracked(&mut *local), Ghost(list_idx), Ghost(next_id));
     page_queue_push_back(heap, to, page, Tracked(&mut *local), Ghost(next_id), Ghost(from as int), Ghost(list_idx));

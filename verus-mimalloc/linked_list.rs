@@ -179,13 +179,13 @@ impl LL {
             ),
             old(self).heap_id().is_none(),
         ensures
-            self.wf(),
-            self.block_size() == old(self).block_size(),
-            self.len() == old(self).len() + 1,
-            self.instance() == old(self).instance(),
-            self.page_id() == old(self).page_id(),
-            self.fixed_page() == old(self).fixed_page(),
-            self.heap_id() == old(self).heap_id(),
+            final(self).wf(),
+            final(self).block_size() == old(self).block_size(),
+            final(self).len() == old(self).len() + 1,
+            final(self).instance() == old(self).instance(),
+            final(self).page_id() == old(self).page_id(),
+            final(self).fixed_page() == old(self).fixed_page(),
+            final(self).heap_id() == old(self).heap_id(),
     {
         let tracked mut mem1;
         let tracked mut mem2;
@@ -281,14 +281,14 @@ impl LL {
                 None => true,
             }),
         ensures
-            self_.wf(),
-            self_.block_size() == old(self_).block_size(),
-            self_.len() == old(self_).len() + 1,
-            self_.instance() == old(self_).instance(),
-            self_.page_id() == old(self_).page_id(),
-            self_.fixed_page() == old(self_).fixed_page(),
-            self_.heap_id() == old(self_).heap_id(),
-            self_.ptr() == ptr
+            final(self_).wf(),
+            final(self_).block_size() == old(self_).block_size(),
+            final(self_).len() == old(self_).len() + 1,
+            final(self_).instance() == old(self_).instance(),
+            final(self_).page_id() == old(self_).page_id(),
+            final(self_).fixed_page() == old(self_).fixed_page(),
+            final(self_).heap_id() == old(self_).heap_id(),
+            final(self_).ptr() == ptr
     {
         self_.first = ptr;
 
@@ -361,13 +361,13 @@ impl LL {
         ensures ({
             let (ptr, points_to, block_token) = x;
             {
-                &&& self.wf()
-                &&& self.block_size() == old(self).block_size()
-                &&& self.len() + 1 == old(self).len()
-                &&& self.instance() == old(self).instance()
-                &&& self.page_id() == old(self).page_id()
-                &&& self.fixed_page() == old(self).fixed_page()
-                &&& self.heap_id() == old(self).heap_id()
+                &&& final(self).wf()
+                &&& final(self).block_size() == old(self).block_size()
+                &&& final(self).len() + 1 == old(self).len()
+                &&& final(self).instance() == old(self).instance()
+                &&& final(self).page_id() == old(self).page_id()
+                &&& final(self).fixed_page() == old(self).fixed_page()
+                &&& final(self).heap_id() == old(self).heap_id()
 
                 &&& points_to@.is_range(ptr as int, block_token@.key().block_size as int)
                 &&& points_to@.provenance() == ptr@.provenance
@@ -375,11 +375,11 @@ impl LL {
                 &&& block_token@.instance_id() == old(self).instance().id()
                 &&& is_block_ptr(ptr, block_token@.key())
 
-                &&& (self.fixed_page() ==> (
-                    block_token@.key().page_id == self.page_id()
-                    && block_token@.key().block_size == self.block_size()
+                &&& (final(self).fixed_page() ==> (
+                    block_token@.key().page_id == final(self).page_id()
+                    && block_token@.key().block_size == final(self).block_size()
                 ))
-                &&& (match self.heap_id() {
+                &&& (match final(self).heap_id() {
                     Some(heap_id) => block_token@.value().heap_id == Some(heap_id),
                     None => true,
                 })
@@ -503,13 +503,13 @@ impl LL {
     )
         requires old(self).wf(), old(self).len() == 0,
         ensures
-            self.wf(),
-            self.page_id() == page_id,
-            self.fixed_page() == fixed_page,
-            self.instance() == instance,
-            self.block_size() == block_size,
-            self.heap_id() == heap_id,
-            self.len() == 0,
+            final(self).wf(),
+            final(self).page_id() == page_id,
+            final(self).fixed_page() == fixed_page,
+            final(self).instance() == instance,
+            final(self).block_size() == block_size,
+            final(self).heap_id() == heap_id,
+            final(self).len() == 0,
     {
         proof {
             self.data@.fixed_page = fixed_page;
@@ -538,21 +538,21 @@ impl LL {
             old(other).len() < u32::MAX,
         ensures 
             // Book-keeping junk:
-            self.wf() && other.wf(),
-            self.page_id() == old(self).page_id(),
-            self.block_size() == old(self).block_size(),
-            self.fixed_page() == old(self).fixed_page(),
-            self.instance() == old(self).instance(),
-            self.heap_id() == old(self).heap_id(),
-            other.page_id() == old(other).page_id(),
-            other.block_size() == old(other).block_size(),
-            other.fixed_page() == old(other).fixed_page(),
-            other.instance() == old(other).instance(),
-            other.heap_id() == old(other).heap_id(),
+            final(self).wf() && final(other).wf(),
+            final(self).page_id() == old(self).page_id(),
+            final(self).block_size() == old(self).block_size(),
+            final(self).fixed_page() == old(self).fixed_page(),
+            final(self).instance() == old(self).instance(),
+            final(self).heap_id() == old(self).heap_id(),
+            final(other).page_id() == old(other).page_id(),
+            final(other).block_size() == old(other).block_size(),
+            final(other).fixed_page() == old(other).fixed_page(),
+            final(other).instance() == old(other).instance(),
+            final(other).heap_id() == old(other).heap_id(),
 
             // What you're here for:
-            self.len() == old(self).len() + old(other).len(),
-            other.len() == 0,
+            final(self).len() == old(self).len() + old(other).len(),
+            final(other).len() == 0,
 
             other_len as int == old(other).len(),
     {
@@ -671,11 +671,11 @@ impl LL {
             self.page_id() == old(self).page_id(),
         ensures 
             // Book-keeping junk:
-            self.wf()
-            self.page_id() == old(self).page_id(),
-            self.block_size() == old(self).block_size(),
-            self.fixed_page() == old(self).fixed_page(),
-            self.instance() == old(self).instance(),
+            final(self).wf()
+            final(self).page_id() == old(self).page_id(),
+            final(self).block_size() == old(self).block_size(),
+            final(self).fixed_page() == old(self).fixed_page(),
+            final(self).instance() == old(self).instance(),
     {
     } */
 
@@ -722,18 +722,18 @@ impl LL {
                 old(tokens).index(i).key())
             )
         ensures
-            self.wf(),
-            self.page_id() == old(self).page_id(),
-            self.block_size() == old(self).block_size(),
-            self.fixed_page() == old(self).fixed_page(),
-            self.instance() == old(self).instance(),
-            self.heap_id() == old(self).heap_id(),
+            final(self).wf(),
+            final(self).page_id() == old(self).page_id(),
+            final(self).block_size() == old(self).block_size(),
+            final(self).fixed_page() == old(self).fixed_page(),
+            final(self).instance() == old(self).instance(),
+            final(self).heap_id() == old(self).heap_id(),
 
-            self.len() == old(self).len() + extend,
+            final(self).len() == old(self).len() + extend,
 
             //points_to_raw.ptr() == old(points_to_raw).ptr() + extend * (bsize as int),
             //points_to_raw@.size == old(points_to_raw)@.size - extend * (bsize as int),
-            *tokens == old(tokens).remove_keys(
+            *final(tokens) == old(tokens).remove_keys(
                 set_int_range(cap as int, cap as int + extend)),
     {
         // based on mi_page_free_list_extend
@@ -985,8 +985,8 @@ impl LL {
             llgstr@.page_id == old(self).page_id(),
             llgstr@.instance == old(self).instance(),
             llgstr@.map.len() == old(self).len(),
-            self.wf(),
-            self.len() == 0,
+            final(self).wf(),
+            final(self).len() == 0,
     {
         proof {
             assert(forall |i: nat| #[trigger] self.perms@.dom().contains(i) ==>
@@ -1361,8 +1361,8 @@ pub fn bound_on_2_lists(
         // which requires it
         old(ll1).block_size() == old(ll2).block_size(),
         thread_token.value().pages.dom().contains(old(ll1).page_id()),
-    ensures *ll1 == *old(ll1), *ll2 == *old(ll2),
-        ll1.len() + ll2.len() <= thread_token.value().pages[ll1.page_id()].num_blocks,
+    ensures *final(ll1) == *old(ll1), *final(ll2) == *old(ll2),
+        final(ll1).len() + final(ll2).len() <= thread_token.value().pages[final(ll1).page_id()].num_blocks,
 {
     proof {
         assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
@@ -1435,8 +1435,8 @@ pub fn bound_on_1_lists(
         old(ll1).fixed_page(),
         old(ll1).instance() == instance,
         thread_token.value().pages.dom().contains(old(ll1).page_id()),
-    ensures *ll1 == *old(ll1),
-        ll1.len() <= thread_token.value().pages[ll1.page_id()].num_blocks,
+    ensures *final(ll1) == *old(ll1),
+        final(ll1).len() <= thread_token.value().pages[final(ll1).page_id()].num_blocks,
 {
     proof {
         assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
@@ -1798,11 +1798,11 @@ impl ThreadLLWithDelayBits {
             delay_token.key() == page_id,
             delay_token.value() == DelayState::UseDelayedFree,
         ensures
-            self.wf(),
-            !self.is_empty(),
-            self.block_size() == block_size,
-            self.page_id() == page_id,
-            self.instance == instance,
+            final(self).wf(),
+            !final(self).is_empty(),
+            final(self).block_size() == block_size,
+            final(self).page_id() == page_id,
+            final(self).instance == instance,
     {
         let p = core::ptr::null_mut::<Node>();
         let ghost data = LLData {
@@ -1861,9 +1861,9 @@ impl ThreadLLWithDelayBits {
         requires !old(self).is_empty(),
             old(self).wf(),
         ensures
-            self.wf(),
-            self.is_empty(),
-            self.instance == old(self).instance,
+            final(self).wf(),
+            final(self).is_empty(),
+            final(self).instance == old(self).instance,
             delay@.instance_id() == old(self).instance@.id(),
             delay@.key() == old(self).page_id(),
     {

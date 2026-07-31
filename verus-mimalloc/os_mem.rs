@@ -170,11 +170,11 @@ pub fn mprotect_prot_none(addr: *mut u8, len: usize, Tracked(mem): Tracked<&mut 
         old(mem).has_pointsto_for_all_read_write(),
         old(mem).points_to.provenance() == addr@.provenance,
     ensures
-        mem.wf(),
-        mem.os_exact_range(addr as int, len as int),
-        mem.os_has_range_no_read_write(addr as int, len as int),
-        mem.points_to.dom() === Set::empty(),
-        mem.points_to.provenance() == old(mem).points_to.provenance(),
+        final(mem).wf(),
+        final(mem).os_exact_range(addr as int, len as int),
+        final(mem).os_has_range_no_read_write(addr as int, len as int),
+        final(mem).points_to.dom() === Set::empty(),
+        final(mem).points_to.provenance() == old(mem).points_to.provenance(),
 {
     _mprotect_prot_none(addr as *mut libc::c_void, len);
 }
@@ -189,13 +189,13 @@ pub fn mprotect_prot_read_write(addr: *mut u8, len: usize, Tracked(mem): Tracked
         old(mem).os_exact_range(addr as int, len as int),
         old(mem).points_to.provenance() == addr@.provenance,
     ensures
-        mem.wf(),
-        mem.os_exact_range(addr as int, len as int),
-        mem.os_has_range_read_write(addr as int, len as int),
-        mem.has_new_pointsto(&*old(mem)),
+        final(mem).wf(),
+        final(mem).os_exact_range(addr as int, len as int),
+        final(mem).os_has_range_read_write(addr as int, len as int),
+        final(mem).has_new_pointsto(&*old(mem)),
         old(mem).has_pointsto_for_all_read_write() ==>
-             mem.has_pointsto_for_all_read_write(),
-        mem.points_to.provenance() == old(mem).points_to.provenance(),
+             final(mem).has_pointsto_for_all_read_write(),
+        final(mem).points_to.provenance() == old(mem).points_to.provenance(),
 {
     _mprotect_prot_read_write(addr as *mut libc::c_void, len);
 }

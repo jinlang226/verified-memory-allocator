@@ -184,7 +184,7 @@ impl AtomicHeapPtr {
         requires old(self).wf(old(self).instance@, old(self).page_id@),
             !old(self).is_empty(),
         ensures
-            self.is_empty(),
+            final(self).is_empty(),
             hop@.instance_id() == old(self).instance@.id(),
             hop@.key() == old(self).page_id@,
     {
@@ -808,7 +808,7 @@ impl Local {
         ensures
             // All fields remain the same except thread_token which is set to an
             // arbitrary value
-            *self == (Local { thread_token: self.thread_token, .. *old(self) }),
+            *final(self) == (Local { thread_token: final(self).thread_token, .. *old(self) }),
             tt == old(self).thread_token,
     {
         let tracked mut t = Mim::thread_local_state::arbitrary();
@@ -820,7 +820,7 @@ impl Local {
         ensures
             // All fields remain the same except thread_token which is set to an
             // arbitrary value
-            *self == (Local { checked_token: self.checked_token, .. *old(self) }),
+            *final(self) == (Local { checked_token: final(self).checked_token, .. *old(self) }),
             tt == old(self).checked_token,
     {
         let tracked mut t = Mim::thread_checked_state::arbitrary();
@@ -1064,7 +1064,7 @@ impl HeapPtr {
             self.wf(),
             self.is_in(*old(local)),
         ensures
-            local_page_count_update(*old(local), *local),
+            local_page_count_update(*old(local), *final(local)),
     {
         let tracked perm = &local.instance.thread_local_state_guards_heap(
             local.thread_id, &local.thread_token).points_to;
@@ -1091,7 +1091,7 @@ impl HeapPtr {
             self.wf(),
             self.is_in(*old(local)),
         ensures
-            local_page_retired_min_update(*old(local), *local),
+            local_page_retired_min_update(*old(local), *final(local)),
     {
         let tracked perm = &local.instance.thread_local_state_guards_heap(
             local.thread_id, &local.thread_token).points_to;
@@ -1118,7 +1118,7 @@ impl HeapPtr {
             self.wf(),
             self.is_in(*old(local)),
         ensures
-            local_page_retired_max_update(*old(local), *local),
+            local_page_retired_max_update(*old(local), *final(local)),
     {
         let tracked perm = &local.instance.thread_local_state_guards_heap(
             local.thread_id, &local.thread_token).points_to;
@@ -1232,7 +1232,6 @@ impl TldPtr {
     }
 
     #[inline(always)]
-    #[verifier::deprecated_postcondition_mut_ref_style(false)]
     pub fn get_mut<'a>(&self, Tracked(local): Tracked<&'a mut Local>) -> (tld: &'a mut Tld)
         requires
             local.tld.ptr() == self.tld_ptr,
@@ -1816,6 +1815,7 @@ impl PagePtr {
 }
 
 // Use macro as a work-arounds for not supporting functions that return &mut
+// (note: not necessary anymore now that &mut is supported)
 
 #[macro_export]
 macro_rules! page_get_mut_inner {

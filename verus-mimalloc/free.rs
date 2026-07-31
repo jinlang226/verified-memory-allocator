@@ -61,9 +61,9 @@ pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user
         ptr.addr() != 0 ==> ptr == user_dealloc.unwrap().ptr(),
         ptr.addr() != 0 ==> old(local).inst() == user_dealloc.unwrap().inst()
     ensures
-        local.wf(),
-        local.inst() == old(local).inst(),
-        forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*local),
+        final(local).wf(),
+        final(local).inst() == old(local).inst(),
+        forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*final(local)),
 {
     if ptr.addr() == 0 {
         return;
@@ -216,8 +216,8 @@ fn free_generic(segment: *mut SegmentHeader, page: PagePtr, is_local: bool, p: *
         is_local ==> old(local).thread_token.value().pages[page.page_id@].block_size == dealloc.block_id().block_size,
         page.page_id@ == dealloc.block_id().page_id,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
 {
     // this has_aligned check could be a data race??
     //if page.get_inner_ref(Tracked(&*local)).get_has_aligned() {
@@ -241,8 +241,8 @@ fn free_block(page: PagePtr, is_local: bool, ptr: *mut u8, Tracked(perm): Tracke
         is_local ==> old(local).thread_token.value().pages[page.page_id@].block_size == dealloc.block_id().block_size,
         page.page_id@ == dealloc.block_id().page_id,
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
 {
     if likely(is_local) {
         let used;
@@ -289,8 +289,8 @@ fn free_block_mt(page: PagePtr, ptr: *mut u8, Tracked(perm): Tracked<PointsToRaw
         page.page_id@ == dealloc.block_id().page_id,
         page.wf(),
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
 {
     // Based on _mi_free_block_mt
 
@@ -541,8 +541,8 @@ pub fn free_delayed_block(ptr: *mut u8,
         old(local).instance == dealloc.mim_instance,
         dealloc.mim_block.value().heap_id == Some(old(local).thread_token.value().heap_id),
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
         !res.0 ==> res.1@ == Some(perm),
         !res.0 ==> res.2@ == Some(dealloc),
 {

@@ -105,9 +105,9 @@ impl PageInner {
     pub fn set_retire_expire(&mut self, u: u8)
         requires u <= 127,
         ensures 
-            *self == (PageInner { flags2: self.flags2, .. *old(self) }),
-            self.is_zero() == old(self).is_zero(),
-            self.retire_expire() == u,
+            *final(self) == (PageInner { flags2: final(self).flags2, .. *old(self) }),
+            final(self).is_zero() == old(self).is_zero(),
+            final(self).retire_expire() == u,
     {
         proof {
             let x = self.flags2;
@@ -121,10 +121,10 @@ impl PageInner {
 
     #[inline(always)]
     pub fn set_is_reset(&mut self, b: bool)
-        ensures *self == (PageInner { flags0: self.flags0, .. *old(self) }),
-            self.is_reset() == b,
-            self.is_committed() == old(self).is_committed(),
-            self.is_zero_init() == old(self).is_zero_init(),
+        ensures *final(self) == (PageInner { flags0: final(self).flags0, .. *old(self) }),
+            final(self).is_reset() == b,
+            final(self).is_committed() == old(self).is_committed(),
+            final(self).is_zero_init() == old(self).is_zero_init(),
     {
         proof {
             let y = (if b { 1 } else { 0 });
@@ -138,10 +138,10 @@ impl PageInner {
 
     #[inline(always)]
     pub fn set_is_committed(&mut self, b: bool)
-        ensures *self == (PageInner { flags0: self.flags0, .. *old(self) }),
-            self.is_reset() == old(self).is_reset(),
-            self.is_committed() == b,
-            self.is_zero_init() == old(self).is_zero_init(),
+        ensures *final(self) == (PageInner { flags0: final(self).flags0, .. *old(self) }),
+            final(self).is_reset() == old(self).is_reset(),
+            final(self).is_committed() == b,
+            final(self).is_zero_init() == old(self).is_zero_init(),
     {
         proof {
             let y: u8 = (if b { 1 } else { 0 });
@@ -156,10 +156,10 @@ impl PageInner {
 
     #[inline(always)]
     pub fn set_is_zero_init(&mut self, b: bool)
-        ensures *self == (PageInner { flags0: self.flags0, .. *old(self) }),
-            self.is_reset() == old(self).is_reset(),
-            self.is_committed() == old(self).is_committed(),
-            self.is_zero_init() == b,
+        ensures *final(self) == (PageInner { flags0: final(self).flags0, .. *old(self) }),
+            final(self).is_reset() == old(self).is_reset(),
+            final(self).is_committed() == old(self).is_committed(),
+            final(self).is_zero_init() == b,
     {
         proof {
             let y: u8 = (if b { 1 } else { 0 });
@@ -174,9 +174,9 @@ impl PageInner {
 
     #[inline(always)]
     pub fn set_in_full(&mut self, b: bool)
-        ensures *self == (PageInner { flags1: self.flags1, .. *old(self) }),
-            self.has_aligned() == old(self).has_aligned(),
-            self.in_full() == b,
+        ensures *final(self) == (PageInner { flags1: final(self).flags1, .. *old(self) }),
+            final(self).has_aligned() == old(self).has_aligned(),
+            final(self).in_full() == b,
     {
         proof {
             let y = (if b { 1 } else { 0 });
@@ -189,9 +189,9 @@ impl PageInner {
 
     #[inline(always)]
     pub fn set_has_aligned(&mut self, b: bool)
-        ensures *self == (PageInner { flags1: self.flags1, .. *old(self) }),
-            self.has_aligned() == b,
-            self.in_full() == old(self).in_full(),
+        ensures *final(self) == (PageInner { flags1: final(self).flags1, .. *old(self) }),
+            final(self).has_aligned() == b,
+            final(self).in_full() == old(self).in_full(),
     {
         proof {
             let y: u8 = (if b { 1 } else { 0 });

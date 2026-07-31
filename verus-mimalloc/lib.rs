@@ -6,7 +6,6 @@
 #![allow(unused_macros)]
 #![feature(thread_id_value)]
 #![verifier::exec_allows_no_decreases_clause]
-#![verifier::deprecated_postcondition_mut_ref_style(true)]
 
 // bottom bread
 

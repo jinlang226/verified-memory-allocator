@@ -308,7 +308,7 @@ impl CommitMask {
     }
 
     pub fn create_intersect(&self, other: &CommitMask, res: &mut CommitMask)
-        ensures res@ == self@.intersect(other@)
+        ensures final(res)@ == self@.intersect(other@)
     {
         let mut i = 0;
         while i < 8
@@ -328,7 +328,7 @@ impl CommitMask {
     }
 
     pub fn clear(&mut self, other: &CommitMask)
-        ensures self@ == old(self)@.difference(other@)
+        ensures final(self)@ == old(self)@.difference(other@)
     {
         let mut i = 0;
         while i < 8
@@ -350,7 +350,7 @@ impl CommitMask {
     }
 
     pub fn set(&mut self, other: &CommitMask)
-        ensures self@ == old(self)@.union(other@)
+        ensures final(self)@ == old(self)@.union(other@)
     {
         let mut i = 0;
         while i < 8
@@ -408,7 +408,7 @@ impl CommitMask {
         requires
             idx + count <= COMMIT_MASK_BITS,
             old(self)@ == Set::<int>::empty(),
-        ensures self@ == Set::range(idx as int, idx + count),
+        ensures final(self)@ == Set::range(idx as int, idx + count),
     {
         proof {
             const_facts();
@@ -545,7 +545,7 @@ impl CommitMask {
     }
 
     pub fn create_empty(&mut self)
-        ensures self@ == Set::<int>::empty(),
+        ensures final(self)@ == Set::<int>::empty(),
     {
         let mut i = 0;
         while i < 8
@@ -562,7 +562,7 @@ impl CommitMask {
     }
 
     pub fn create_full(&mut self)
-        ensures self@ == Set::range(0, COMMIT_MASK_BITS as int),
+        ensures final(self)@ == Set::range(0, COMMIT_MASK_BITS as int),
     {
         let mut i = 0;
         while i < 8

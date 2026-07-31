@@ -33,17 +33,17 @@ pub fn page_queue_remove(heap: HeapPtr, pq: usize, page: PagePtr, Tracked(local)
         //    Some(PageHeaderKind::Normal(crate::bin_sizes::size_of_bin(pq as int) as int)),
         old(local).page_organization.valid_used_page(page.page_id@, pq as int, list_idx),
     ensures
-        local.wf_main(),
-        common_preserves(*old(local), *local),
-        page.is_in(*local),
-        local.page_organization.popped == Popped::Used(page.page_id@, true),
-        local.page_organization.pages[page.page_id@].page_header_kind
+        final(local).wf_main(),
+        common_preserves(*old(local), *final(local)),
+        page.is_in(*final(local)),
+        final(local).page_organization.popped == Popped::Used(page.page_id@, true),
+        final(local).page_organization.pages[page.page_id@].page_header_kind
             == old(local).page_organization.pages[page.page_id@].page_header_kind,
-        local.tld_id == old(local).tld_id,
+        final(local).tld_id == old(local).tld_id,
         old(local).page_organization.valid_used_page(next_id, pq as int, list_idx + 1) ==>
-            local.page_organization.valid_used_page(next_id, pq as int, list_idx),
+            final(local).page_organization.valid_used_page(next_id, pq as int, list_idx),
         old(local).pages[page.page_id@].inner.value().used
-            == local.pages[page.page_id@].inner.value().used,
+            == final(local).pages[page.page_id@].inner.value().used,
 {
     let ghost mut next_state;
     let ghost page_id = page.page_id@;
@@ -232,14 +232,14 @@ pub fn page_queue_push(heap: HeapPtr, pq: usize, page: PagePtr, Tracked(local): 
         heap.is_in(*old(local)),
         page.wf(),
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
         page.wf(),
-        page.is_in(*local),
-        page.is_used_and_primary(*local),
-        local.pages.index(page.page_id@).inner.value().xblock_size ==
+        page.is_in(*final(local)),
+        page.is_used_and_primary(*final(local)),
+        final(local).pages.index(page.page_id@).inner.value().xblock_size ==
             old(local).pages.index(page.page_id@).inner.value().xblock_size,
-        local.tld_id == old(local).tld_id,
+        final(local).tld_id == old(local).tld_id,
 {
     let ghost mut next_state;
     proof {
@@ -410,17 +410,17 @@ pub fn page_queue_push_back(heap: HeapPtr, pq: usize, page: PagePtr, Tracked(loc
         heap.is_in(*old(local)),
         page.wf(),
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
         page.wf(),
-        page.is_in(*local),
-        page.is_used_and_primary(*local),
-        local.pages.index(page.page_id@).inner.value().xblock_size ==
+        page.is_in(*final(local)),
+        page.is_used_and_primary(*final(local)),
+        final(local).pages.index(page.page_id@).inner.value().xblock_size ==
             old(local).pages.index(page.page_id@).inner.value().xblock_size,
-        local.tld_id == old(local).tld_id,
+        final(local).tld_id == old(local).tld_id,
 
         old(local).page_organization.valid_used_page(other_id, other_pq, other_list_idx) ==>
-            local.page_organization.valid_used_page(other_id, other_pq, other_list_idx),
+            final(local).page_organization.valid_used_page(other_id, other_pq, other_list_idx),
 {
     let ghost mut next_state;
     proof {
@@ -652,8 +652,8 @@ fn heap_queue_first_update(heap: HeapPtr, pq: usize, Tracked(local): Tracked<&mu
         //  ==> old(local).heap.pages.value()@[pq as int].first
         //      == old(local).page_empty_global@.s.points_to.ptr()
     ensures
-        pq == BIN_FULL ==> *local == *old(local),
-        pq != BIN_FULL ==> local_direct_update(*old(local), *local,
+        pq == BIN_FULL ==> *final(local) == *old(local),
+        pq != BIN_FULL ==> local_direct_update(*old(local), *final(local),
             pfd_lower(pq as int) as int,
             pfd_upper(pq as int) as int + 1,
             pq as int)

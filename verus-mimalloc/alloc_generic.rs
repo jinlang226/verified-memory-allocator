@@ -30,17 +30,17 @@ pub fn malloc_generic(
         heap.wf(),
         heap.is_in(*old(local)),
     ensures
-        local.wf(),
+        final(local).wf(),
         ({
             let (ptr, points_to_raw, dealloc) = t;
 
             points_to_raw@.is_range(ptr as int, size as int)
               && points_to_raw@.provenance() == ptr@.provenance
               && ptr == dealloc@.ptr()
-              && dealloc@.inst() == local.instance
+              && dealloc@.inst() == final(local).instance
               && dealloc@.size() == size
         }),
-        common_preserves(*old(local), *local),
+        common_preserves(*old(local), *final(local)),
 
 {
     // TODO heap initialization
@@ -71,11 +71,11 @@ pub fn page_free_collect(
         page_ptr.wf(),
         page_ptr.is_used_and_primary(*old(local)),
         old(local).page_organization.pages[page_ptr.page_id@].is_used == true,
-    ensures local.wf(),
-        page_ptr.is_used_and_primary(*local),
-        old(local).page_organization == local.page_organization,
-        common_preserves(*old(local), *local),
-        old(local).thread_token == local.thread_token,
+    ensures final(local).wf(),
+        page_ptr.is_used_and_primary(*final(local)),
+        old(local).page_organization == final(local).page_organization,
+        common_preserves(*old(local), *final(local)),
+        old(local).thread_token == final(local).thread_token,
 {
     if force || page_ptr.get_ref(Tracked(&*local)).xthread_free.atomic.load().addr() != 0 {
         page_thread_free_collect(page_ptr, Tracked(&mut *local));
@@ -107,12 +107,12 @@ fn page_thread_free_collect(
         old(local).wf(),
         page_ptr.wf(),
         page_ptr.is_used_and_primary(*old(local)),
-    ensures local.wf(),
-        local.pages.dom() == old(local).pages.dom(),
-        page_ptr.is_used_and_primary(*local),
-        old(local).page_organization == local.page_organization,
-        common_preserves(*old(local), *local),
-        old(local).thread_token == local.thread_token,
+    ensures final(local).wf(),
+        final(local).pages.dom() == old(local).pages.dom(),
+        page_ptr.is_used_and_primary(*final(local)),
+        old(local).page_organization == final(local).page_organization,
+        common_preserves(*old(local), *final(local)),
+        old(local).thread_token == final(local).thread_token,
 {
     let mut ll = page_ptr.get_ref(Tracked(&*local)).xthread_free.take();
 
@@ -153,10 +153,10 @@ fn page_free_list_extend(
         bsize % 8 == 0,
         extend >= 1,
     ensures
-        local.wf_main(),
-        page_ptr.is_used_and_primary(*local),
-        local.page_organization == old(local).page_organization,
-        common_preserves(*old(local), *local),
+        final(local).wf_main(),
+        page_ptr.is_used_and_primary(*final(local)),
+        final(local).page_organization == old(local).page_organization,
+        common_preserves(*old(local), *final(local)),
 {
     let ghost page_id = page_ptr.page_id@;
     proof {
@@ -433,10 +433,10 @@ pub fn page_extend_free(
         old(local).is_used_primary(page_ptr.page_id@),
         old(local).pages[page_ptr.page_id@].inner.value().xblock_size % 8 == 0,
     ensures
-        local.wf_main(),
-        local.is_used_primary(page_ptr.page_id@),
-        local.page_organization == old(local).page_organization,
-        common_preserves(*old(local), *local),
+        final(local).wf_main(),
+        final(local).is_used_primary(page_ptr.page_id@),
+        final(local).page_organization == old(local).page_organization,
+        common_preserves(*old(local), *final(local)),
 {
     let page_inner = page_ptr.get_inner_ref(Tracked(&*local));
 
@@ -491,8 +491,8 @@ fn heap_delayed_free_partial(heap: HeapPtr, Tracked(local): Tracked<&mut Local>)
         old(local).wf(),
         heap.wf(), heap.is_in(*old(local)),
     ensures
-        local.wf(),
-        common_preserves(*old(local), *local),
+        final(local).wf(),
+        common_preserves(*old(local), *final(local)),
 {
     let mut ll = heap.get_ref(Tracked(&*local)).thread_delayed_free.take();
     let mut all_freed = true;

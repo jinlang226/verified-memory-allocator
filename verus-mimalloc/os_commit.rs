@@ -23,13 +23,13 @@ pub fn os_commit(addr: *mut u8, size: usize, Tracked(mem): Tracked<&mut MemChunk
         //old(mem).has_pointsto_for_all_read_write(),
     ensures ({
         let (success, is_zero) = res;
-        mem.wf()
-        //&& mem.has_pointsto_for_all_read_write()
-        //&& (success ==> mem.os_has_range_read_write(addr as int, size as int))
-        && mem.has_new_pointsto(&*old(mem))
-        && mem.os.dom() == old(mem).os.dom()
-        && mem.points_to.provenance() == old(mem).points_to.provenance()
-        && (success ==> mem.os_has_range_read_write(addr as int, size as int))
+        final(mem).wf()
+        //&& final(mem).has_pointsto_for_all_read_write()
+        //&& (success ==> final(mem).os_has_range_read_write(addr as int, size as int))
+        && final(mem).has_new_pointsto(&*old(mem))
+        && final(mem).os.dom() == old(mem).os.dom()
+        && final(mem).points_to.provenance() == old(mem).points_to.provenance()
+        && (success ==> final(mem).os_has_range_read_write(addr as int, size as int))
     })
 {
     os_commitx(addr, size, true, false, Tracked(&mut *mem))
@@ -46,16 +46,16 @@ pub fn os_decommit(addr: *mut u8, size: usize, Tracked(mem): Tracked<&mut MemChu
         addr as int + size <= usize::MAX,
         addr@.provenance == old(mem).points_to.provenance(),
     ensures
-        mem.wf(),
-        mem.os.dom() =~= old(mem).os.dom(),
+        final(mem).wf(),
+        final(mem).os.dom() =~= old(mem).os.dom(),
 
-        mem.points_to.dom().subset_of(old(mem).points_to.dom()),
-        mem.os_rw_bytes().subset_of(old(mem).os_rw_bytes()),
-        mem.points_to.provenance() == old(mem).points_to.provenance(),
+        final(mem).points_to.dom().subset_of(old(mem).points_to.dom()),
+        final(mem).os_rw_bytes().subset_of(old(mem).os_rw_bytes()),
+        final(mem).points_to.provenance() == old(mem).points_to.provenance(),
 
-        old(mem).points_to.dom() - mem.points_to.dom()
-            =~= old(mem).os_rw_bytes() - mem.os_rw_bytes(),
-        old(mem).os_rw_bytes() - mem.os_rw_bytes()
+        old(mem).points_to.dom() - final(mem).points_to.dom()
+            =~= old(mem).os_rw_bytes() - final(mem).os_rw_bytes(),
+        old(mem).os_rw_bytes() - final(mem).os_rw_bytes()
             <= set_int_range(addr as int, addr as int + size),
 {
     let tracked mut t = mem.split(addr as int, size as int);
@@ -155,15 +155,15 @@ fn os_commitx(
         !commit ==> old(mem).pointsto_has_range(addr as int, size as int),
         addr@.provenance == old(mem).points_to.provenance()
     ensures
-        mem.wf(),
-        mem.os.dom() =~= old(mem).os.dom(),
-        commit ==> mem.has_new_pointsto(&*old(mem)),
-        commit ==> res.0 ==> mem.os_has_range_read_write(addr as int, size as int),
-        !commit ==> mem.points_to.dom().subset_of(old(mem).points_to.dom()),
-        !commit ==> mem.os_rw_bytes().subset_of(old(mem).os_rw_bytes()),
-        !commit ==> old(mem).points_to.dom() - mem.points_to.dom()
-                    =~= old(mem).os_rw_bytes() - mem.os_rw_bytes(),
-        mem.points_to.provenance() == old(mem).points_to.provenance()
+        final(mem).wf(),
+        final(mem).os.dom() =~= old(mem).os.dom(),
+        commit ==> final(mem).has_new_pointsto(&*old(mem)),
+        commit ==> res.0 ==> final(mem).os_has_range_read_write(addr as int, size as int),
+        !commit ==> final(mem).points_to.dom().subset_of(old(mem).points_to.dom()),
+        !commit ==> final(mem).os_rw_bytes().subset_of(old(mem).os_rw_bytes()),
+        !commit ==> old(mem).points_to.dom() - final(mem).points_to.dom()
+                    =~= old(mem).os_rw_bytes() - final(mem).os_rw_bytes(),
+        final(mem).points_to.provenance() == old(mem).points_to.provenance()
 {
     let is_zero = false;
     let (start, csize) = os_page_align_areax(conservative, addr.addr(), size);
