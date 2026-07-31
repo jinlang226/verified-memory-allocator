@@ -774,6 +774,17 @@ fn segment_span_allocate(
     let mut i: usize = 1;
     let ghost local_snapshot = *local;
     let extra = slice_count - 1;
+    // Establish the page-range invariant at loop entry: range_from(1, extra+1) is a subrange
+    // of range_from(0, slice_count), whose pages are all unused and well-formed.
+    assert forall |page_id|
+        #[trigger] first_page_id.range_from(1, extra + 1).contains(page_id) implies
+            local.unused_pages.dom().contains(page_id)
+            && local.unused_pages[page_id].points_to.is_init()
+            && is_page_ptr(local.unused_pages[page_id].points_to.ptr(), page_id)
+            && local.unused_pages[page_id].points_to.ptr()@.provenance == local.unused_pages[page_id].exposed.provenance()
+    by {
+        assert(local.pages.dom().contains(page_id));
+    }
     while i <= extra
         invariant 1 <= i <= extra + 1,
           first_page_id.idx + extra < SLICES_PER_SEGMENT,
@@ -1819,7 +1830,7 @@ fn segment_page_clear(page: PagePtr, tld: TldPtr, Tracked(local): Tracked<&mut L
     proof {
         let tracked thread_state_tok = local.take_thread_token();
         let block_state_map = Map::new(
-            |block_id: BlockId| block_tokens.dom().contains(block_id),
+            block_tokens.dom(),
             |block_id: BlockId| block_tokens[block_id].value(),
         );
         assert(block_state_map.dom() =~= block_tokens.dom());
@@ -1960,6 +1971,7 @@ fn segment_page_clear(page: PagePtr, tld: TldPtr, Tracked(local): Tracked<&mut L
 
         assert(page_organization_pages_match(local.page_organization.pages, local.pages, local.psa));
         assert(local.page_organization_valid());*/
+
         assert(local.wf_main());
     }
 
