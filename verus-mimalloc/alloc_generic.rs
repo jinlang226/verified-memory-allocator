@@ -119,13 +119,16 @@ fn page_thread_free_collect(
     if ll.is_empty() { return; }
 
     page_get_mut_inner!(page_ptr, local, page_inner => {
-        bound_on_1_lists(Tracked(local.instance.clone()), Tracked(&local.thread_token), &mut ll);
+        proof {
+            bound_on_1_lists(local.instance, &local.thread_token, &mut ll);
+        }
         let count = page_inner.local_free.append(&mut ll);
         
         // this relies on counting the block tokens
-        // (this is a no-op)
-        bound_on_2_lists(Tracked(local.instance.clone()), Tracked(&local.thread_token),
-            &mut page_inner.local_free, &mut page_inner.free);
+        proof {
+            bound_on_2_lists(local.instance, &local.thread_token,
+                &mut page_inner.local_free, &mut page_inner.free);
+        }
         //assert(page_inner.used >= count);
 
         page_inner.used = page_inner.used - count;

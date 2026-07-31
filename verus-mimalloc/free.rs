@@ -177,7 +177,9 @@ pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user
 
                 page_inner.free.insert_block(ptr, Tracked(perm), Tracked(mim_block));
 
-                bound_on_2_lists(Tracked(local.instance.clone()), Tracked(&local.thread_token), &mut page_inner.free, &mut page_inner.local_free);
+                proof {
+                    bound_on_2_lists(local.instance, &local.thread_token, &mut page_inner.free, &mut page_inner.local_free);
+                }
                 //assert(page_inner.used >= 1);
 
                 used = page_inner.used - 1;
@@ -256,7 +258,9 @@ fn free_block(page: PagePtr, is_local: bool, ptr: *mut u8, Tracked(perm): Tracke
 
             page_inner.free.insert_block(ptr, Tracked(perm), Tracked(mim_block));
 
-            bound_on_2_lists(Tracked(local.instance.clone()), Tracked(&local.thread_token), &mut page_inner.free, &mut page_inner.local_free);
+            proof {
+                bound_on_2_lists(local.instance, &local.thread_token, &mut page_inner.free, &mut page_inner.local_free);
+            }
             //assert(page_inner.used >= 1);
 
             used = page_inner.used - 1;

@@ -1344,11 +1344,11 @@ pub closed spec fn llgstr_wf(llgstr: LLGhostStateToReconvene) -> bool {
         }))
 }
 
-#[inline(always)]
-pub fn bound_on_2_lists(
-    Tracked(instance): Tracked<Mim::Instance>,
-    Tracked(thread_token): Tracked<&Mim::thread_local_state>,
-    ll1: &mut LL, ll2: &mut LL,
+pub proof fn bound_on_2_lists(
+    tracked instance: Mim::Instance,
+    tracked thread_token: &Mim::thread_local_state,
+    tracked ll1: &mut LL,
+    tracked ll2: &mut LL,
 )
     requires thread_token.instance_id() == instance.id(),
         old(ll1).wf(), old(ll2).wf(),
@@ -1364,71 +1364,68 @@ pub fn bound_on_2_lists(
     ensures *final(ll1) == *old(ll1), *final(ll2) == *old(ll2),
         final(ll1).len() + final(ll2).len() <= thread_token.value().pages[final(ll1).page_id()].num_blocks,
 {
-    proof {
-        assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
-            ll1.valid_node(i, ll1.next_ptr(i)));
-        assert(forall |i: nat| #[trigger] ll2.perms@.dom().contains(i) ==>
-            ll2.valid_node(i, ll2.next_ptr(i)));
+    assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
+        ll1.valid_node(i, ll1.next_ptr(i)));
+    assert(forall |i: nat| #[trigger] ll2.perms@.dom().contains(i) ==>
+        ll2.valid_node(i, ll2.next_ptr(i)));
 
-        let page_id = ll1.page_id();
-        let block_size = ll1.block_size();
-        let n_blocks = thread_token.value().pages[ll1.page_id()].num_blocks;
-        if ll1.len() + ll2.len() > n_blocks {
-            let len = ll1.len();
-            let tracked mut m = Map::tracked_empty();
-            tracked_swap(&mut m, ll1.perms.borrow_mut());
-            assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
-            by {
-                if 0 <= i < len {
-                    assert(old(ll1).valid_node(i, old(ll1).next_ptr(i)));
-                    assert(m.dom().contains(i));
-                }
+    let page_id = ll1.page_id();
+    let block_size = ll1.block_size();
+    let n_blocks = thread_token.value().pages[ll1.page_id()].num_blocks;
+    if ll1.len() + ll2.len() > n_blocks {
+        let len = ll1.len();
+        let tracked mut m = Map::tracked_empty();
+        tracked_swap(&mut m, ll1.perms.borrow_mut());
+        assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
+        by {
+            if 0 <= i < len {
+                assert(old(ll1).valid_node(i, old(ll1).next_ptr(i)));
+                assert(m.dom().contains(i));
             }
-            let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
-            let tracked llgstr1 = LLGhostStateToReconvene { map: map, block_size, page_id, instance };
+        }
+        let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
+        let tracked llgstr1 = LLGhostStateToReconvene { map: map, block_size, page_id, instance };
 
-            let len = ll2.len();
-            let tracked mut m = Map::tracked_empty();
-            tracked_swap(&mut m, ll2.perms.borrow_mut());
-            assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
-            by {
-                if 0 <= i < len {
-                    assert(old(ll2).valid_node(i, old(ll2).next_ptr(i)));
-                    assert(m.dom().contains(i));
-                }
+        let len = ll2.len();
+        let tracked mut m = Map::tracked_empty();
+        tracked_swap(&mut m, ll2.perms.borrow_mut());
+        assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
+        by {
+            if 0 <= i < len {
+                assert(old(ll2).valid_node(i, old(ll2).next_ptr(i)));
+                assert(m.dom().contains(i));
             }
-            let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
-            let tracked llgstr2 = LLGhostStateToReconvene { map: map, block_size, page_id, instance };
+        }
+        let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
+        let tracked llgstr2 = LLGhostStateToReconvene { map: map, block_size, page_id, instance };
 
-            let tracked llgstr = LL::llgstr_merge(llgstr1, llgstr2);
-            let tracked LLGhostStateToReconvene { map: mut map, .. } = llgstr;
+        let tracked llgstr = LL::llgstr_merge(llgstr1, llgstr2);
+        let tracked LLGhostStateToReconvene { map: mut map, .. } = llgstr;
 
-            let idxmap = Map::<nat, nat>::new(
-                map.dom(),
-                |p| map[p].1.key().idx);
-            if exists |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks) {
-                let p = choose |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks);
-                assert(map.dom().contains(p));
-                let tracked (_, block_p) = map.tracked_remove(p);
-                assert(block_p.instance_id() == instance.id());
-                instance.block_in_range(thread_token.key(), block_p.key(), thread_token, &block_p);
-                assert(false);
-            } else {
-                let (p, q) = crate::pigeonhole::pigeonhole_too_many_elements_implies_double(idxmap, (map.len() - 1) as nat);
-                let tracked (_, block_p) = map.tracked_remove(p);
-                let tracked (_, block_q) = map.tracked_remove(q);
-                instance.block_tokens_distinct(block_p.key(), block_q.key(), block_p, block_q);
-                assert(false);
-            }
+        let idxmap = Map::<nat, nat>::new(
+            map.dom(),
+            |p| map[p].1.key().idx);
+        if exists |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks) {
+            let p = choose |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks);
+            assert(map.dom().contains(p));
+            let tracked (_, block_p) = map.tracked_remove(p);
+            assert(block_p.instance_id() == instance.id());
+            instance.block_in_range(thread_token.key(), block_p.key(), thread_token, &block_p);
+            assert(false);
+        } else {
+            let (p, q) = crate::pigeonhole::pigeonhole_too_many_elements_implies_double(idxmap, (map.len() - 1) as nat);
+            let tracked (_, block_p) = map.tracked_remove(p);
+            let tracked (_, block_q) = map.tracked_remove(q);
+            instance.block_tokens_distinct(block_p.key(), block_q.key(), block_p, block_q);
+            assert(false);
         }
     }
 }
 
-#[inline(always)]
-pub fn bound_on_1_lists(
-    Tracked(instance): Tracked<Mim::Instance>,
-    Tracked(thread_token): Tracked<&Mim::thread_local_state>,
-    ll1: &mut LL,
+pub proof fn bound_on_1_lists(
+    tracked instance: Mim::Instance,
+    tracked thread_token: &Mim::thread_local_state,
+    tracked ll1: &mut LL,
 )
     requires thread_token.instance_id() == instance.id(),
         old(ll1).wf(),
@@ -1438,45 +1435,43 @@ pub fn bound_on_1_lists(
     ensures *final(ll1) == *old(ll1),
         final(ll1).len() <= thread_token.value().pages[final(ll1).page_id()].num_blocks,
 {
-    proof {
-        assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
-            ll1.valid_node(i, ll1.next_ptr(i)));
+    assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
+        ll1.valid_node(i, ll1.next_ptr(i)));
 
-        let page_id = ll1.page_id();
-        let block_size = ll1.block_size();
-        let n_blocks = thread_token.value().pages[ll1.page_id()].num_blocks;
-        if ll1.len() > n_blocks {
-            let len = ll1.len();
-            let tracked mut m = Map::tracked_empty();
-            tracked_swap(&mut m, ll1.perms.borrow_mut());
+    let page_id = ll1.page_id();
+    let block_size = ll1.block_size();
+    let n_blocks = thread_token.value().pages[ll1.page_id()].num_blocks;
+    if ll1.len() > n_blocks {
+        let len = ll1.len();
+        let tracked mut m = Map::tracked_empty();
+        tracked_swap(&mut m, ll1.perms.borrow_mut());
 
-            assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
-            by {
-                if 0 <= i < len {
-                    assert(old(ll1).valid_node(i, old(ll1).next_ptr(i)));
-                    assert(m.dom().contains(i));
-                }
+        assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
+        by {
+            if 0 <= i < len {
+                assert(old(ll1).valid_node(i, old(ll1).next_ptr(i)));
+                assert(m.dom().contains(i));
             }
+        }
 
-            let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
+        let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
 
-            let idxmap = Map::<nat, nat>::new(
-                map.dom(),
-                |p| map[p].1.key().idx);
-            if exists |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks) {
-                let p = choose |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks);
-                assert(map.dom().contains(p));
-                let tracked (_, block_p) = map.tracked_remove(p);
-                assert(block_p.instance_id() == instance.id());
-                instance.block_in_range(thread_token.key(), block_p.key(), thread_token, &block_p);
-                assert(false);
-            } else {
-                let (p, q) = crate::pigeonhole::pigeonhole_too_many_elements_implies_double(idxmap, (map.len() - 1) as nat);
-                let tracked (_, block_p) = map.tracked_remove(p);
-                let tracked (_, block_q) = map.tracked_remove(q);
-                instance.block_tokens_distinct(block_p.key(), block_q.key(), block_p, block_q);
-                assert(false);
-            }
+        let idxmap = Map::<nat, nat>::new(
+            map.dom(),
+            |p| map[p].1.key().idx);
+        if exists |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks) {
+            let p = choose |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks);
+            assert(map.dom().contains(p));
+            let tracked (_, block_p) = map.tracked_remove(p);
+            assert(block_p.instance_id() == instance.id());
+            instance.block_in_range(thread_token.key(), block_p.key(), thread_token, &block_p);
+            assert(false);
+        } else {
+            let (p, q) = crate::pigeonhole::pigeonhole_too_many_elements_implies_double(idxmap, (map.len() - 1) as nat);
+            let tracked (_, block_p) = map.tracked_remove(p);
+            let tracked (_, block_q) = map.tracked_remove(q);
+            instance.block_tokens_distinct(block_p.key(), block_q.key(), block_p, block_q);
+            assert(false);
         }
     }
 }
