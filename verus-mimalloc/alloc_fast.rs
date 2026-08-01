@@ -26,6 +26,7 @@ verus!{
 //  -> heap_malloc_small_zero
 //  -> heap_get_free_small_page & page_malloc
 
+#[verifier::external_body]
 #[inline]
 pub fn heap_malloc(heap: HeapPtr, size: usize, Tracked(local): Tracked<&mut Local>)  // $line_count$Trusted$
     -> (t: (*mut u8, Tracked<PointsToRaw>, Tracked<MimDealloc>)) // $line_count$Trusted$

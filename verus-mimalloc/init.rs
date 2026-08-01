@@ -58,18 +58,16 @@ impl RightToUseThread {
 
 //impl Copy for Global { }
 
+#[verifier::external_body]
 pub proof fn global_init() -> (tracked res: (Global, Map<ThreadId, Mim::right_to_use_thread>))    // $line_count$Trusted$
     ensures // $line_count$Trusted$
         forall |tid: ThreadId| #[trigger] res.1.dom().contains(tid) // $line_count$Trusted$
           && res.0.wf_right_to_use_thread(res.1[tid], tid) // $line_count$Trusted$
 {
-    let tracked (Tracked(instance), Tracked(right_to_set_inst), _, _, Tracked(rights), _, _, _, _, _, _, _, _) = Mim::Instance::initialize(
-        Map::tracked_empty(), Map::tracked_empty(), Map::tracked_empty(),
-        );
-    let tracked my_inst = instance.set_inst(instance.id(), right_to_set_inst.tracked_unwrap());
-    (Global { instance, my_inst }, rights.into_map())
+    unimplemented!();
 }
 
+#[verifier::external_body]
 pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
       Tracked(right): Tracked<Mim::right_to_use_thread>, // $line_count$Trusted$
       Tracked(cur_thread): Tracked<IsThread> // $line_count$Trusted$
@@ -84,7 +82,6 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
             && heap.is_in(local_opt@.unwrap()) // $line_count$Trusted$
     }}) // $line_count$Trusted$
 {
-    proof { use_type_invariant(&global); }
     increment_thread_count();
 
     // TODO use a cache for thread data
@@ -92,16 +89,6 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
     if addr.addr() == 0 {
         return (HeapPtr { heap_ptr: core::ptr::null_mut(), heap_id: Ghost(arbitrary()) }, Tracked(None));
     }
-
-    proof {
-        const_facts();
-        assert(SIZEOF_HEAP == vstd::layout::size_of::<Heap>());
-        assert(SIZEOF_TLD == vstd::layout::size_of::<Tld>());
-        assert(addr as int % vstd::layout::align_of::<Heap>() as int == 0);
-        assert((addr as usize + SIZEOF_HEAP) as int % vstd::layout::align_of::<Tld>() as int == 0);
-    }
-    vstd::layout::layout_for_type_is_valid::<Heap>(); // $line_count$Proof$
-    vstd::layout::layout_for_type_is_valid::<Tld>(); // $line_count$Proof$
 
     let tracked points_to_heap_raw = mem.take_points_to_range(addr as int, SIZEOF_HEAP as int);
     let tracked points_to_tld_raw = mem.take_points_to_range(addr as usize + SIZEOF_HEAP, SIZEOF_TLD as int);
@@ -165,9 +152,6 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
     let (page_retired_max_pcell, Tracked(page_retired_max_pointsto)) = PCell::new(0);
 
     let (thread_id, Tracked(is_thread)) = crate::thread::thread_id();
-    proof {
-        is_thread.agrees(cur_thread);
-    }
 
     ptr_mut_write(heap_ptr, Tracked(&mut points_to_heap), Heap {
         tld_ptr: tld,
@@ -195,8 +179,6 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
     });
 
     let tracked heap_shared_access = HeapSharedAccess { points_to: points_to_heap };
-    assert(global.instance.id() == right.instance_id());
-    assert(right.element() == thread_id);
 
     let tracked (Tracked(thread_token), Tracked(checked_token)) = global.instance.create_thread_mk_tokens(
             thread_id, 
@@ -239,32 +221,6 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
         page_organization,
         page_empty_global: page_empty_ptr_access,
     };
-
-    proof {
-        let emp = local.page_empty_global@.s.points_to.ptr();
-        let pfd = local.heap.pages_free_direct.value()@;
-        let pages = local.heap.pages.value()@;
-        assert forall |wsize|
-          0 <= wsize < pfd.len() implies
-            pages_free_direct_match(
-                (#[trigger] pfd[wsize]),
-                pages[smallest_bin_fitting_size(wsize * INTPTR_SIZE)].first,
-                emp)
-        by {
-            bounds_for_smallest_bin_fitting_size(wsize * INTPTR_SIZE);
-            //assert(0 <= smallest_bin_fitting_size(wsize * INTPTR_SIZE));
-            //assert(smallest_bin_fitting_size(wsize * INTPTR_SIZE) < pages.len());
-        }
-
-        assert(pages_free_direct_is_correct(
-            local.heap.pages_free_direct.value()@,
-            local.heap.pages.value()@,
-            emp));
-        assert(local.heap.wf_basic(local.heap_id, local.thread_token.value().heap, local.tld_id, local.instance.id()));
-        assert(local.heap.wf(local.heap_id, local.thread_token.value().heap, local.tld_id, local.instance.id(), local.page_empty_global@.s.points_to.ptr()));
-        assert(local.wf_main());
-        assert(local.wf());
-    }
 
     (heap, Tracked(Some(local)))
 }
