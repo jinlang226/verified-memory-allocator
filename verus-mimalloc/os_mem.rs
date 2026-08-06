@@ -8,10 +8,13 @@ verus!{
 #[verus::trusted]
 pub open spec fn page_size() -> int { 4096 }
 
+#[verifier::external_body]
 #[verus::trusted]
 pub fn get_page_size() -> (u: usize)
     ensures u == page_size()
-{ 4096 }
+{
+    unimplemented!()
+}
 
 #[verus::trusted]
 #[verifier(external_body)]
@@ -131,11 +134,9 @@ pub fn mmap_prot_none(hint: *mut u8, len: usize) -> (pt: (*mut u8, Tracked<MemCh
         pt.0.addr() != MAP_FAILED ==> pt.1@.os_exact_range(pt.0 as int, len as int),
         pt.0.addr() != MAP_FAILED ==> pt.1@.os_has_range_no_read_write(pt.0 as int, len as int),
         pt.0.addr() != MAP_FAILED ==> pt.0.addr() + len < usize::MAX,
-        pt.0.addr() != MAP_FAILED ==> pt.0@.provenance == pt.1@.points_to.provenance(),
+        pt.0.addr() != MAP_FAILED ==> pt.0@.provenance == pt.1@.points_to.provenance()
 {
-    let p = _mmap_prot_none(hint as *mut libc::c_void, len);
-    let p = if p == libc::MAP_FAILED { MAP_FAILED as *mut u8 } else { p as *mut u8 };
-    (p, Tracked::assume_new())
+    unimplemented!()
 }
 
 #[verus::trusted]
@@ -151,11 +152,9 @@ pub fn mmap_prot_read_write(hint: *mut u8, len: usize) -> (pt: (*mut u8, Tracked
         pt.0.addr() != MAP_FAILED ==> pt.1@.has_pointsto_for_all_read_write(),
         pt.0.addr() != MAP_FAILED ==> pt.0.addr() + len < usize::MAX,
         pt.0.addr() != MAP_FAILED ==> pt.0 as int % page_size() == 0,
-        pt.0.addr() != MAP_FAILED ==> pt.0@.provenance == pt.1@.points_to.provenance(),
+        pt.0.addr() != MAP_FAILED ==> pt.0@.provenance == pt.1@.points_to.provenance()
 {
-    let p = _mmap_prot_read_write(hint as *mut libc::c_void, len);
-    let p = if p == libc::MAP_FAILED { MAP_FAILED as *mut u8 } else { p as *mut u8 };
-    (p, Tracked::assume_new())
+    unimplemented!()
 }
 
 #[verus::trusted]
@@ -174,9 +173,9 @@ pub fn mprotect_prot_none(addr: *mut u8, len: usize, Tracked(mem): Tracked<&mut 
         final(mem).os_exact_range(addr as int, len as int),
         final(mem).os_has_range_no_read_write(addr as int, len as int),
         final(mem).points_to.dom() === Set::empty(),
-        final(mem).points_to.provenance() == old(mem).points_to.provenance(),
+        final(mem).points_to.provenance() == old(mem).points_to.provenance()
 {
-    _mprotect_prot_none(addr as *mut libc::c_void, len);
+    unimplemented!()
 }
 
 #[verus::trusted]
@@ -195,70 +194,38 @@ pub fn mprotect_prot_read_write(addr: *mut u8, len: usize, Tracked(mem): Tracked
         final(mem).has_new_pointsto(&*old(mem)),
         old(mem).has_pointsto_for_all_read_write() ==>
              final(mem).has_pointsto_for_all_read_write(),
-        final(mem).points_to.provenance() == old(mem).points_to.provenance(),
+        final(mem).points_to.provenance() == old(mem).points_to.provenance()
 {
-    _mprotect_prot_read_write(addr as *mut libc::c_void, len);
+    unimplemented!()
 }
 
 //// Tested for macOS / Linux
 
 #[verus::trusted]
 #[verifier::external]
-fn _mmap_prot_read_write(hint_addr: *mut libc::c_void, len: usize) -> *mut libc::c_void {
-    unsafe {
-        libc::mmap(
-            hint_addr,
-            len,
-            PROT_READ | PROT_WRITE,
-            MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE,
-            // The fd argument is ignored [if MAP_ANONYMOUS is specified]; however,
-            // some implementations require fd to be -1
-            -1,
-            0)
-    }
+fn _mmap_prot_read_write(hint_addr: *mut libc::c_void, len: usize) -> *mut libc::c_void
+{
+    unimplemented!()
 }
 
 #[verifier::external]
-fn _mmap_prot_none(hint_addr: *mut libc::c_void, len: usize) -> *mut libc::c_void {
-    unsafe {
-        libc::mmap(
-            hint_addr,
-            len,
-            PROT_NONE,
-            MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE,
-            // The fd argument is ignored [if MAP_ANONYMOUS is specified]; however,
-            // some implementations require fd to be -1
-            -1,
-            0)
-    }
+fn _mmap_prot_none(hint_addr: *mut libc::c_void, len: usize) -> *mut libc::c_void
+{
+    unimplemented!()
 }
 
 #[verus::trusted]
 #[verifier::external]
-fn _mprotect_prot_read_write(addr: *mut libc::c_void, len: usize) {
-    unsafe {
-        let res = libc::mprotect(
-            addr as *mut libc::c_void,
-            len,
-            PROT_READ | PROT_WRITE);
-        if res != 0 {
-            panic!("mprotect failed");
-        }
-    }
+fn _mprotect_prot_read_write(addr: *mut libc::c_void, len: usize)
+{
+    unimplemented!()
 }
 
 #[verus::trusted]
 #[verifier::external]
-fn _mprotect_prot_none(addr: *mut libc::c_void, len: usize) {
-    unsafe {
-        let res = libc::mprotect(
-            addr as *mut libc::c_void,
-            len,
-            PROT_NONE);
-        if res != 0 {
-            panic!("mprotect failed");
-        }
-    }
+fn _mprotect_prot_none(addr: *mut libc::c_void, len: usize)
+{
+    unimplemented!()
 }
 
 //// Misc utilities
@@ -272,9 +239,7 @@ pub struct ExTimespec(libc::timespec);
 #[verifier::external_body]
 pub fn clock_gettime_monotonic() -> libc::timespec
 {
-    let mut ts = libc::timespec { tv_sec: 0, tv_nsec: 0 };
-    unsafe { libc::clock_gettime(libc::CLOCK_MONOTONIC, &mut ts); }
-    ts
+    unimplemented!()
 }
 
 

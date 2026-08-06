@@ -82,6 +82,7 @@ pub const HUGE_BLOCK_SIZE: u32 = 0x80000000; // 2 GiB
 
 // Helpers
 
+#[verifier::external_body]
 pub proof fn const_facts()
     ensures SLICE_SIZE == 65536,
         SEGMENT_SIZE == 33554432,
@@ -105,26 +106,46 @@ pub proof fn const_facts()
         vstd::layout::align_of::<SegmentHeader>() == 8,
         vstd::layout::align_of::<Page>() == 8,
         vstd::layout::align_of::<Heap>() == 8,
-        vstd::layout::align_of::<Tld>() == 8,
+        vstd::layout::align_of::<Tld>() == 8
 {
-    assert(SLICE_SIZE == 65536) by (compute);
-    assert(SEGMENT_SIZE == 33554432) by (compute);
-    assert(SMALL_PAGE_SIZE == 65536) by (compute);
-    assert(MEDIUM_PAGE_SIZE == 524288) by (compute);
-    assert(COMMIT_MASK_FIELD_COUNT == 8) by (compute);
+    unimplemented!()
 }
 
 use crate::types::todo;
-pub fn option_eager_commit_delay() -> i64 { 1 }
-pub fn option_eager_commit() -> bool { true }
-pub fn option_allow_decommit() -> bool { true }
-pub fn option_page_reset() -> bool { false }
+#[verifier::external_body]
+pub fn option_eager_commit_delay() -> i64
+{
+    unimplemented!()
+}
+#[verifier::external_body]
+pub fn option_eager_commit() -> bool
+{
+    unimplemented!()
+}
+#[verifier::external_body]
+pub fn option_allow_decommit() -> bool
+{
+    unimplemented!()
+}
+#[verifier::external_body]
+pub fn option_page_reset() -> bool
+{
+    unimplemented!()
+}
 
 //pub fn option_decommit_delay() -> i64 { assume(false); 1 /*25*/ }
 //pub fn option_decommit_extend_delay() -> i64 { assume(false); 0 /*1*/ }
 
-pub fn option_decommit_delay() -> i64 { 25 }
-pub fn option_decommit_extend_delay() -> i64 { 1 }
+#[verifier::external_body]
+pub fn option_decommit_delay() -> i64
+{
+    unimplemented!()
+}
+#[verifier::external_body]
+pub fn option_decommit_extend_delay() -> i64
+{
+    unimplemented!()
+}
 
 
 }

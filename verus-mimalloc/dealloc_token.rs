@@ -68,6 +68,7 @@ impl MimDeallocInner {
         &&& is_block_ptr(self.ptr, self.block_id())
     }
 
+    #[verifier::external_body]
     pub(crate) proof fn into_user(tracked self, tracked points_to_raw: PointsToRaw, sz: int)
         -> (tracked res: (MimDealloc, PointsToRaw))
 
@@ -86,9 +87,7 @@ impl MimDeallocInner {
             && md.inst() == self.mim_instance
         })
     {
-        let tracked (x, y) = points_to_raw.split(set_int_range(self.ptr as int, self.ptr as int + sz));
-        let tracked md = MimDealloc { padding: y, _size: sz, inner: self };
-        (md, x)
+        unimplemented!()
     }
 }
 
@@ -120,6 +119,7 @@ impl MimDealloc {
           && self.padding.provenance() == self.inner.ptr@.provenance
     }
 
+    #[verifier::external_body]
     pub(crate) proof fn into_internal(tracked self, tracked points_to_raw: PointsToRaw)
         -> (tracked res: (MimDeallocInner, PointsToRaw))
 
@@ -136,10 +136,7 @@ impl MimDealloc {
             && md.mim_instance == self.inst()
         })
     {
-        use_type_invariant(&self);
-        let tracked MimDealloc { padding, _size, inner } = self;
-        let tracked p = points_to_raw.join(padding);
-        (inner, p)
+        unimplemented!()
     }
 }
 
