@@ -17,7 +17,6 @@ verus!{
 pub type ArenaId = usize;
 pub type MemId = usize;
 
-#[verifier::external_body]
 pub fn arena_alloc_aligned(
     size: usize,
     alignment: usize,
@@ -52,7 +51,18 @@ pub fn arena_alloc_aligned(
     // is_zero: bool
     // mem_id: usize
 {
-    unimplemented!()
+    // TODO arena allocation
+    let (p, is_large, Tracked(mem)) = os_alloc_aligned_offset(size, alignment, align_offset, request_commit, allow_large);
+    let did_commit = request_commit;
+    let is_pinned = is_large;
+    let is_zero = true;
+    let memid_os = 0;
+    proof {
+        if p as int != 0 {
+            mem.os_restrict(p as int, size as int);
+        }
+    }
+    (p, Tracked(mem), did_commit, is_large, is_pinned, is_zero, memid_os)
 }
 
 /*

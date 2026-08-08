@@ -216,22 +216,28 @@ pub open spec fn segment_u_max(s: Set<SegmentId>) -> int
     }
 }
 
-#[verifier::external_body]
 proof fn segment_u_max_not_in(s: Set<SegmentId>)
-    ensures forall |id: SegmentId| s.contains(id) ==> id.uniq < segment_u_max(s) + 1
+    ensures forall |id: SegmentId| s.contains(id) ==> id.uniq < segment_u_max(s) + 1,
+    decreases s.len(),
 {
-    unimplemented!()
+    vstd::set_lib::lemma_set_empty_equivalency_len(s);
+    if s.len() == 0 {
+        assert(s === Set::empty());
+    } else {
+        let x = s.choose();
+        let t = s.remove(x);
+        segment_u_max_not_in(t);
+    }
 }
 
 pub open spec fn segment_get_unused_uniq_field(s: Set<SegmentId>) -> int {
     segment_u_max(s) + 1
 }
 
-#[verifier::external_body]
 pub proof fn lemma_segment_get_unused_uniq_field(s: Set<SegmentId>)
     ensures forall |id: SegmentId| s.contains(id) ==> id.uniq != segment_get_unused_uniq_field(s)
 {
-    unimplemented!()
+    segment_u_max_not_in(s);
 }
 
 pub open spec fn heap_u_max(s: Set<HeapId>) -> int
@@ -245,22 +251,28 @@ pub open spec fn heap_u_max(s: Set<HeapId>) -> int
     }
 }
 
-#[verifier::external_body]
 proof fn heap_u_max_not_in(s: Set<HeapId>)
-    ensures forall |id: HeapId| s.contains(id) ==> id.uniq < heap_u_max(s) + 1
+    ensures forall |id: HeapId| s.contains(id) ==> id.uniq < heap_u_max(s) + 1,
+    decreases s.len(),
 {
-    unimplemented!()
+    vstd::set_lib::lemma_set_empty_equivalency_len(s);
+    if s.len() == 0 {
+        assert(s === Set::empty());
+    } else {
+        let x = s.choose();
+        let t = s.remove(x);
+        heap_u_max_not_in(t);
+    }
 }
 
 pub open spec fn heap_get_unused_uniq_field(s: Set<HeapId>) -> int {
     heap_u_max(s) + 1
 }
 
-#[verifier::external_body]
 pub proof fn lemma_heap_get_unused_uniq_field(s: Set<HeapId>)
     ensures forall |id: HeapId| s.contains(id) ==> id.uniq != heap_get_unused_uniq_field(s)
 {
-    unimplemented!()
+    heap_u_max_not_in(s);
 }
 
 pub open spec fn all_thread_ids() -> Set<ThreadId> {
@@ -456,7 +468,13 @@ tokenized_state_machine!{ Mim {
             have block >= [ block_id => let block_state ];
             let segment_id = block_id.page_id.segment_id;
             guard segment_shared_access >= [ segment_id => block_state.segment_shared_access ]
-            by { assume(false); };
+            by {
+                let page_id = block_id.page_id_for_slice();
+                let thread_id = pre.thread_of_segment[block_id.page_id.segment_id];
+                assert(pre.thread_local_state[thread_id].pages.dom().contains(page_id));
+                assert(pre.thread_local_state[thread_id].segments.dom().contains(segment_id));
+                assert(pre.segment_shared_access.dom().contains(segment_id));
+            };
         }
     }
 
@@ -465,7 +483,7 @@ tokenized_state_machine!{ Mim {
             have block >= [ block_id => let block_state ];
             let page_id = block_id.page_id_for_slice();
             guard page_shared_access >= [ page_id => block_state.page_slice_shared_access ]
-                by { assume(false); };
+                by { assert(pre.page_shared_access.dom().contains(page_id)); };
         }
     }
 
@@ -474,7 +492,7 @@ tokenized_state_machine!{ Mim {
             have block >= [ block_id => let block_state ];
             let page_id = block_id.page_id;
             guard page_shared_access >= [ page_id => block_state.page_shared_access ]
-                by { assume(false); };
+                by { assert(pre.page_shared_access.dom().contains(page_id)); };
         }
     }
 
@@ -561,7 +579,7 @@ tokenized_state_machine!{ Mim {
         delay_guards_page_shared_access(page_id: PageId) {
             have delay_actor >= [ page_id => let DelayFreeingActor::Heap(heap_id, _hsa, psa) ];
             guard page_shared_access >= [ page_id => psa ]
-                by { assume(false); };
+                by { assert(pre.page_shared_access.dom().contains(page_id)); };
         }
     }
 
@@ -573,7 +591,7 @@ tokenized_state_machine!{ Mim {
           guard page_shared_access >= [ page_id =>
               thread_state.pages.index(page_id).shared_access ]
 
-                by { assume(false); };
+                by { assert(pre.page_shared_access.dom().contains(page_id)); };
         }
     }
 
@@ -596,7 +614,7 @@ tokenized_state_machine!{ Mim {
                 assert(thread_state.segments.dom().contains(segment_id));
                 assert(pre.segment_shared_access.dom().contains(segment_id));
             };*/
-                by { assume(false); };
+                by { assert(pre.segment_shared_access.dom().contains(segment_id)); };
         }
     }
 
@@ -625,7 +643,13 @@ tokenized_state_machine!{ Mim {
         reserve_uniq_identifier() {
             birds_eye let u = heap_get_unused_uniq_field(pre.heap_shared_access.dom() + pre.reserved_uniq);
             add reserved_uniq += set { HeapId { id: 0, uniq: u, provenance: Provenance::null() } }
-            by { assume(false); };
+            by {
+                lemma_heap_get_unused_uniq_field(pre.heap_shared_access.dom() + pre.reserved_uniq);
+                if pre.reserved_uniq.contains(HeapId { id: 0, uniq: u, provenance: Provenance::null() }) {
+                    assert((pre.heap_shared_access.dom() + pre.reserved_uniq)
+                        .contains(HeapId { id: 0, uniq: u, provenance: Provenance::null() }));
+                }
+            };
         }
     }
 
@@ -645,7 +669,9 @@ tokenized_state_machine!{ Mim {
             deposit heap_shared_access +=
                 [ thread_state.heap_id => thread_state.heap.shared_access ]
 
-              by { assume(false); };
+              by {
+                  lemma_heap_get_unused_uniq_field(pre.heap_shared_access.dom() + pre.reserved_uniq);
+              };
 
             update heap_to_thread =
                 pre.heap_to_thread.insert(thread_state.heap_id, thread_id);
@@ -676,13 +702,13 @@ tokenized_state_machine!{ Mim {
 
             birds_eye let real_segment_id = Self::mk_fresh_segment_id(pre.thread_of_segment,pre_segment_id);
             assert !ts.segments.dom().contains(real_segment_id)
-              by { assume(false); };
+              by { lemma_segment_get_unused_uniq_field(pre.thread_of_segment.dom()); };
             assert pre_segment_id.id == real_segment_id.id && pre_segment_id.provenance == real_segment_id.provenance;
             let new_segments = ts.segments.insert(real_segment_id, segment_state);
             let ts2 = ThreadState { segments: new_segments, .. ts };
             add thread_local_state += [ thread_id => ts2 ];
             add thread_of_segment += [ real_segment_id => thread_id ]
-              by { assume(false); };
+              by { lemma_segment_get_unused_uniq_field(pre.thread_of_segment.dom()); };
         }
     }
 
@@ -963,7 +989,19 @@ tokenized_state_machine!{ Mim {
                 |pid: PageId| ts.pages[pid].shared_access,
             );
             withdraw page_shared_access -= (psa_map)
-            by { assume(false); };
+            by {
+                //page_disable_withdraw_ok(thread_id, page_id, n_slices);
+                // PAPER CUT
+                assert forall |pid: PageId| #![all_triggers]
+                    psa_map.dom().contains(pid) implies
+                        pre.page_shared_access.dom().contains(pid)
+                        && psa_map[pid] == pre.page_shared_access[pid]
+                by {
+                    assert(page_id.range_from(0, n_slices as int).contains(pid));
+                    assert(ts.pages.dom().contains(pid));
+                    assert(pre.page_shared_access.dom().contains(pid));
+                }
+            };
         }
     }
 
@@ -1354,78 +1392,88 @@ tokenized_state_machine!{ Mim {
     }
 
     #[inductive(initialize)]
-    fn initialize_inductive(post: Self) {
-        assume(false);
-    }
+    fn initialize_inductive(post: Self) { }
    
     #[inductive(set_inst)]
-    fn set_inst_inductive(pre: Self, post: Self, inst: InstanceId) {
-        assume(false);
-    }
+    fn set_inst_inductive(pre: Self, post: Self, inst: InstanceId) { }
    
     #[inductive(actor_make_idle)]
-    fn actor_make_idle_inductive(pre: Self, post: Self, thread_id: ThreadId) {
-        assume(false);
-    }
+    fn actor_make_idle_inductive(pre: Self, post: Self, thread_id: ThreadId) { }
    
     #[inductive(actor_abandon)]
-    fn actor_abandon_inductive(pre: Self, post: Self, thread_id: ThreadId) {
-        assume(false);
-    }
+    fn actor_abandon_inductive(pre: Self, post: Self, thread_id: ThreadId) { }
    
     #[inductive(set_use_delayed_free)]
-    fn set_use_delayed_free_inductive(pre: Self, post: Self, page_id: PageId) {
-        assume(false);
-    }
+    fn set_use_delayed_free_inductive(pre: Self, post: Self, page_id: PageId) { }
    
     #[inductive(delay_enter_freeing)]
-    fn delay_enter_freeing_inductive(pre: Self, post: Self, page_id: PageId, block_id: BlockId) {
-        assume(false);
-    }
+    fn delay_enter_freeing_inductive(pre: Self, post: Self, page_id: PageId, block_id: BlockId) { }
    
     #[inductive(delay_leave_freeing)]
-    fn delay_leave_freeing_inductive(pre: Self, post: Self, page_id: PageId) {
-        assume(false);
-    }
+    fn delay_leave_freeing_inductive(pre: Self, post: Self, page_id: PageId) { }
    
     #[inductive(delay_lookup_heap)]
-    fn delay_lookup_heap_inductive(pre: Self, post: Self, block_id: BlockId) {
-        assume(false);
-    }
+    fn delay_lookup_heap_inductive(pre: Self, post: Self, block_id: BlockId) { }
    
     #[inductive(block_set_heap_id)]
     fn block_set_heap_id_inductive(pre: Self, post: Self, block_id: BlockId) {
-        assume(false);
+        /*match pre.delay_actor[block_id.page_id] {
+            DelayFreeingActor::Heap(heap_id, _hsa, _psa) => {
+                let thread_id = post.heap_to_thread[heap_id];
+                assert(post.heap_to_thread.dom().contains(heap_id));
+                assert(thread_id == post.thread_of_segment[block_id.page_id.segment_id]);
+                assert(heap_id == post.thread_local_state[thread_id].heap_id);
+                assert(heap_id == post.thread_local_state[post.thread_of_segment[block_id.page_id.segment_id]].heap_id);
+            }
+            _ => { assert(false); }
+        }*/
     }
    
     #[inductive(create_thread_mk_tokens)]
     fn create_thread_mk_tokens_inductive(pre: Self, post: Self, thread_id: ThreadId, thread_state: ThreadState) {
-        assume(false);
+        /*assert forall |tid, segment_id| post.thread_local_state.dom().contains(tid) && #[trigger] post.thread_local_state[tid].segments.dom().contains(segment_id) implies
+            post.thread_of_segment.dom().contains(segment_id)
+              && post.thread_of_segment[segment_id] == tid
+        by {
+            if tid == thread_id {
+                assert(post.thread_of_segment.dom().contains(segment_id));
+                assert(post.thread_of_segment[segment_id] == tid);
+            } else {
+                assert(post.thread_of_segment.dom().contains(segment_id));
+                assert(post.thread_of_segment[segment_id] == tid);
+            }
+        }*/
     }
    
     #[inductive(create_segment_mk_tokens)]
-    fn create_segment_mk_tokens_inductive(pre: Self, post: Self, thread_id: ThreadId, pre_segment_id: SegmentId, segment_state: SegmentState) {
-        assume(false);
-    }
+    fn create_segment_mk_tokens_inductive(pre: Self, post: Self, thread_id: ThreadId, pre_segment_id: SegmentId, segment_state: SegmentState) { }
    
     #[inductive(segment_enable)]
-    fn segment_enable_inductive(pre: Self, post: Self, thread_id: ThreadId, segment_id: SegmentId, shared_access: SegmentSharedAccess) {
-        assume(false);
-    }
+    fn segment_enable_inductive(pre: Self, post: Self, thread_id: ThreadId, segment_id: SegmentId, shared_access: SegmentSharedAccess) { }
    
     #[inductive(create_page_mk_tokens)]
     fn create_page_mk_tokens_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId, n_slices: nat, block_size: nat, page_map: Map<PageId, PageState>) {
-        assume(false);
+        
     }
    
     #[inductive(page_enable)]
-    fn page_enable_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId, n_slices: nat, page_map: Map<PageId, PageState>, psa_map: Map<PageId, PageSharedAccess>) {
-        assume(false);
-    }
+    fn page_enable_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId, n_slices: nat, page_map: Map<PageId, PageState>, psa_map: Map<PageId, PageSharedAccess>) { }
    
     #[inductive(page_mk_block_tokens)]
     fn page_mk_block_tokens_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId, old_num_blocks: nat, new_num_blocks: nat, block_size: nat) {
-        assume(false);
+        let ts1 = pre.thread_local_state[thread_id];
+        let ts2 = post.thread_local_state[thread_id];
+        assert forall |block_id: BlockId| #[trigger] post.block.dom().contains(block_id)
+            implies post.inv_block_id_valid_for_block(block_id)
+        by {
+            if post.block.dom().contains(block_id)
+              && !pre.block.dom().contains(block_id)
+            {
+                assert(Self::okay_to_add_block(ts1, page_id, block_id.idx, block_size));
+            }
+            assert(post.segment_shared_access.dom().contains(block_id.page_id.segment_id));
+            assert(post.inv_block_id_valid_for_block(block_id));
+        }
     }
 
     proof fn block_map_with_len(blocks: Map<BlockId, BlockState>, page_id: PageId, len: int)
@@ -1443,7 +1491,34 @@ tokenized_state_machine!{ Mim {
             forall |i| 0 <= i < blocks.len() ==> Self::blocks_has(blocks, page_id, i)
         decreases len,
     {
-        assume(false);
+        if len == 0 {
+            if (blocks.len() > len) {
+                vstd::set_lib::lemma_set_empty_equivalency_len(blocks.dom());
+                let t = choose |t: BlockId| blocks.dom().contains(t);
+                assert(blocks.dom().contains(t));
+                assert(false);
+            }
+            assert(forall |i| 0 <= i < blocks.len() ==> Self::blocks_has(blocks, page_id, i));
+        } else {
+            if Self::blocks_has(blocks, page_id, len - 1) {
+                let block_id = choose |block_id: BlockId| blocks.dom().contains(block_id)
+                    && block_id.page_id == page_id && block_id.idx == len - 1;
+                let blocks0 = blocks.remove(block_id);
+                Self::block_map_with_len(blocks0, page_id, len - 1);
+                assert forall |i| 0 <= i < blocks.len()
+                    implies Self::blocks_has(blocks, page_id, i)
+                by {
+                    if i < blocks.len() - 1 {
+                        assert(Self::blocks_has(blocks0, page_id, i));
+                        assert(Self::blocks_has(blocks, page_id, i));
+                    } else {
+                        assert(Self::blocks_has(blocks, page_id, i));
+                    }
+                }
+            } else {
+                Self::block_map_with_len(blocks, page_id, len - 1);
+            }
+        }
     }
 
     spec fn blocks_has(blocks: Map<BlockId, BlockState>, page_id: PageId, i: int) -> bool {
@@ -1453,28 +1528,96 @@ tokenized_state_machine!{ Mim {
 
     #[inductive(page_destroy_block_tokens)]
     fn page_destroy_block_tokens_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId, blocks: Map<BlockId, BlockState>) {
-        assume(false);
+        let ts = pre.thread_local_state[thread_id];
+        assert(forall |block_id: BlockId| blocks.dom().contains(block_id) ==>
+            pre.block.dom().contains(block_id));
+        /*assert forall |block_id: BlockId| blocks.dom().contains(block_id) implies
+                block_id.page_id == page_id && 0 <= block_id.idx < ts.pages[page_id].num_blocks
+        by {
+            assert(pre.block.dom().contains(block_id));
+            assert(pre.inv_block_id_valid_for_block(block_id));
+            assert(0 <= block_id.idx < ts.pages[page_id].num_blocks);
+        }*/
+
+        Self::block_map_with_len(blocks, page_id, ts.pages[page_id].num_blocks as int);
+        assert forall |block_id: BlockId| #[trigger] post.block.dom().contains(block_id)
+            implies post.inv_block_id_valid_for_block(block_id)
+        by {
+            if block_id.page_id == page_id {
+                assert(Self::blocks_has(blocks, page_id, block_id.idx as int));
+                assert(post.inv_block_id_valid_for_block(block_id));
+            } else {
+                assert(post.inv_block_id_valid_for_block(block_id));
+            }
+        }
     }
    
     #[inductive(page_disable)]
     fn page_disable_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId, n_slices: nat) {
-        assume(false);
+        assert forall |pid: PageId| #[trigger] post.delay_actor.dom().contains(pid)
+            implies post.inv_delay_actor_for_page(pid)
+        by {
+            if pid == page_id {
+                assert(post.inv_delay_actor_for_page(pid));
+            } else if page_id.range_from(0, n_slices as int).contains(pid) {
+                assert(post.inv_delay_actor_for_page(pid));
+            } else {
+                assert(post.inv_delay_actor_for_page(pid));
+            }
+        }
+        /*assert forall |block_id: BlockId| #[trigger] post.block.dom().contains(block_id)
+            implies post.inv_block_id_valid_for_block(block_id)
+        by {
+            let slice_id = block_id.page_id_for_slice();
+            //let old_ts = pre.thread_local_state[pre.thread_of_segment[block_id.page_id.segment_id]];
+            let ts = post.thread_local_state[post.thread_of_segment[block_id.page_id.segment_id]];
+
+            if page_id.range_from(0, n_slices as int).contains(slice_id) {
+                assert(block_id.page_id == page_id);
+                assert(false);
+            }
+
+            //assert(old_ts.pages.dom().contains(slice_id));
+            //assert(old_ts.pages[slice_id].is_enabled);
+            //assert(ts.pages.dom().contains(slice_id));
+            //assert(ts.pages[slice_id].is_enabled);
+            //assert(post.inv_block_id_valid_for_block(block_id));
+        }*/
+        /*assert(post.inv_page_implies_first_page()) by {
+            assert forall |thread_id: ThreadId|
+                #[trigger] post.thread_local_state.dom().contains(thread_id) implies
+                  post.inv_page_implies_first_page_dom(post.thread_local_state[thread_id].pages.dom())
+            by {
+                reveal(State::inv_page_implies_first_page_dom);
+            }
+        }*/
     }
    
     #[inductive(page_destroy_tokens)]
     fn page_destroy_tokens_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId, n_slices: nat) {
-        assume(false);
+        assert(page_id.range_from(0, n_slices as int).contains(page_id));
+        assert forall |block_id: BlockId| #[trigger] post.block.dom().contains(block_id)
+            implies post.inv_block_id_valid_for_block(block_id)
+        by {
+            if block_id.page_id == page_id {
+                assert(post.inv_block_id_valid_for_block(block_id));
+            } else if page_id.range_from(0, n_slices as int).contains(block_id.page_id) {
+                assert(post.inv_block_id_valid_for_block(block_id));
+            } else {
+                assert(post.inv_block_id_valid_for_block(block_id));
+            }
+        }
+        let ts = pre.thread_local_state[thread_id];
+        assert(page_id.range_from(0, n_slices as int).contains(page_id));
+        assert(!ts.pages[page_id].is_enabled);
+        assert(!pre.delay_actor.dom().contains(page_id));
     }
    
     #[inductive(block_tokens_distinct)]
-    fn block_tokens_distinct_inductive(pre: Self, post: Self, block_id1: BlockId, block_id2: BlockId) {
-        assume(false);
-    }
+    fn block_tokens_distinct_inductive(pre: Self, post: Self, block_id1: BlockId, block_id2: BlockId) { }
    
     #[inductive(block_in_range)]
-    fn block_in_range_inductive(pre: Self, post: Self, thread_id: ThreadId, block_id: BlockId) {
-        assume(false);
-    }
+    fn block_in_range_inductive(pre: Self, post: Self, thread_id: ThreadId, block_id: BlockId) { }
 
     /*proof fn page_disable_withdraw_ok(
             &self,
@@ -1497,13 +1640,24 @@ tokenized_state_machine!{ Mim {
       })*/
 
     #[inductive(page_check_delay_state)]
-    fn page_check_delay_state_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId) {
-        assume(false);
-    }
+    fn page_check_delay_state_inductive(pre: Self, post: Self, thread_id: ThreadId, page_id: PageId) { }
 
     #[inductive(reserve_uniq_identifier)]
     fn reserve_uniq_identifier_inductive(pre: Self, post: Self) {
-        assume(false);
+        lemma_heap_get_unused_uniq_field(pre.heap_shared_access.dom() + pre.reserved_uniq);
+        let u = heap_get_unused_uniq_field(pre.heap_shared_access.dom() + pre.reserved_uniq);
+        assert forall |hid1: HeapId, hid2: HeapId|
+            post.reserved_uniq.contains(hid1)
+            && post.heap_shared_access.dom().contains(hid2)
+            implies hid1.uniq != hid2.uniq
+        by {
+            if hid1.uniq == u {
+                assert((pre.heap_shared_access.dom() + pre.reserved_uniq).contains(hid2));
+                assert(hid1.uniq != hid2.uniq);
+            } else {
+                assert(hid1.uniq != hid2.uniq);
+            }
+        }
     }
 
 

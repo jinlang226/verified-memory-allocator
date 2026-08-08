@@ -41,17 +41,13 @@ impl IsThread {
 
     #[verifier(external_body)]
     pub proof fn agrees(tracked self, tracked other: IsThread)
-        ensures self@ == other@
-    {
-        unimplemented!()
-    }
+        ensures self@ == other@,
+    { unimplemented!(); }
 
     #[verifier(external_body)]
     pub proof fn nonzero(tracked self)
-        ensures self@.thread_id != 0
-    {
-        unimplemented!()
-    }
+        ensures self@.thread_id != 0,
+    { unimplemented!(); }
 }
 
 #[verus::trusted]
@@ -77,9 +73,13 @@ impl Copy for IsThread { }
 #[cfg(target_os = "linux")]
 #[verifier::external_body]
 pub fn thread_id() -> (res: (ThreadId, Tracked<IsThread>))
-    ensures res.1@@ == res.0
+    ensures res.1@@ == res.0,
 {
-    unimplemented!()
+    //let id: i32 = unsafe { libc::gettid() };
+    //let id_u64: u64 = ((id as u64) << 1) | 1; // make sure it's nonzero
+    let id_u64: u64 = unsafe { crate::thread_id_helper() };
+    let id = ThreadId { thread_id: id_u64 };
+    (id, Tracked::assume_new())
 }
 
 // NOTE: std::thread recursively calls malloc, so this can't be used when doing override
@@ -88,9 +88,11 @@ pub fn thread_id() -> (res: (ThreadId, Tracked<IsThread>))
 #[cfg(not(feature = "override_system_allocator"))]
 #[verifier::external_body]
 pub fn thread_id() -> (res: (ThreadId, Tracked<IsThread>))
-    ensures res.1@@ == res.0
+    ensures res.1@@ == res.0,
 {
-    unimplemented!()
+    let id: std::thread::ThreadId = std::thread::current().id();
+    let id = ThreadId { thread_id: id.as_u64().into() };
+    (id, Tracked::assume_new())
 }
 
 
@@ -100,7 +102,7 @@ pub fn thread_id() -> (res: (ThreadId, Tracked<IsThread>))
 #[verifier::external_body]
 pub proof fn ghost_thread_id() -> (tracked res: IsThread)
 {
-    unimplemented!()
+    unimplemented!();
 }
 
 #[verus::trusted]
