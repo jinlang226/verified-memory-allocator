@@ -50,7 +50,6 @@ verus!{
 //     (Also note that setting the 'Freeing' state does not prevent the next thread that
 //     comes along from adding to the thread_free list.)
 
-#[verifier::external_body]
 pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user_dealloc): Tracked<Option<MimDealloc>>, Tracked(local): Tracked<&mut Local>)
     // According to the Linux man pages, `ptr` is allowed to be NULL,
     // in which case no operation is performed.
@@ -70,8 +69,15 @@ pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user
         return;
     }
 
-    let Tracked(dealloc): Tracked<MimDeallocInner> = Tracked::assume_new();
-    let Tracked(perm): Tracked<PointsToRaw> = Tracked::assume_new();
+    let tracked user_dealloc = user_dealloc.tracked_unwrap();
+
+    let tracked dealloc;
+    let tracked perm;
+    proof {
+        let tracked (x, y) = user_dealloc.into_internal(user_perm);
+        dealloc = x;
+        perm = y;
+    }
 
     // Calculate the pointer to the segment this block is in.
 
@@ -105,6 +111,7 @@ pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user
     );
 
     let (thread_id, Tracked(is_thread)) = crate::thread::thread_id();
+    proof { local.is_thread.agrees(is_thread); }
     let is_local = thread_id.thread_id == segment_thread_id_u64;
 
     // Calculate the pointer to the PageHeader for the *slice* that this block is in.
@@ -148,6 +155,7 @@ pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user
         page_ptr,
         page_id: Ghost(page_id),
     };
+    assert(page_ptr.addr() != 0) by { is_page_ptr_nonzero(page_ptr, page_id); }
 
     // Case based on whether this is thread local or not
 
@@ -168,11 +176,20 @@ pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user
                 //}
 
                 page_inner.free.insert_block(ptr, Tracked(perm), Tracked(mim_block));
+
+                proof {
+                    bound_on_2_lists(local.instance, &local.thread_token, &mut page_inner.free, &mut page_inner.local_free);
+                }
                 //assert(page_inner.used >= 1);
 
                 used = page_inner.used - 1;
                 page_inner.used = used;
             });
+
+            proof {
+                crate::os_mem_util::preserves_mem_chunk_good(*old(local), *local);
+                //assert(local.wf());
+            }
 
             if unlikely(used == 0) {
                 crate::page::page_retire(page, Tracked(&mut *local));
