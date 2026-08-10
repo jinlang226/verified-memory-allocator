@@ -51,7 +51,7 @@ struct_with_invariants!{
             specifically (self.data@.index(field_idx))
             is (v: usize, gmap: Map<int, G>)
         {
-            forall |bitidx: int| 
+            forall |bitidx: int|
                 ! #[trigger] has_bit(v, bitidx)
                 ==> gmap.dom().contains(field_idx * usize::BITS + bitidx)
                     && entry_inv(k,
@@ -206,7 +206,7 @@ impl Bitmap {
                         let bit = bitidx;
 
                         verus_proof_expr!({
-                        assert forall |bitidx0: int| 
+                        assert forall |bitidx0: int|
                             ! #[trigger] has_bit(new_v, bitidx0)
                             implies gmap.dom().contains(field_idx * usize::BITS + bitidx0)
                                 && entry_inv(self.k,
@@ -303,9 +303,9 @@ impl Bitmap {
 
         return (false, 0, Tracked(Map::tracked_empty()));
     }
-        
 
-    //pub bitmap_try_find_claim_field_across(&self, idx: usize, 
+
+    //pub bitmap_try_find_claim_field_across(&self, idx: usize,
 }
 
 */

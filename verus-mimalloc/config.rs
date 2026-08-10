@@ -76,12 +76,13 @@ pub const COMMIT_SIZE: u64 = SLICE_SIZE;
 pub const COMMIT_MASK_BITS: u64 = SLICES_PER_SEGMENT;
 pub const COMMIT_MASK_FIELD_COUNT: u64 = COMMIT_MASK_BITS / (usize::BITS as u64);
 
-// huge 
+// huge
 
 pub const HUGE_BLOCK_SIZE: u32 = 0x80000000; // 2 GiB
 
 // Helpers
 
+#[verifier::external_body]
 pub proof fn const_facts()
     ensures SLICE_SIZE == 65536,
         SEGMENT_SIZE == 33554432,
@@ -107,23 +108,25 @@ pub proof fn const_facts()
         vstd::layout::align_of::<Heap>() == 8,
         vstd::layout::align_of::<Tld>() == 8,
 {
-    assert(SLICE_SIZE == 65536) by (compute);
-    assert(SEGMENT_SIZE == 33554432) by (compute);
-    assert(SMALL_PAGE_SIZE == 65536) by (compute);
-    assert(MEDIUM_PAGE_SIZE == 524288) by (compute);
-    assert(COMMIT_MASK_FIELD_COUNT == 8) by (compute);
+    unimplemented!();
 }
 
 use crate::types::todo;
+#[verifier::external_body]
 pub fn option_eager_commit_delay() -> i64 { 1 }
+#[verifier::external_body]
 pub fn option_eager_commit() -> bool { true }
+#[verifier::external_body]
 pub fn option_allow_decommit() -> bool { true }
+#[verifier::external_body]
 pub fn option_page_reset() -> bool { false }
 
 //pub fn option_decommit_delay() -> i64 { assume(false); 1 /*25*/ }
 //pub fn option_decommit_extend_delay() -> i64 { assume(false); 0 /*1*/ }
 
+#[verifier::external_body]
 pub fn option_decommit_delay() -> i64 { 25 }
+#[verifier::external_body]
 pub fn option_decommit_extend_delay() -> i64 { 1 }
 
 

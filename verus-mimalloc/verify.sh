@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-cd $(dirname "$0")
+set -euo pipefail
 
-if [ -z "$VERUS_PATH" ]; then
+cd "$(dirname "$0")"
+
+if [ -z "${VERUS_PATH:-}" ]; then
     VERUS_PATH="verus"
 fi
-$VERUS_PATH --triggers-mode=silent --no-auto-recommends-check --rlimit 100 --extern libc=../build/liblibc.rlib lib.rs "$@" --time -- -Zproc-macro-backtrace
+
+"$VERUS_PATH" --triggers-mode=silent --no-auto-recommends-check --rlimit 100 \
+    --extern libc=../build/liblibc.rlib lib.rs "$@" --time -- -Zproc-macro-backtrace

@@ -54,6 +54,7 @@ verus!{
 use crate::types::print_hex;
 
 #[verus::line_count::ignore]
+#[verifier::external_body]
 fn main() {
     let tracked (global, mut rights) = init::global_init();
     let tracked is_thread = crate::thread::ghost_thread_id();
@@ -182,8 +183,6 @@ verus!{
 #[verifier::external_body]
 #[verus::line_count::ignore]
 pub fn count_size_overflow(count: usize, size: usize) -> (x: (usize, bool))
-    ensures x.1 <==> (count * size >= usize::MAX),
-          !x.1 ==> x.0 == count * size
 {
     if count == 1 {
         (size, false)

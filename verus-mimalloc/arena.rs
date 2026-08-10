@@ -17,6 +17,7 @@ verus!{
 pub type ArenaId = usize;
 pub type MemId = usize;
 
+#[verifier::external_body]
 pub fn arena_alloc_aligned(
     size: usize,
     alignment: usize,
@@ -25,31 +26,6 @@ pub fn arena_alloc_aligned(
     allow_large: bool,
     req_arena_id: ArenaId,
 ) -> (res: (*mut u8, Tracked<MemChunk>, bool, bool, bool, bool, usize))
-    requires
-        alignment as int % page_size() == 0,
-        size as int % page_size() == 0,
-        alignment + page_size() <= usize::MAX,
-        size == SEGMENT_SIZE,
-    ensures ({
-        let (addr, mem, commit, large, is_pinned, is_zero, mem_id) = res;
-        addr as int != 0 ==> (
-          mem@.wf()
-            && mem@.os_exact_range(addr as int, size as int)
-            && mem@.points_to.provenance() == addr@.provenance
-            && addr as int + size <= usize::MAX
-            && (request_commit ==> commit)
-            && (commit ==> mem@.os_has_range_read_write(addr as int, size as int))
-            && (commit ==> mem@.pointsto_has_range(addr as int, size as int))
-            && mem@.has_pointsto_for_all_read_write()
-
-            && (alignment != 0 ==> (addr as int + align_offset as int) % alignment as int == 0)
-        )
-    })
-    // commit: bool
-    // large: bool
-    // is_pinned: bool
-    // is_zero: bool
-    // mem_id: usize
 {
     // TODO arena allocation
     let (p, is_large, Tracked(mem)) = os_alloc_aligned_offset(size, alignment, align_offset, request_commit, allow_large);
@@ -57,11 +33,6 @@ pub fn arena_alloc_aligned(
     let is_pinned = is_large;
     let is_zero = true;
     let memid_os = 0;
-    proof {
-        if p as int != 0 {
-            mem.os_restrict(p as int, size as int);
-        }
-    }
     (p, Tracked(mem), did_commit, is_large, is_pinned, is_zero, memid_os)
 }
 

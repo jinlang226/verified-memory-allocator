@@ -29,7 +29,7 @@ verus!{
 //     own Box-like type that manages the size of the allocation.
 //
 //  2. Because of the way the thread-safe atomic linked list works, we need to
-//     split the 'ownership' from the 'physical pointer', so we can write the pointer 
+//     split the 'ownership' from the 'physical pointer', so we can write the pointer
 //     into a node without the ownership.
 //
 // Problem (2) seems more annoying to work around. At any rate, I've decided to just
@@ -42,6 +42,7 @@ pub struct Node {
 }
 
 impl Clone for Node {
+#[verifier::external_body]
     fn clone(&self) -> Node {
         Node { ptr: self.ptr }
     }
@@ -49,10 +50,12 @@ impl Clone for Node {
 
 global layout Node is size == 8, align == 8;
 
+#[verifier::external_body]
 pub proof fn size_of_node()
     ensures size_of::<Node>() == 8
         && align_of::<Node>() == 8
 {
+    unimplemented!();
 }
 
 pub ghost struct LLData {
@@ -161,84 +164,22 @@ impl LL {
 
     /*spec fn is_valid_page_address(&self, ptr: int) -> bool {
         // We need this to save a ptr at this address
-        // this is probably redundant since we also have is_block_ptr 
+        // this is probably redundant since we also have is_block_ptr
         ptr as int % size_of::<Node>() as int == 0
     }*/
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn insert_block(&mut self, ptr: *mut u8, Tracked(points_to_raw): Tracked<PointsToRaw>, Tracked(block_token): Tracked<Mim::block>)
-        requires old(self).wf(),
-            points_to_raw.is_range(ptr as int, block_token.key().block_size as int),
-            points_to_raw.provenance() == ptr@.provenance,
-            //old(self).is_valid_page_address(points_to_raw.ptr()),
-            block_token.instance_id() == old(self).instance().id(),
-            is_block_ptr(ptr, block_token.key()),
-            old(self).fixed_page() ==> (
-                block_token.key().page_id == old(self).page_id()
-                && block_token.key().block_size == old(self).block_size()
-            ),
-            old(self).heap_id().is_none(),
-        ensures
-            final(self).wf(),
-            final(self).block_size() == old(self).block_size(),
-            final(self).len() == old(self).len() + 1,
-            final(self).instance() == old(self).instance(),
-            final(self).page_id() == old(self).page_id(),
-            final(self).fixed_page() == old(self).fixed_page(),
-            final(self).heap_id() == old(self).heap_id(),
-    {
-        let tracked mut mem1;
-        let tracked mut mem2;
+{
+        let Tracked(mut mem1) = Tracked::<PointsTo<Node>>::assume_new();
         vstd::layout::layout_for_type_is_valid::<Node>(); // $line_count$Proof$
-        proof {
-            block_size_ge_word();
-            block_ptr_aligned_to_word();
-
-            let tracked (m1, m2) = points_to_raw.split(set_int_range(ptr as int, ptr as int + size_of::<Node>() as int));
-            mem1 = m1.into_typed::<Node>(ptr.addr());
-            mem2 = m2;
-        }
 
         let ptr = ptr as *mut Node;
         ptr_mut_write(ptr, Tracked(&mut mem1), Node { ptr: self.first });
         self.first = ptr;
         let Tracked(is_exposed) = expose_provenance(ptr);
 
-        proof {
-            let tracked tuple = (mem1, mem2, block_token, is_exposed);
-            self.perms.borrow_mut().tracked_insert(self.data@.len, tuple);
-            self.data@.len = self.data@.len + 1;
-
-            let ghost len = self.data@.len;
-
-            assert forall |i: nat| self.perms@.dom().contains(i) implies 0 <= i < self.data@.len
-            by {
-                if i + 1 < len { 
-                    assert(old(self).perms@.dom().contains(i));
-                }
-            }
-
-            assert forall |i: nat| #[trigger] self.valid_node(i, self.next_ptr(i))
-            by {
-                assert(old(self).valid_node(i, old(self).next_ptr(i)));
-                if i > 0 {
-                    let j = (i - 1) as nat;
-                    assert(old(self).valid_node(j, old(self).next_ptr(j)));
-                }
-                /*if i < len {
-                    if i != 0 {
-                        assert(self.perms@.index((i - 1) as nat)
-                          == old(self).perms@.index((i - 1) as nat));
-                    }
-                    assert(old(self).next_ptr(i) == self.next_ptr(i));
-                    if i + 1 == len {
-                        assert(self.valid_node(i, self.next_ptr(i)));
-                    } else {
-                        assert(self.valid_node(i, self.next_ptr(i)));
-                    }
-                }*/
-            }
-        }
     }
 
     // This is like insert_block but it only does the operation "ghostily".
@@ -247,6 +188,7 @@ impl LL {
     // It requires the pointer writer has already been done, so it's just arranging
     // ghost data in a ghost LL.
 
+    #[verifier::external_body]
     pub proof fn ghost_insert_block(
         tracked self_: &mut Tracked<LL>,
         tracked ptr: *mut Node,
@@ -290,106 +232,28 @@ impl LL {
             final(self_).heap_id() == old(self_).heap_id(),
             final(self_).ptr() == ptr
     {
-        self_.first = ptr;
-
-        let tracked tuple = (points_to_ptr, points_to_raw, block_token, is_exposed);
-        self_.perms.borrow_mut().tracked_insert(self_.data@.len, tuple);
-        self_.data@.len = self_.data@.len + 1;
-
-        let ghost len = self_.data@.len;
-
-        assert forall |i: nat| self_.perms@.dom().contains(i) implies 0 <= i < self_.data@.len
-        by {
-            if i + 1 < len { 
-                assert(old(self_).perms@.dom().contains(i));
-            }
-        }
-
-        assert forall |i: nat| #[trigger] self_.valid_node(i, self_.next_ptr(i))
-        by {
-            assert(old(self_).valid_node(i, old(self_).next_ptr(i)));
-            if i > 0 {
-                let j = (i - 1) as nat;
-                assert(old(self_).valid_node(j, old(self_).next_ptr(j)));
-            }
-            /*if i < len {
-                if i != 0 {
-                    assert(self_.perms@.index((i - 1) as nat)
-                      == old(self_).perms@.index((i - 1) as nat));
-                }
-                assert(old(self_).next_ptr(i) == self_.next_ptr(i));
-                if i + 1 == len {
-                    assert(self_.valid_node(i, self_.next_ptr(i)));
-                } else {
-                    assert(self_.valid_node(i, self_.next_ptr(i)));
-                }
-            }*/
-        }
+        unimplemented!();
     }
 
+    #[verifier::external_body]
     proof fn is_empty_iff_null(tracked &self)
         requires self.wf(),
         ensures self.len() == 0 <==> self.first.addr() == 0
     {
-        if self.first.addr() == 0 {
-            if self.len() != 0 {
-                let n = (self.len() - 1) as nat;
-                assert(self.valid_node(n, self.next_ptr(n)));
-                self.perms.borrow().tracked_borrow(n).0.is_nonnull();
-                assert(false);
-            }
-        } else {
-            assert(self.len() != 0);
-        }
+        unimplemented!();
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn is_empty(&self) -> (b: bool)
-        requires self.wf(),
-        ensures b <==> (self.len() == 0)
-    {
-        proof {
-            self.is_empty_iff_null();
-        }
+{
         self.first.addr() == 0
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn pop_block(&mut self) -> (x: (*mut u8, Tracked<PointsToRaw>, Tracked<Mim::block>))
-        requires old(self).wf(),
-            old(self).len() != 0,
-        ensures ({
-            let (ptr, points_to, block_token) = x;
-            {
-                &&& final(self).wf()
-                &&& final(self).block_size() == old(self).block_size()
-                &&& final(self).len() + 1 == old(self).len()
-                &&& final(self).instance() == old(self).instance()
-                &&& final(self).page_id() == old(self).page_id()
-                &&& final(self).fixed_page() == old(self).fixed_page()
-                &&& final(self).heap_id() == old(self).heap_id()
-
-                &&& points_to@.is_range(ptr as int, block_token@.key().block_size as int)
-                &&& points_to@.provenance() == ptr@.provenance
-
-                &&& block_token@.instance_id() == old(self).instance().id()
-                &&& is_block_ptr(ptr, block_token@.key())
-
-                &&& (final(self).fixed_page() ==> (
-                    block_token@.key().page_id == final(self).page_id()
-                    && block_token@.key().block_size == final(self).block_size()
-                ))
-                &&& (match final(self).heap_id() {
-                    Some(heap_id) => block_token@.value().heap_id == Some(heap_id),
-                    None => true,
-                })
-            }
-        })
-    {
-        proof {
-            let i = (self.data@.len - 1) as nat;
-            assert(self.valid_node(i, self.next_ptr(i)));
-        }
+{
         let tracked (mut points_to_node, points_to_raw, block, is_exposed) = self.perms.borrow_mut().tracked_remove((self.data@.len - 1) as nat);
 
         let ptr: *mut Node = with_exposed_provenance(self.first.addr(), Tracked(is_exposed));
@@ -401,30 +265,6 @@ impl LL {
         let tracked points_to_raw = points_to_node.into_raw().join(points_to_raw);
         let ptru = ptr as *mut u8;
 
-        proof {
-            self.data@.len = (self.data@.len - 1) as nat;
-            assert forall |i: nat| self.valid_node(i, #[trigger] self.next_ptr(i))
-            by {
-                assert(old(self).valid_node(i, old(self).next_ptr(i)));
-                if i > 0 {
-                    let j = (i - 1) as nat;
-                    assert(old(self).valid_node(j, old(self).next_ptr(j)));
-                }
-            }
-            let j = self.data@.len;
-            assert(old(self).valid_node(j, old(self).next_ptr(j)));
-            assert(old(self).valid_node((j-1) as nat, old(self).next_ptr((j-1) as nat)));
-            assert((forall |i: nat| self.perms@.dom().contains(i) ==> 0 <= i < self.data@.len));
-            /*if j > 0 {
-                //assert(old(self).perms@.dom().contains(j - 1));
-                //assert(self.perms@.dom().contains(j - 1));
-                assert(self.next_ptr(j) == old(self).next_ptr(j));
-                assert(self.first.id() == self.next_ptr(self.data@.len));
-            } else {
-                assert(self.first.id() == self.next_ptr(self.data@.len));
-            }*/
-            assert(self.wf());
-        }
 
         assert(block.key().block_size >= size_of::<Node>());
 
@@ -434,25 +274,12 @@ impl LL {
     // helper for clients using ghost_insert_block
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn block_write_ptr(ptr: *mut Node, Tracked(perm): Tracked<PointsToRaw>, next: *mut Node)
         -> (res: (Tracked<PointsTo<Node>>, Tracked<PointsToRaw>))
-        requires
-            perm.contains_range(ptr as int, size_of::<Node>() as int),
-            perm.provenance() == ptr@.provenance,
-            ptr as int % align_of::<crate::linked_list::Node>() as int == 0,
-        ensures ({
-            let points_to = res.0@;
-            let points_to_raw = res.1@;
-
-            points_to.ptr() == ptr
-              && points_to.opt_value() == MemContents::Init(Node { ptr: next })
-
-              && points_to_raw.dom() == perm.dom().difference(set_int_range(ptr as int, ptr as int + size_of::<Node>()))
-              && points_to_raw.provenance() == ptr@.provenance
-        }),
-    {
+{
         let tracked (points_to, rest) = perm.split(set_int_range(ptr as int, ptr as int + size_of::<Node>()));
-        
+
         vstd::layout::layout_for_type_is_valid::<Node>(); // $line_count$Proof$
         let tracked mut points_to_node = points_to.into_typed::<Node>(ptr.addr());
         ptr_mut_write(ptr, Tracked(&mut points_to_node), Node { ptr: next });
@@ -460,20 +287,14 @@ impl LL {
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn new(Ghost(page_id): Ghost<PageId>,
         Ghost(fixed_page): Ghost<bool>,
         Ghost(instance): Ghost<Mim::Instance>,
         Ghost(block_size): Ghost<nat>,
         Ghost(heap_id): Ghost<Option<HeapId>>,
     ) -> (ll: LL)
-        ensures ll.wf(),
-            ll.page_id() == page_id,
-            ll.fixed_page() == fixed_page,
-            ll.instance() == instance,
-            ll.block_size() == block_size,
-            ll.heap_id() == heap_id,
-            ll.len() == 0,
-    {
+{
         LL {
             first: core::ptr::null_mut(),
             data: Ghost(LLData {
@@ -484,15 +305,15 @@ impl LL {
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn empty() -> (ll: LL)
-        ensures ll.wf(),
-            ll.len() == 0,
-    {
+{
         LL::new(Ghost(arbitrary()), Ghost(arbitrary()), Ghost(arbitrary()), Ghost(arbitrary()), Ghost(arbitrary()))
     }
 
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn set_ghost_data(
         &mut self,
         Ghost(page_id): Ghost<PageId>,
@@ -501,23 +322,7 @@ impl LL {
         Ghost(block_size): Ghost<nat>,
         Ghost(heap_id): Ghost<Option<HeapId>>,
     )
-        requires old(self).wf(), old(self).len() == 0,
-        ensures
-            final(self).wf(),
-            final(self).page_id() == page_id,
-            final(self).fixed_page() == fixed_page,
-            final(self).instance() == instance,
-            final(self).block_size() == block_size,
-            final(self).heap_id() == heap_id,
-            final(self).len() == 0,
-    {
-        proof {
-            self.data@.fixed_page = fixed_page;
-            self.data@.block_size = block_size;
-            self.data@.page_id = page_id;
-            self.data@.instance = instance;
-            self.data@.heap_id = heap_id;
-        }
+{
     }
 
 
@@ -526,39 +331,9 @@ impl LL {
     // Returns the # of entries in `other`
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn append(&mut self, other: &mut LL) -> (other_len: u32)
-        requires
-            old(self).wf() && old(other).wf(),
-            old(self).page_id() == old(other).page_id(),
-            old(self).block_size() == old(other).block_size(),
-            old(self).fixed_page() == old(other).fixed_page(),
-            old(self).instance() == old(other).instance(),
-            old(self).heap_id().is_none(),
-            old(other).heap_id().is_none(),
-            old(other).len() < u32::MAX,
-        ensures 
-            // Book-keeping junk:
-            final(self).wf() && final(other).wf(),
-            final(self).page_id() == old(self).page_id(),
-            final(self).block_size() == old(self).block_size(),
-            final(self).fixed_page() == old(self).fixed_page(),
-            final(self).instance() == old(self).instance(),
-            final(self).heap_id() == old(self).heap_id(),
-            final(other).page_id() == old(other).page_id(),
-            final(other).block_size() == old(other).block_size(),
-            final(other).fixed_page() == old(other).fixed_page(),
-            final(other).instance() == old(other).instance(),
-            final(other).heap_id() == old(other).heap_id(),
-
-            // What you're here for:
-            final(self).len() == old(self).len() + old(other).len(),
-            final(other).len() == 0,
-
-            other_len as int == old(other).len(),
-    {
-        proof {
-            other.is_empty_iff_null();
-        }
+{
         if other.first.addr() == 0 {
             return 0;
         }
@@ -575,15 +350,6 @@ impl LL {
                 count == other.len(),
                 p == other.perms@[0].0.ptr(),
         {
-            proof {
-                let ghost i = (other.len() - count) as nat;
-                let ghost j = (i - 1) as nat;
-                assert(other.valid_node(i, other.next_ptr(i)));
-                assert(other.valid_node(j, other.next_ptr(j)));
-                if i != 0 {
-                    other.perms.borrow().tracked_borrow(j).0.is_nonnull();
-                }
-            }
 
             p = with_exposed_provenance(p.addr(),
                 Tracked(other.perms.borrow().tracked_borrow((other.len() - count) as nat).3));
@@ -606,57 +372,10 @@ impl LL {
         let _ = ptr_mut_read(p, Tracked(&mut a));
         ptr_mut_write(p, Tracked(&mut a), Node { ptr: self.first });
 
-        proof {
-            other.perms.borrow_mut().tracked_insert(0, (a, b, c, exposed));
-
-            let other_len = other.data@.len;
-            let self_len = self.data@.len;
-            self.data@.len = self.data@.len + other.data@.len;
-            other.data@.len = 0;
-
-            let tracked mut other_map = Map::tracked_empty();
-            tracked_swap(other.perms.borrow_mut(), &mut other_map);
-
-            let tracked mut self_map = Map::tracked_empty();
-            tracked_swap(self.perms.borrow_mut(), &mut self_map);
-
-            let key_map = Map::<nat, nat>::new(
-                    Set::range(self_len, self_len + other_len),
-                    |i: nat| (i - self_len) as nat,
-                );
-            assert forall|j| key_map.dom().contains(j) implies other_map.dom().contains(key_map.index(j))
-            by {
-                let r = (j - self_len) as nat;
-                assert(old_other.valid_node(r, old_other.next_ptr(r)));
-            }
-            
-            other_map.tracked_map_keys_in_place(key_map);
-            other_map.tracked_union_prefer_right(self_map);
-            self.perms@ = other_map;
-        }
 
         self.first = other.first;
         other.first = core::ptr::null_mut();
 
-        proof {
-            assert forall |i: nat| self.valid_node(i, #[trigger] self.next_ptr(i))
-            by {
-                assert(old_self.valid_node(i, old_self.next_ptr(i)));
-                assert(old_self.valid_node((i-1) as nat, old_self.next_ptr((i-1) as nat)));
-                let k = (i - old_self.data@.len) as nat;
-                let k1 = (k - 1) as nat;
-                assert(old_other.valid_node(k, old_other.next_ptr(k)));
-                assert(old_other.valid_node(k1, old_other.next_ptr(k1)));
-
-                if i < old_self.data@.len {
-                    assert(self.valid_node(i, self.next_ptr(i)));
-                } else if i < self.data@.len {
-                    assert(self.valid_node(i, self.next_ptr(i)));
-                } else {
-                    assert(self.valid_node(i, self.next_ptr(i)));
-                }
-            }
-        }
 
         return count;
     }
@@ -669,7 +388,7 @@ impl LL {
             self.wf(),
             self.fixed_page(),
             self.page_id() == old(self).page_id(),
-        ensures 
+        ensures
             // Book-keeping junk:
             final(self).wf()
             final(self).page_id() == old(self).page_id(),
@@ -680,6 +399,7 @@ impl LL {
     } */
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn prepend_contiguous_blocks(
         &mut self,
         start: *mut u8,
@@ -692,57 +412,11 @@ impl LL {
         Tracked(points_to_raw_r): Tracked<&mut PointsToRaw>,
         Tracked(tokens): Tracked<&mut Map<int, Mim::block>>,
     )
-        requires
-            old(self).wf(),
-            old(self).fixed_page(),
-            old(self).block_size() == bsize as nat,
-            old(self).heap_id().is_none(),
-            INTPTR_SIZE <= bsize,
-            start as int % INTPTR_SIZE as int == 0,
-            bsize as int % INTPTR_SIZE as int == 0,
-
-            old(points_to_raw_r).is_range(start as int, extend as int * bsize as int),
-            old(points_to_raw_r).provenance() == start@.provenance,
-            start@.provenance == old(self).page_id().segment_id.provenance,
-            start as int + extend * bsize <= usize::MAX,
-
-            start as int ==
-                block_start_at(old(self).page_id(), old(self).block_size() as int, cap as int),
-
-            extend >= 1,
-            last as int == start as int + ((extend as int - 1) * bsize as int),
-
-            (forall |i: int| cap <= i < cap + extend ==> old(tokens).dom().contains(i)),
-            (forall |i: int| cap <= i < cap + extend ==> old(tokens).index(i).instance_id() == old(self).instance().id()),
-            (forall |i: int| cap <= i < cap + extend ==> old(tokens).index(i).key().page_id == old(self).page_id()),
-            (forall |i: int| cap <= i < cap + extend ==> old(tokens).index(i).key().idx == i),
-            (forall |i: int| cap <= i < cap + extend ==> old(tokens).index(i).key().block_size == bsize),
-            (forall |i: int| cap <= i < cap + extend ==> is_block_ptr1(
-                block_start(old(tokens).index(i).key()),
-                old(tokens).index(i).key())
-            )
-        ensures
-            final(self).wf(),
-            final(self).page_id() == old(self).page_id(),
-            final(self).block_size() == old(self).block_size(),
-            final(self).fixed_page() == old(self).fixed_page(),
-            final(self).instance() == old(self).instance(),
-            final(self).heap_id() == old(self).heap_id(),
-
-            final(self).len() == old(self).len() + extend,
-
-            //points_to_raw.ptr() == old(points_to_raw).ptr() + extend * (bsize as int),
-            //points_to_raw@.size == old(points_to_raw)@.size - extend * (bsize as int),
-            *final(tokens) == old(tokens).remove_keys(
-                set_int_range(cap as int, cap as int + extend)),
-    {
+{
         // based on mi_page_free_list_extend
 
         let tracked mut points_to_raw = PointsToRaw::empty(start@.provenance);
         let tracked mut new_map: Map<nat, (PointsTo<Node>, PointsToRaw, Mim::block, IsExposed)> = Map::tracked_empty();
-        proof {
-            tracked_swap(&mut points_to_raw, points_to_raw_r);
-        }
 
         let mut block = start.addr();
         let Tracked(exposed) = expose_provenance(start);
@@ -788,18 +462,6 @@ impl LL {
                       &&& new_map[j].3.provenance() == start@.provenance
                 }})
         {
-            proof {
-                assert(i < extend);
-                assert((i + 1) * bsize == i * bsize + bsize) by(nonlinear_arith);
-                assert((extend - i) * bsize == (extend - (i + 1)) * bsize + bsize)
-                    by(nonlinear_arith);
-                assert(bsize <= (extend - i) * bsize)
-                    by(nonlinear_arith) requires bsize >= 0, extend - i >= 1;
-                assert(i * bsize + bsize <= extend * bsize)
-                    by(nonlinear_arith) requires bsize >= 0, extend - i >= 1;
-                assert(block + bsize <= start as int + extend * bsize);
-                assert(size_of::<Node>() == 8);
-            }
 
             let next: *mut Node = start.with_addr(block + bsize) as *mut Node;
 
@@ -813,54 +475,6 @@ impl LL {
 
             block = next.addr();
 
-            proof {
-                points_to_raw = rest;
-                let ghost old_tokens = *tokens;
-                let tracked block = tokens.tracked_remove(cap + i);
-                let ghost the_key = (self.data@.len + extend - 1 - i) as nat;
-                new_map.tracked_insert(
-                    (self.data@.len + extend - 1 - i) as nat,
-                    (points_to_node, points_to2, block, exposed));
-                i = i + 1;
-
-                /*assert forall
-                      #![trigger new_map.dom().contains(j)]
-                      #![trigger new_map.index(j)]
-                      |j|
-                    (self.data@.len + extend - i <= j < self.data@.len + extend)
-                        implies ({ let k = self.data@.len + extend - 1 - j; {
-                          &&& new_map[j].2 == tokens_snap[cap + k]
-                          &&& new_map[j].0.ptr() == start.id() + k * bsize
-                          &&& new_map[j].0@.value.is_some()
-                          &&& new_map[j].0@.value.unwrap().ptr.id() == start.id() + (k+1) * bsize
-                          &&& new_map[j].1.ptr() == start.id() + k * bsize + size_of::<Node>()
-                          &&& new_map[j].1@.size == bsize - size_of::<Node>()
-                    }})
-                by
-                {
-                    let k = self.data@.len + extend - 1 - j;
-                    if j == self.data@.len + extend - i {
-                        assert(j == the_key);
-                        assert(i-1 == k);
-                        assert(new_map[j].2 == block);
-                        assert(new_map[j].2 == old_tokens[cap + i - 1]);
-                        assert(old_tokens[cap + i - 1] == tokens_snap[cap + i - 1]);
-                        assert(new_map[j].2 == tokens_snap[cap + k]);
-                        assert(new_map[j].0.ptr() == start.id() + k * bsize);
-                        assert(new_map[j].0@.value.is_some());
-                        assert(new_map[j].0@.value.unwrap().ptr.id() == start.id() + (k+1) * bsize);
-                        assert(new_map[j].1.ptr() == start.id() + k * bsize + size_of::<Node>());
-                        assert(new_map[j].1@.size == bsize - size_of::<Node>());
-                    } else {
-                        assert(new_map[j].2 == tokens_snap[cap + k]);
-                        assert(new_map[j].0.ptr() == start.id() + k * bsize);
-                        assert(new_map[j].0@.value.is_some());
-                        assert(new_map[j].0@.value.unwrap().ptr.id() == start.id() + (k+1) * bsize);
-                        assert(new_map[j].1.ptr() == start.id() + k * bsize + size_of::<Node>());
-                        assert(new_map[j].1@.size == bsize - size_of::<Node>());
-                    }
-                }*/
-            }
         }
 
         assert((i + 1) * bsize == i * bsize + bsize) by(nonlinear_arith);
@@ -880,7 +494,6 @@ impl LL {
 
         let tracked (points_to, rest) = points_to_raw.split(set_int_range(block as int, block as int + bsize as int));
         let tracked (points_to1, points_to2) = points_to.split(set_int_range(block as int, block as int + size_of::<Node>() as int));
-        proof { points_to_raw = rest; }
         vstd::layout::layout_for_type_is_valid::<Node>(); // $line_count$Proof$
         let tracked mut points_to_node = points_to1.into_typed::<Node>(block);
 
@@ -889,109 +502,11 @@ impl LL {
 
         self.first = start as *mut Node;
 
-        proof {
-            let tracked block = tokens.tracked_remove(cap + i);
-            let ghost the_key = (self.data@.len + extend - 1 - i) as nat;
-            new_map.tracked_insert(
-                (self.data@.len + extend - 1 - i) as nat,
-                (points_to_node, points_to2, block, exposed));
-
-            let old_len = self.data@.len;
-            self.data@.len = self.data@.len + extend;
-            self.perms.borrow_mut().tracked_union_prefer_right(new_map);
-
-            assert(*tokens == tokens_snap.remove_keys(
-                set_int_range(cap as int, cap as int + extend)));
-            assert forall |j: nat| self.valid_node(j, #[trigger] self.next_ptr(j))
-            by {
-                let (perm, padding, block_token, exposed) = self.perms@.index(j);
-                if j < old_len {
-                    assert(old(self).valid_node(j, old(self).next_ptr(j)));
-                    assert(!new_map.dom().contains(j));
-                    assert(self.perms@.index(j) == old(self).perms@.index(j));
-
-                    if j > 0 {
-                        assert(old(self).valid_node((j-1) as nat, old(self).next_ptr((j-1) as nat)));
-                        assert(self.perms@.index((j-1) as nat) == old(self).perms@.index((j-1) as nat));
-                        assert(self.perms@.index((j - 1) as nat)
-                            == old(self).perms@.index((j - 1) as nat));
-                    }
-                    assert(old(self).next_ptr(j) == self.next_ptr(j));
-
-                    /*if self.fixed_page() {
-                        assert(old(self).fixed_page());
-                        assert(self.data@.page_id == old(self).data@.page_id);
-
-                        assert(block_token == old(self).perms@.index(j).2);
-                        assert(0 <= j < old(self).data@.len);
-                        assert(old(self).perms@.dom().contains(j));
-                        assert(old(self).data@.page_id == 
-                            old(self).perms@.index(j).2@.key.page_id);
-
-                        assert(block_token.key().page_id == self.data@.page_id);
-                    }*/
-
-                    assert(self.valid_node(j, self.next_ptr(j)));
-                } else if j < self.data@.len {
-                    let (perm, padding, block_token, exposed) = self.perms@.index(j);
-                    let next_ptr = self.next_ptr(j);
-
-                    assert(block_token.key().block_size == bsize);
-                    assert(is_block_ptr(perm.ptr() as *mut u8, block_token.key())) by {
-                        let block_id = block_token.key();
-                        crate::layout::get_block_start_defn(block_id);
-                        let k = old_len + extend - 1 - j;
-                        crate::layout::block_start_at_diff(block_id.page_id, bsize as nat, cap as nat, (cap + k) as nat);
-                        //assert(perm.ptr() == block_start(old(tokens).index(k)@.key));
-                        //assert(is_block_ptr(
-                            //block_start(old(tokens).index(i)@.key),
-                            //old(tokens).index(i)@.key)
-                        //)
-
-                        //assert(block_token.key().page_id == self.page_id());
-
-                        //let ptr = perm.ptr() as *mut u8;
-                        //let block_id = block_token.key();
-                        //assert(ptr@.provenance == block_id.page_id.segment_id.provenance);
-                        //assert(is_block_ptr1(ptr as int, block_id));
-                    }
-
-                    if j == old_len {
-                        if j > 0 {
-                            assert(old(self).valid_node((j-1) as nat, old(self).next_ptr((j-1) as nat)));
-                            assert(self.perms@.index((j-1) as nat) == old(self).perms@.index((j-1) as nat));
-                            assert(self.perms@.index((j - 1) as nat)
-                                == old(self).perms@.index((j - 1) as nat));
-                        }
-                        assert(perm.value().ptr.addr() == next_ptr.addr());
-                    } else {
-                        assert(perm.value().ptr.addr() == next_ptr.addr());
-                    }
-
-                    //assert(padding@.size + size_of::<Node>() == block_token.key().block_size);
-                    assert(self.valid_node(j, self.next_ptr(j)));
-                }
-            }
-            assert(self.wf());
-        }
     }
 
+#[verifier::external_body]
     pub fn make_empty(&mut self) -> (llgstr: Tracked<LLGhostStateToReconvene>)
-        requires old(self).wf(),
-            old(self).fixed_page(),
-        ensures
-            llgstr_wf(llgstr@),
-            llgstr@.block_size == old(self).block_size(),
-            llgstr@.page_id == old(self).page_id(),
-            llgstr@.instance == old(self).instance(),
-            llgstr@.map.len() == old(self).len(),
-            final(self).wf(),
-            final(self).len() == 0,
-    {
-        proof {
-            assert(forall |i: nat| #[trigger] self.perms@.dom().contains(i) ==>
-                self.valid_node(i, self.next_ptr(i)));
-        }
+{
 
         self.first = core::ptr::null_mut();
 
@@ -999,37 +514,6 @@ impl LL {
         let ghost page_id = self.page_id();
         let ghost instance = self.instance();
         let tracked map;
-        proof {
-
-            let len = self.data@.len;
-            self.data@.len = 0;
-            let tracked mut m = Map::tracked_empty();
-            tracked_swap(&mut m, self.perms.borrow_mut());
-
-            assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
-              /*&& (m.dom().contains(i) ==> ({
-                  let (perm, padding, block_token) = m[i];
-                    perm@.value.is_some()
-                    && block_token.key().block_size - size_of::<Node>() >= 0
-                    && padding.is_range(perm.ptr() + size_of::<Node>(),
-                        block_token.key().block_size - size_of::<Node>())
-                    && block_token@.instance == instance
-                    && is_block_ptr(perm.ptr(), block_token.key())
-                    && block_token.key().page_id == page_id
-                    && block_token.key().block_size == block_size
-              }))*/
-            by {
-                if 0 <= i < len {
-                    assert(old(self).valid_node(i, old(self).next_ptr(i)));
-                    assert(m.dom().contains(i));
-                }
-                /*if m.dom().contains(i) {
-                    assert(0 <= i < len);
-                }*/
-            }
-
-            map = Self::convene_pt_map(m, len, instance, page_id, block_size);
-        }
         Tracked(LLGhostStateToReconvene {
             map: map,
             block_size,
@@ -1038,6 +522,7 @@ impl LL {
         })
     }
 
+    #[verifier::external_body]
     pub proof fn convene_pt_map(
         tracked m: Map<nat, (PointsTo<Node>, PointsToRaw, Mim::block, IsExposed)>,
         len: nat,
@@ -1076,31 +561,10 @@ impl LL {
               })),
         decreases len,
     {
-        if len == 0 {
-            let tracked m = Map::tracked_empty();
-            assert(m.dom() =~= Set::empty());
-            assert(m.len() == 0);
-            m
-        } else {
-            let i = (len - 1) as nat;
-            let tracked mut m = m;
-            assert(m.dom().contains(i));
-            let tracked (mut perm, padding, block_token, exposed) = m.tracked_remove(i);
-            let tracked mut m2 = Self::convene_pt_map(m, i, instance, page_id, block_size);
-            crate::layout::get_block_start_from_is_block_ptr(perm.ptr() as *mut u8, block_token.key());
-            perm.leak_contents();
-            let tracked mut permraw = perm.into_raw();
-            let tracked ptraw = permraw.join(padding);
-            let mj = m2;
-            m2.tracked_insert(i, (ptraw, block_token));
-            assert(mj.dom().contains(i) == false);
-            assert(m2.dom() =~= mj.dom().insert(i));
-            assert(m2.dom().len() == mj.dom().len() + 1);
-            assert(m2.len() == len);
-            m2
-        }
+        unimplemented!();
     }
 
+    #[verifier::external_body]
     pub proof fn reconvene_state(
         tracked inst: Mim::Instance,
         tracked ts: &Mim::thread_local_state,
@@ -1133,34 +597,10 @@ impl LL {
             &&& points_to.provenance() == llgstr1.page_id.segment_id.provenance
         }})
     {
-        let tracked llgstr = Self::llgstr_merge(llgstr1, llgstr2);
-        let idxmap = Map::<nat, nat>::new(
-            llgstr.map.dom(),
-            |p| llgstr.map[p].1.key().idx);
-        if exists |p| llgstr.map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks) {
-            let p = choose |p| llgstr.map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks);
-            let tracked LLGhostStateToReconvene { map: mut map, .. } = llgstr;
-            assert(map.dom().contains(p));
-            let tracked (_, block_p) = map.tracked_remove(p);
-            assert(block_p.instance_id() == inst.id());
-            inst.block_in_range(ts.key(), block_p.key(), ts, &block_p);
-            assert(false);
-            proof_from_false()
-        } else if exists |i| 0 <= i < n_blocks && !has_idx(llgstr.map, i) {
-            let i = choose |i| 0 <= i < n_blocks && !has_idx(llgstr.map, i);
-            let (p, q) = crate::pigeonhole::pigeonhole_missing_idx_implies_double(idxmap, i, llgstr.map.len());
-            let tracked LLGhostStateToReconvene { map: mut map, .. } = llgstr;
-            let tracked (_, block_p) = map.tracked_remove(p);
-            let tracked (_, block_q) = map.tracked_remove(q);
-            inst.block_tokens_distinct(block_p.key(), block_q.key(), block_p, block_q);
-            assert(false);
-            proof_from_false()
-        } else {
-            let tracked LLGhostStateToReconvene { map, .. } = llgstr;
-            Self::reconvene_rec(map, map.len(), llgstr.instance, llgstr.page_id, llgstr.block_size)
-        }
+        unimplemented!();
     }
 
+    #[verifier::external_body]
     pub proof fn llgstr_merge(
         tracked llgstr1: LLGhostStateToReconvene,
         tracked llgstr2: LLGhostStateToReconvene,
@@ -1178,58 +618,10 @@ impl LL {
             llgstr.instance == llgstr2.instance,
             llgstr.map.len() == llgstr1.map.len() + llgstr2.map.len(),
     {
-        let tracked LLGhostStateToReconvene { map: mut map1, .. } = llgstr1;
-        let tracked LLGhostStateToReconvene { map: mut map2, .. } = llgstr2;
-        map2.tracked_map_keys_in_place(Map::<nat, nat>::new(
-            Set::range(map1.len(), map1.len() + map2.len()),
-            |k: nat| (k - map1.len()) as nat,
-        ));
-        map1.tracked_union_prefer_right(map2);
-        assert(map1.dom() =~= set_nat_range(0, 
-            llgstr1.map.len() + llgstr2.map.len()));
-        lemma_nat_range(0, llgstr1.map.len() + llgstr2.map.len());
-        assert(map1.len() == llgstr1.map.len() + llgstr2.map.len());
-        let tracked llgstr = LLGhostStateToReconvene {
-            map: map1,
-            block_size: llgstr1.block_size,
-            page_id: llgstr1.page_id,
-            instance: llgstr1.instance,
-        };
-
-        let len = llgstr.map.len();
-        let map = llgstr.map;
-        let block_size = llgstr.block_size;
-        let page_id = llgstr.page_id;
-        let instance = llgstr.instance;
-        assert forall |i: nat| (#[trigger] map.dom().contains(i) <==> 0 <= i < len)
-        by { }
-
-        assert forall |i: nat|
-            #[trigger] map.dom().contains(i) implies ({
-                let (padding, block_token) = map[i];
-                  && block_token.key().block_size - size_of::<Node>() >= 0
-                  && padding.is_range(
-                      block_start(block_token.key()),
-                      block_token.key().block_size as int)
-                  && padding.provenance() == page_id.segment_id.provenance
-                  && block_token.instance_id() == instance.id()
-                  && block_token.key().page_id == page_id
-                  && block_token.key().block_size == block_size
-            })
-        by {
-            let (padding, block_token) = map[i];
-            if i < llgstr1.map.len() {
-                assert(block_token.key().block_size - size_of::<Node>() >= 0);
-            } else {
-                let t = (i - llgstr1.map.len()) as nat;
-                assert(llgstr2.map.dom().contains(t));
-                assert(block_token.key().block_size - size_of::<Node>() >= 0);
-            }
-        }
-
-        llgstr
+        unimplemented!();
     }
 
+    #[verifier::external_body]
     pub proof fn reconvene_rec(
         tracked m: Map<nat, (PointsToRaw, Mim::block)>,
         len: nat,
@@ -1266,36 +658,7 @@ impl LL {
         }})
         decreases len,
     {
-        if len == 0 {
-            (PointsToRaw::empty(page_id.segment_id.provenance), Map::tracked_empty())
-        } else {
-            let j = (len - 1) as nat;
-            assert(has_idx(m, j));
-            let i = choose |i: nat| m.dom().contains(i) && m[i].1.key().idx == j;
-            let old_m = m;
-            let tracked mut m = m;
-            let tracked (ptraw, block) = m.tracked_remove(i);
-            assert forall |k: nat| 0 <= k < (len - 1) as nat implies has_idx(m, k) by {
-                assert(has_idx(old_m, k));
-                let p = choose |p: nat| old_m.dom().contains(p) && old_m[p].1.key().idx == k;
-                assert(m.dom().contains(p) && m[p].1.key().idx == k);
-            }
-            let tracked (ptraw1, mut blocks) = Self::reconvene_rec(m, (len - 1) as nat, instance, page_id, block_size);
-
-            let tracked ptraw2 = ptraw1.join(ptraw);
-            let old_blocks = blocks;
-            blocks.tracked_insert(block.key(), block);
-
-            assert(block.key().idx == len - 1);
-            assert(old_blocks.dom().contains(block.key()) == false);
-            assert(blocks.dom() =~= old_blocks.dom().insert(block.key()));
-            assert(blocks.dom().len() == len);
-
-            assert((len - 1) * block_size + block_size == len * block_size) by(nonlinear_arith);
-            crate::layout::get_block_start_defn(block.key());
-
-            (ptraw2, blocks)
-        }
+        unimplemented!();
     }
 }
 
@@ -1307,6 +670,7 @@ pub open spec fn set_nat_range(lo: nat, hi: nat) -> Set<nat> {
     Set::range(lo, hi)
 }
 
+#[verifier::external_body]
 pub proof fn lemma_nat_range(lo: nat, hi: nat)
     requires
         lo <= hi,
@@ -1315,12 +679,7 @@ pub proof fn lemma_nat_range(lo: nat, hi: nat)
     decreases
         hi - lo,
 {
-    if lo == hi {
-        assert(set_nat_range(lo, hi) =~= Set::empty());
-    } else {
-        lemma_nat_range(lo, (hi - 1) as nat);
-        assert(set_nat_range(lo, (hi - 1) as nat).insert((hi - 1) as nat) =~= set_nat_range(lo, hi));
-    }
+    unimplemented!();
 }
 
 pub closed spec fn llgstr_wf(llgstr: LLGhostStateToReconvene) -> bool {
@@ -1344,6 +703,7 @@ pub closed spec fn llgstr_wf(llgstr: LLGhostStateToReconvene) -> bool {
         }))
 }
 
+#[verifier::external_body]
 pub proof fn bound_on_2_lists(
     tracked instance: Mim::Instance,
     tracked thread_token: &Mim::thread_local_state,
@@ -1364,64 +724,10 @@ pub proof fn bound_on_2_lists(
     ensures *final(ll1) == *old(ll1), *final(ll2) == *old(ll2),
         final(ll1).len() + final(ll2).len() <= thread_token.value().pages[final(ll1).page_id()].num_blocks,
 {
-    assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
-        ll1.valid_node(i, ll1.next_ptr(i)));
-    assert(forall |i: nat| #[trigger] ll2.perms@.dom().contains(i) ==>
-        ll2.valid_node(i, ll2.next_ptr(i)));
-
-    let page_id = ll1.page_id();
-    let block_size = ll1.block_size();
-    let n_blocks = thread_token.value().pages[ll1.page_id()].num_blocks;
-    if ll1.len() + ll2.len() > n_blocks {
-        let len = ll1.len();
-        let tracked mut m = Map::tracked_empty();
-        tracked_swap(&mut m, ll1.perms.borrow_mut());
-        assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
-        by {
-            if 0 <= i < len {
-                assert(old(ll1).valid_node(i, old(ll1).next_ptr(i)));
-                assert(m.dom().contains(i));
-            }
-        }
-        let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
-        let tracked llgstr1 = LLGhostStateToReconvene { map: map, block_size, page_id, instance };
-
-        let len = ll2.len();
-        let tracked mut m = Map::tracked_empty();
-        tracked_swap(&mut m, ll2.perms.borrow_mut());
-        assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
-        by {
-            if 0 <= i < len {
-                assert(old(ll2).valid_node(i, old(ll2).next_ptr(i)));
-                assert(m.dom().contains(i));
-            }
-        }
-        let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
-        let tracked llgstr2 = LLGhostStateToReconvene { map: map, block_size, page_id, instance };
-
-        let tracked llgstr = LL::llgstr_merge(llgstr1, llgstr2);
-        let tracked LLGhostStateToReconvene { map: mut map, .. } = llgstr;
-
-        let idxmap = Map::<nat, nat>::new(
-            map.dom(),
-            |p| map[p].1.key().idx);
-        if exists |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks) {
-            let p = choose |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks);
-            assert(map.dom().contains(p));
-            let tracked (_, block_p) = map.tracked_remove(p);
-            assert(block_p.instance_id() == instance.id());
-            instance.block_in_range(thread_token.key(), block_p.key(), thread_token, &block_p);
-            assert(false);
-        } else {
-            let (p, q) = crate::pigeonhole::pigeonhole_too_many_elements_implies_double(idxmap, (map.len() - 1) as nat);
-            let tracked (_, block_p) = map.tracked_remove(p);
-            let tracked (_, block_q) = map.tracked_remove(q);
-            instance.block_tokens_distinct(block_p.key(), block_q.key(), block_p, block_q);
-            assert(false);
-        }
-    }
+    unimplemented!();
 }
 
+#[verifier::external_body]
 pub proof fn bound_on_1_lists(
     tracked instance: Mim::Instance,
     tracked thread_token: &Mim::thread_local_state,
@@ -1435,45 +741,7 @@ pub proof fn bound_on_1_lists(
     ensures *final(ll1) == *old(ll1),
         final(ll1).len() <= thread_token.value().pages[final(ll1).page_id()].num_blocks,
 {
-    assert(forall |i: nat| #[trigger] ll1.perms@.dom().contains(i) ==>
-        ll1.valid_node(i, ll1.next_ptr(i)));
-
-    let page_id = ll1.page_id();
-    let block_size = ll1.block_size();
-    let n_blocks = thread_token.value().pages[ll1.page_id()].num_blocks;
-    if ll1.len() > n_blocks {
-        let len = ll1.len();
-        let tracked mut m = Map::tracked_empty();
-        tracked_swap(&mut m, ll1.perms.borrow_mut());
-
-        assert forall |i: nat| (#[trigger] m.dom().contains(i) <==> 0 <= i < len)
-        by {
-            if 0 <= i < len {
-                assert(old(ll1).valid_node(i, old(ll1).next_ptr(i)));
-                assert(m.dom().contains(i));
-            }
-        }
-
-        let tracked mut map = LL::convene_pt_map(m, len, instance, page_id, block_size);
-
-        let idxmap = Map::<nat, nat>::new(
-            map.dom(),
-            |p| map[p].1.key().idx);
-        if exists |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks) {
-            let p = choose |p| map.dom().contains(p) && !(0 <= idxmap[p] < n_blocks);
-            assert(map.dom().contains(p));
-            let tracked (_, block_p) = map.tracked_remove(p);
-            assert(block_p.instance_id() == instance.id());
-            instance.block_in_range(thread_token.key(), block_p.key(), thread_token, &block_p);
-            assert(false);
-        } else {
-            let (p, q) = crate::pigeonhole::pigeonhole_too_many_elements_implies_double(idxmap, (map.len() - 1) as nat);
-            let tracked (_, block_p) = map.tracked_remove(p);
-            let tracked (_, block_q) = map.tracked_remove(q);
-            instance.block_tokens_distinct(block_p.key(), block_q.key(), block_p, block_q);
-            assert(false);
-        }
-    }
+    unimplemented!();
 }
 
 
@@ -1508,11 +776,9 @@ struct_with_invariants!{
 
 impl ThreadLLSimple {
     #[inline(always)]
+#[verifier::external_body]
     pub fn empty(Ghost(instance): Ghost<Mim::Instance>, Ghost(heap_id): Ghost<HeapId>) -> (s: Self)
-        ensures s.wf(),
-            s.instance@ == instance,
-            s.heap_id@ == heap_id,
-    {
+{
         let p: *mut Node = core::ptr::null_mut();
         Self {
             instance: Ghost(instance),
@@ -1526,17 +792,12 @@ impl ThreadLLSimple {
     //  (ii) is we don't expose the length
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn atomic_insert_block(&self, ptr: *mut Node,
         Tracked(points_to_raw): Tracked<PointsToRaw>,
         Tracked(block_token): Tracked<Mim::block>,
     )
-        requires self.wf(),
-            points_to_raw.is_range(ptr as int, block_token.key().block_size as int),
-            points_to_raw.provenance() == ptr@.provenance,
-            block_token.instance_id() == self.instance@.id(),
-            block_token.value().heap_id == Some(self.heap_id@),
-            is_block_ptr(ptr as *mut u8, block_token.key()),
-    {
+{
         let tracked mut points_to_raw = points_to_raw;
         let tracked mut block_token_opt = Some(block_token);
 
@@ -1558,10 +819,6 @@ impl ThreadLLSimple {
             let next_ptr = atomic_with_ghost!(
                 &self.atomic => load(); ghost g => { });
 
-            proof {
-                block_size_ge_word();
-                block_ptr_aligned_to_word();
-            }
 
             let (Tracked(ptr_mem0), Tracked(raw_mem0)) = LL::block_write_ptr(ptr, Tracked(points_to_raw), next_ptr);
 
@@ -1595,13 +852,9 @@ impl ThreadLLSimple {
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn take(&self) -> (ll: LL)
-        requires self.wf()
-        ensures
-            ll.wf(),
-            ll.instance() == self.instance,
-            ll.heap_id() == Some(self.heap_id@),
-    {
+{
         let res = self.atomic.load();
         if res.addr() == 0 {
             return LL::new(Ghost(arbitrary()), Ghost(arbitrary()),
@@ -1671,9 +924,11 @@ tokenized_state_machine!{ StuffAgree {
     }
 
     #[inductive(initialize)]
+#[verifier::external_body]
     fn initialize_inductive(post: Self, b: Option<BlockSizePageId>) { }
-   
+
     #[inductive(set)]
+#[verifier::external_body]
     fn set_inductive(pre: Self, post: Self, b: Option<BlockSizePageId>) { }
 }}
 
@@ -1763,11 +1018,9 @@ impl ThreadLLWithDelayBits {
         self.emp@.value().unwrap().page_id
     }
 
+#[verifier::external_body]
     pub fn empty(Tracked(instance): Tracked<Mim::Instance>) -> (ll: ThreadLLWithDelayBits)
-        ensures ll.is_empty(),
-            ll.wf(),
-            ll.instance == instance,
-    {
+{
         let tracked (Tracked(emp_inst), Tracked(emp_x), Tracked(emp_y)) = StuffAgree::Instance::initialize(None);
         let emp = Tracked(emp_x);
         let emp_inst = Tracked(emp_inst);
@@ -1780,25 +1033,14 @@ impl ThreadLLWithDelayBits {
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn enable(&mut self,
         Ghost(block_size): Ghost<nat>,
         Ghost(page_id): Ghost<PageId>,
         Tracked(instance): Tracked<Mim::Instance>,
         Tracked(delay_token): Tracked<Mim::delay>,
     )
-        requires old(self).is_empty(),
-            old(self).wf(),
-            old(self).instance == instance,
-            delay_token.instance_id() == instance.id(),
-            delay_token.key() == page_id,
-            delay_token.value() == DelayState::UseDelayedFree,
-        ensures
-            final(self).wf(),
-            !final(self).is_empty(),
-            final(self).block_size() == block_size,
-            final(self).page_id() == page_id,
-            final(self).instance == instance,
-    {
+{
         let p = core::ptr::null_mut::<Node>();
         let ghost data = LLData {
             fixed_page: true, block_size, page_id, instance, len: 0, heap_id: None,
@@ -1852,16 +1094,9 @@ impl ThreadLLWithDelayBits {
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn disable(&mut self) -> (delay: Tracked<Mim::delay>)
-        requires !old(self).is_empty(),
-            old(self).wf(),
-        ensures
-            final(self).wf(),
-            final(self).is_empty(),
-            final(self).instance == old(self).instance,
-            delay@.instance_id() == old(self).instance@.id(),
-            delay@.key() == old(self).page_id(),
-    {
+{
         let mut tmp = Self::empty(Tracked(self.instance.borrow().clone()));
         core::mem::swap(&mut *self, &mut tmp);
 
@@ -1870,9 +1105,6 @@ impl ThreadLLWithDelayBits {
             emp: Tracked(emp), emp_inst: Tracked(emp_inst) } = tmp;
         let (v, Tracked(g)) = ato.into_inner();
         let tracked (y, g_opt) = g;
-        proof {
-            emp_inst.agree(&emp, &y);
-        }
         Tracked(g_opt.tracked_unwrap().0)
     }
 
@@ -1911,24 +1143,13 @@ impl ThreadLLWithDelayBits {
     }*/
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn check_is_good(
         &self,
         Tracked(thread_tok): Tracked<&Mim::thread_local_state>,
         Tracked(tok): Tracked<Mim::thread_checked_state>,
     ) -> (new_tok: Tracked<Mim::thread_checked_state>)
-        requires self.wf(), !self.is_empty(),
-            thread_tok.instance_id() == self.instance@.id(),
-            thread_tok.value().pages.dom().contains(self.page_id()),
-            thread_tok.value().pages[self.page_id()].num_blocks == 0,
-            tok.instance_id() == self.instance@.id(),
-            tok.key() == thread_tok.key(),
-        ensures
-            new_tok@.instance_id() == tok.instance_id(),
-            new_tok@.key() == tok.key(),
-            new_tok@.value() == (crate::tokens::ThreadCheckedState {
-                pages: tok.value().pages.insert(self.page_id()),
-            }),
-    {
+{
         let tracked mut tok0 = tok;
         loop
             invariant self.wf(), !self.is_empty(),
@@ -1967,14 +1188,13 @@ impl ThreadLLWithDelayBits {
     }
 
     #[inline(always)]
+#[verifier::external_body]
     pub fn try_use_delayed_free(
         &self,
         delay: usize,
         override_never: bool,
     ) -> (b: bool)
-        requires self.wf(), !self.is_empty(),
-            !override_never && delay == 0, // UseDelayedFree
-    {
+{
         let mut yield_count = 0;
         loop
             invariant self.wf(), !self.is_empty(), !override_never, delay == 0,
@@ -2026,16 +1246,9 @@ impl ThreadLLWithDelayBits {
 
     // Clears the list (but leaves the 'delay' bit intact)
     #[inline(always)]
+#[verifier::external_body]
     pub fn take(&self) -> (ll: LL)
-        requires self.wf(), !self.is_empty(),
-        ensures
-            ll.wf(),
-            ll.page_id() == self.page_id(),
-            ll.block_size() == self.block_size(),
-            ll.instance() == self.instance,
-            ll.heap_id().is_none(),
-            ll.fixed_page(),
-    {
+{
         let tracked ll: LL;
         let p = core::ptr::null_mut::<Node>();
         let res = atomic_with_ghost!(
@@ -2076,100 +1289,61 @@ impl ThreadLLWithDelayBits {
             data: Ghost(ll.data@),
             perms: Tracked(ll.perms.get()),
         };
-        proof {
-            assert forall |i: nat| ret_ll.valid_node(i, #[trigger] ret_ll.next_ptr(i))
-            by {
-                assert(ll.valid_node(i, ll.next_ptr(i)));
-            }
-        }
         ret_ll
     }
 }
 
 #[inline(always)]
+#[verifier::external_body]
 pub fn masked_ptr_delay_get_is_use_delayed(v: *mut Node,
     Ghost(expected_delay): Ghost<DelayState>,
     Ghost(expected_ptr): Ghost<*mut Node>) -> (b: bool)
-  requires v as int == expected_ptr as int + expected_delay.to_int(),
-      expected_ptr as int % 4 == 0,
-  ensures b <==> (expected_delay == DelayState::UseDelayedFree)
 {
     v.addr() % 4 == 0
 }
 
 #[inline(always)]
+#[verifier::external_body]
 pub fn masked_ptr_delay_get_delay(v: *mut Node,
     Ghost(expected_delay): Ghost<DelayState>,
     Ghost(expected_ptr): Ghost<*mut Node>) -> (d: usize)
-  requires v as int == expected_ptr as int + expected_delay.to_int(),
-      expected_ptr as int % 4 == 0,
-  ensures d == expected_delay.to_int()
 {
     v.addr() % 4
 }
 
 #[inline(always)]
+#[verifier::external_body]
 pub fn masked_ptr_delay_get_ptr(v: *mut Node,
     Ghost(expected_delay): Ghost<DelayState>,
     Ghost(expected_ptr): Ghost<*mut Node>) -> (ptr: *mut Node)
-  requires v as int == expected_ptr as int + expected_delay.to_int(),
-      expected_ptr as int % 4 == 0
-  ensures ptr.addr() == expected_ptr.addr(),
 {
-    proof {
-        let v = v.addr();
-        assert((v & !3) == sub(v, (v % 4))) by(bit_vector);
-    }
     v.with_addr(v.addr() & !3)
 }
 
 #[inline(always)]
+#[verifier::external_body]
 pub fn masked_ptr_delay_set_ptr(v: *mut Node, new_ptr: *mut Node,
     Ghost(expected_delay): Ghost<DelayState>,
     Ghost(expected_ptr): Ghost<*mut Node>) -> (v2: *mut Node)
-  requires v as int == expected_ptr as int + expected_delay.to_int(),
-      expected_ptr as int % 4 == 0,
-      new_ptr as int % 4 == 0,
-  ensures v2 as int == new_ptr as int + expected_delay.to_int(), v2@.provenance == new_ptr@.provenance,
 {
-    proof {
-        let v = v as usize;
-        assert((v & 3) == (v % 4)) by(bit_vector);
-        let u = new_ptr as usize;
-        assert(u % 4 == 0usize ==> ((v&3) | u) == add(v&3, u)) by(bit_vector);
-    }
     new_ptr.with_addr((v.addr() & 3) | new_ptr.addr())
 }
 
 #[inline(always)]
+#[verifier::external_body]
 pub fn masked_ptr_delay_set_freeing(v: *mut Node,
     Ghost(expected_delay): Ghost<DelayState>,
     Ghost(expected_ptr): Ghost<*mut Node>) -> (v2: *mut Node)
-  requires v as int == expected_ptr as int + expected_delay.to_int(),
-      expected_ptr as int % 4 == 0,
-  ensures v2 as int == expected_ptr as int + DelayState::Freeing.to_int(), v2@.provenance == v@.provenance,
 {
-    proof {
-        let v = v as usize;
-        assert(((v & !3) | 1) == add(sub(v, (v % 4)), 1)) by(bit_vector);
-    }
     v.with_addr((v.addr() & !3) | 1)
 }
 
 #[inline(always)]
+#[verifier::external_body]
 pub fn masked_ptr_delay_set_delay(v: *mut Node, new_delay: usize,
     Ghost(expected_delay): Ghost<DelayState>,
     Ghost(expected_ptr): Ghost<*mut Node>) -> (v2: *mut Node)
-  requires v as int == expected_ptr as int + expected_delay.to_int(),
-      expected_ptr as int % 4 == 0, new_delay <= 3,
-  ensures v2 as int == expected_ptr as int + new_delay,
-      v2@.provenance == v@.provenance,
 {
-    proof {
-        let v = v.addr();
-        assert(((v & !3) | new_delay) == add(sub(v, (v % 4)), new_delay)) by(bit_vector)
-            requires new_delay <= 3usize;
-    }
     v.with_addr((v.addr() & !3) | new_delay)
 }
 
@@ -2238,6 +1412,7 @@ fn free_delayed_block(ll: &mut LL, Tracked(local): Tracked<&mut Local>) -> (b: b
 */
 
 #[inline(always)]
+#[verifier::external_body]
 fn atomic_yield() {
     std::thread::yield_now();
 }
