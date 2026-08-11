@@ -37,8 +37,7 @@ spec fn set_8_64() -> Set<(int, usize)> {
 }
 
 impl CommitMask {
-    pub closed spec fn view(&self) -> Set<int>
-    { arbitrary() }
+    pub uninterp spec fn view(&self) -> Set<int>;
 
     #[verifier::opaque]
     pub open spec fn bytes(&self, segment_id: SegmentId) -> Set<int> {

@@ -35,8 +35,7 @@ pub open spec fn is_tld_ptr(ptr: *mut Tld, tld_id: TldId) -> bool {
     tld_id.id == ptr.addr() && ptr@.provenance == tld_id.provenance
 }
 
-pub closed spec fn segment_start(segment_id: SegmentId) -> int
-{ arbitrary() }
+pub uninterp spec fn segment_start(segment_id: SegmentId) -> int;
 
 pub open spec fn page_header_start(page_id: PageId) -> int {
     segment_start(page_id.segment_id) + SIZEOF_SEGMENT_HEADER + page_id.idx * SIZEOF_PAGE_HEADER
@@ -46,8 +45,7 @@ pub open spec fn page_start(page_id: PageId) -> int {
     segment_start(page_id.segment_id) + SLICE_SIZE * page_id.idx
 }
 
-pub closed spec fn start_offset(block_size: int) -> int
-{ arbitrary() }
+pub uninterp spec fn start_offset(block_size: int) -> int;
 
 pub open spec fn block_start_at(page_id: PageId, block_size: int, block_idx: int) -> int {
     page_start(page_id)
@@ -55,8 +53,7 @@ pub open spec fn block_start_at(page_id: PageId, block_size: int, block_idx: int
          + block_idx * block_size
 }
 
-pub closed spec fn block_start(block_id: BlockId) -> int
-{ arbitrary() }
+pub uninterp spec fn block_start(block_id: BlockId) -> int;
 
 pub open spec fn is_block_ptr(ptr: *mut u8, block_id: BlockId) -> bool {
     &&& ptr@.provenance == block_id.page_id.segment_id.provenance

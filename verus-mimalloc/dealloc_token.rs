@@ -71,17 +71,13 @@ impl MimDeallocInner {
 }
 
 impl MimDealloc {
-    pub closed spec fn block_id(&self) -> BlockId
-    { arbitrary() }
+    pub uninterp spec fn block_id(&self) -> BlockId;
 
-    pub closed spec fn ptr(&self) -> *mut u8
-    { arbitrary() }
+    pub uninterp spec fn ptr(&self) -> *mut u8;
 
-    pub closed spec fn inst(&self) -> Mim::Instance
-    { arbitrary() }
+    pub uninterp spec fn inst(&self) -> Mim::Instance;
 
-    pub closed spec fn size(&self) -> int
-    { arbitrary() }
+    pub uninterp spec fn size(&self) -> int;
 
     #[verifier::type_invariant]
     spec fn wf(&self) -> bool {

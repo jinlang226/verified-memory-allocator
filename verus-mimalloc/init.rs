@@ -32,8 +32,7 @@ pub tracked struct Global {
 
 impl Global {
     #[verifier::type_invariant]
-    pub(crate) closed spec fn wf(&self) -> bool
-    { true }
+    pub(crate) uninterp spec fn wf(&self) -> bool;
 
     pub open(crate) spec fn wf_right_to_use_thread(&self, right: RightToUseThread, tid: ThreadId) -> bool {
         right.instance_id() == self.instance.id() && right.element() == tid
@@ -556,8 +555,7 @@ struct EmptyPageStuff {
 }
 
 impl EmptyPageStuff {
-    pub closed spec fn wf(&self) -> bool
-    { true }
+    pub uninterp spec fn wf(&self) -> bool;
 }
 
 /*

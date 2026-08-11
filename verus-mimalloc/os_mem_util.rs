@@ -112,8 +112,7 @@ impl Local {
         }
     }
 
-    pub closed spec fn segment_pages_range_total(&self, segment_id: SegmentId) -> Set<int>
-    { arbitrary() }
+    pub uninterp spec fn segment_pages_range_total(&self, segment_id: SegmentId) -> Set<int>;
 
     spec fn segment_page_used(&self, segment_id: SegmentId, page_id: PageId) -> Set<int> {
         if page_id.segment_id == segment_id && self.is_used_primary(page_id) {
@@ -126,8 +125,7 @@ impl Local {
         }
     }
 
-    pub closed spec fn segment_pages_used_total(&self, segment_id: SegmentId) -> Set<int>
-    { arbitrary() }
+    pub uninterp spec fn segment_pages_used_total(&self, segment_id: SegmentId) -> Set<int>;
 
     /*spec fn segment_page_range_reserved(&self, segment_id: SegmentId, page_id: PageId) -> Set<int> {
         if page_id.segment_id == segment_id && self.is_used_primary(page_id) {

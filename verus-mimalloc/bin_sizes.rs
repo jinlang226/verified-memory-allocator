@@ -392,8 +392,7 @@ pub open spec fn valid_sbin_idx(sbin_idx: int) -> bool {
     0 <= sbin_idx <= SEGMENT_BIN_MAX
 }
 
-pub closed spec fn size_of_sbin(sbin_idx: int) -> nat
-{ arbitrary() }
+pub uninterp spec fn size_of_sbin(sbin_idx: int) -> nat;
 
 pub open spec fn smallest_sbin_fitting_size(i: int) -> int
 {

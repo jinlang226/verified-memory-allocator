@@ -79,35 +79,25 @@ pub tracked struct LLGhostStateToReconvene {
 }
 
 impl LL {
-    pub closed spec fn next_ptr(&self, i: nat) -> *mut Node
-    { arbitrary() }
+    pub uninterp spec fn next_ptr(&self, i: nat) -> *mut Node;
 
-    pub closed spec fn valid_node(&self, i: nat, next_ptr: *mut Node) -> bool
-    { true }
+    pub uninterp spec fn valid_node(&self, i: nat, next_ptr: *mut Node) -> bool;
 
-    pub closed spec fn wf(&self) -> bool
-    { true }
+    pub uninterp spec fn wf(&self) -> bool;
 
-    pub closed spec fn len(&self) -> nat
-    { arbitrary() }
+    pub uninterp spec fn len(&self) -> nat;
 
-    pub closed spec fn page_id(&self) -> PageId
-    { arbitrary() }
+    pub uninterp spec fn page_id(&self) -> PageId;
 
-    pub closed spec fn block_size(&self) -> nat
-    { arbitrary() }
+    pub uninterp spec fn block_size(&self) -> nat;
 
-    pub closed spec fn fixed_page(&self) -> bool
-    { true }
+    pub uninterp spec fn fixed_page(&self) -> bool;
 
-    pub closed spec fn instance(&self) -> Mim::Instance
-    { arbitrary() }
+    pub uninterp spec fn instance(&self) -> Mim::Instance;
 
-    pub closed spec fn heap_id(&self) -> Option<HeapId>
-    { arbitrary() }
+    pub uninterp spec fn heap_id(&self) -> Option<HeapId>;
 
-    pub closed spec fn ptr(&self) -> *mut Node
-    { arbitrary() }
+    pub uninterp spec fn ptr(&self) -> *mut Node;
 
     /*spec fn is_valid_page_address(&self, ptr: int) -> bool {
         // We need this to save a ptr at this address
@@ -421,15 +411,13 @@ impl LL {
 
 }
 
-pub closed spec fn has_idx(map: Map<nat, (PointsToRaw, Mim::block)>, i: nat) -> bool
-{ true }
+pub uninterp spec fn has_idx(map: Map<nat, (PointsToRaw, Mim::block)>, i: nat) -> bool;
 
 pub open spec fn set_nat_range(lo: nat, hi: nat) -> Set<nat> {
     Set::range(lo, hi)
 }
 
-pub closed spec fn llgstr_wf(llgstr: LLGhostStateToReconvene) -> bool
-{ true }
+pub uninterp spec fn llgstr_wf(llgstr: LLGhostStateToReconvene) -> bool;
 
 struct_with_invariants!{
     pub struct ThreadLLSimple {

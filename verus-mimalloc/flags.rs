@@ -9,22 +9,15 @@ use crate::types::*;
 
 verus!{
 
-pub closed spec fn flags0_is_reset(u: u8) -> bool
-{ true }
-pub closed spec fn flags0_is_committed(u: u8) -> bool
-{ true }
-pub closed spec fn flags0_is_zero_init(u: u8) -> bool
-{ true }
+pub uninterp spec fn flags0_is_reset(u: u8) -> bool;
+pub uninterp spec fn flags0_is_committed(u: u8) -> bool;
+pub uninterp spec fn flags0_is_zero_init(u: u8) -> bool;
 
-pub closed spec fn flags1_in_full(u: u8) -> bool
-{ true }
-pub closed spec fn flags1_has_aligned(u: u8) -> bool
-{ true }
+pub uninterp spec fn flags1_in_full(u: u8) -> bool;
+pub uninterp spec fn flags1_has_aligned(u: u8) -> bool;
 
-pub closed spec fn flags2_is_zero(u: u8) -> bool
-{ true }
-pub closed spec fn flags2_retire_expire(u: u8) -> int
-{ arbitrary() }
+pub uninterp spec fn flags2_is_zero(u: u8) -> bool;
+pub uninterp spec fn flags2_retire_expire(u: u8) -> int;
 
 impl PageInner {
     pub open spec fn is_reset(&self) -> bool { flags0_is_reset(self.flags0) }
