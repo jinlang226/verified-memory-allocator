@@ -2,7 +2,6 @@ use vstd::prelude::*;
 
 verus!{
 
-
 // Log of the (pointer-size in bytes) // TODO make configurable
 pub const INTPTR_SHIFT: u64 = 3;
 pub const INTPTR_SIZE: u64 = 8;
@@ -69,7 +68,6 @@ global layout Page is size == 80, align == 8;
 global layout Heap is size == 2904, align == 8;
 global layout Tld is size == 552, align == 8;
 
-
 // commit mask
 
 pub const COMMIT_SIZE: u64 = SLICE_SIZE;
@@ -82,52 +80,28 @@ pub const HUGE_BLOCK_SIZE: u32 = 0x80000000; // 2 GiB
 
 // Helpers
 
-#[verifier::external_body]
-pub proof fn const_facts()
-    ensures SLICE_SIZE == 65536,
-        SEGMENT_SIZE == 33554432,
-        SLICES_PER_SEGMENT == 512,
-        SMALL_PAGE_SIZE == 65536,
-        MEDIUM_PAGE_SIZE == 524288,
-
-        SMALL_OBJ_SIZE_MAX == 16384,
-        MEDIUM_OBJ_SIZE_MAX == 131072,
-        MEDIUM_OBJ_WSIZE_MAX == 16384,
-        SMALL_SIZE_MAX == 1024,
-        LARGE_OBJ_SIZE_MAX == 16777216,
-
-        COMMIT_MASK_FIELD_COUNT == 8,
-
-        vstd::layout::size_of::<SegmentHeader>() == SIZEOF_SEGMENT_HEADER,
-        vstd::layout::size_of::<Page>() == SIZEOF_PAGE_HEADER,
-        vstd::layout::size_of::<Heap>() == SIZEOF_HEAP,
-        vstd::layout::size_of::<Tld>() == SIZEOF_TLD,
-
-        vstd::layout::align_of::<SegmentHeader>() == 8,
-        vstd::layout::align_of::<Page>() == 8,
-        vstd::layout::align_of::<Heap>() == 8,
-        vstd::layout::align_of::<Tld>() == 8,
-{
-    unimplemented!();
-}
-
 use crate::types::todo;
 #[verifier::external_body]
-pub fn option_eager_commit_delay() -> i64 { 1 }
+pub fn option_eager_commit_delay() -> i64
+{ 1 }
 #[verifier::external_body]
-pub fn option_eager_commit() -> bool { true }
+pub fn option_eager_commit() -> bool
+{ true }
 #[verifier::external_body]
-pub fn option_allow_decommit() -> bool { true }
+pub fn option_allow_decommit() -> bool
+{ true }
 #[verifier::external_body]
-pub fn option_page_reset() -> bool { false }
+pub fn option_page_reset() -> bool
+{ false }
 
 //pub fn option_decommit_delay() -> i64 { assume(false); 1 /*25*/ }
 //pub fn option_decommit_extend_delay() -> i64 { assume(false); 0 /*1*/ }
 
 #[verifier::external_body]
-pub fn option_decommit_delay() -> i64 { 25 }
+pub fn option_decommit_delay() -> i64
+{ 25 }
 #[verifier::external_body]
-pub fn option_decommit_extend_delay() -> i64 { 1 }
-
+pub fn option_decommit_extend_delay() -> i64
+{ 1 }
 
 }

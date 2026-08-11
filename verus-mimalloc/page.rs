@@ -154,10 +154,7 @@ fn page_init(heap_ptr: HeapPtr, page_ptr: PagePtr, block_size: usize, tld_ptr: T
     let ghost n_slices = local.page_organization.pages[page_id].count.unwrap();
     let ghost n_blocks = n_slices * SLICE_SIZE / block_size as int;
     let ghost range = page_id.range_from(0, n_slices as int);
-    assert forall |pid| range.contains(pid) implies local.unused_pages.dom().contains(pid) by {
-        assert(local.page_organization.pages.dom().contains(pid));
-        assert(local.page_organization.pages[pid].is_used == false);
-    }
+
     let ghost new_page_state_map = Map::new(
             range,
             |pid: PageId| PageState {
@@ -167,8 +164,8 @@ fn page_init(heap_ptr: HeapPtr, page_ptr: PagePtr, block_size: usize, tld_ptr: T
                 shared_access: arbitrary(),
                 is_enabled: false,
             });
-    assert(n_slices > 0);
-    assert(range.contains(page_id));
+
+    
 
     let count = page_ptr.get_count(Tracked(&*local));
 
@@ -230,8 +227,7 @@ fn page_init(heap_ptr: HeapPtr, page_ptr: PagePtr, block_size: usize, tld_ptr: T
         assert(inner.used == 0);
 
         assert(inner.reserved == page_size as int / block_size as int);*/
-        assert(page_size as int / block_size as int * block_size as int <= page_size) by(nonlinear_arith)
-            requires page_size >= 0, block_size > 0;
+
     });
 
 

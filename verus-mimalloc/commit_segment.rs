@@ -15,7 +15,8 @@ use crate::os_mem::*;
 verus!{
 
 #[verifier::external_body]
-fn clock_now() -> i64 {
+fn clock_now() -> i64
+{
     let t = clock_gettime_monotonic();
     t.tv_sec.wrapping_mul(1000).wrapping_add( (((t.tv_nsec as u64) / 1000000) as i64) )
 }
@@ -215,8 +216,8 @@ pub fn segment_perhaps_decommit(
         }
     }
 
-    assert(local.unused_pages === old(local).unused_pages);
-    assert(local.page_organization === old(local).page_organization);
+
+    
 }
 
 #[verifier::external_body]

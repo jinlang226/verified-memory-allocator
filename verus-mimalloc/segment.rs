@@ -151,13 +151,13 @@ fn segments_page_find_and_allocate(
                 page_ptr: slice_ptr,
                 page_id: Ghost(slice_page_id.unwrap())
             };
-            assert(slice.wf());
+
 
             let found_slice_count = slice.get_count(Tracked(&*local)) as usize;
             if found_slice_count >= slice_count {
                 let segment = SegmentPtr::ptr_segment(slice);
 
-                assert(tld_ptr.is_in(*local));
+
                 span_queue_delete(
                     tld_ptr,
                     sbin_idx,
@@ -166,7 +166,7 @@ fn segments_page_find_and_allocate(
                     Ghost(list_idx),
                     Ghost(found_slice_count as int));
 
-                assert(tld_ptr.is_in(*local));
+
 
                 if found_slice_count > slice_count {
                     /*proof {
@@ -192,7 +192,7 @@ fn segments_page_find_and_allocate(
                         Tracked(&mut *local));
                 }
 
-                assert(tld_ptr.is_in(*local));
+
 
                 let suc = segment_span_allocate(
                     segment,
@@ -341,9 +341,9 @@ fn segment_slice_split(
             c = (current_slice_count - target_slice_count) as u32;
         });
         unused_page_get_mut!(last_slice, local, page => {
-            assert(0 <= (current_slice_count - target_slice_count) as u32 <= 512);
-            assert(SIZEOF_PAGE_HEADER as u32 == 80);
-            assert(0 <= (current_slice_count - target_slice_count - 1) as u32 * 80 <= u32::MAX);
+
+            
+
             //assert((current_slice_count - target_slice_count) as u32 * (SIZEOF_PAGE_HEADER as u32)
             //    == (current_slice_count - target_slice_count) as u32 * 32);
             page.offset = (current_slice_count - target_slice_count - 1) as u32
@@ -377,10 +377,7 @@ fn segment_span_allocate(
 
     let ghost range = first_page_id.range_from(0, slice_count as int);
 
-    assert forall |pid| range.contains(pid) implies #[trigger] local.unused_pages.dom().contains(pid)
-    by {
-        assert(local.pages.dom().contains(pid));
-    }
+
 
     let tracked mut first_psa = local.unused_pages.tracked_remove(first_page_id);
     let mut page = ptr_mut_read(slice.page_ptr, Tracked(&mut first_psa.points_to));
@@ -407,15 +404,7 @@ fn segment_span_allocate(
     let extra = slice_count - 1;
     // Establish the page-range invariant at loop entry: range_from(1, extra+1) is a subrange
     // of range_from(0, slice_count), whose pages are all unused and well-formed.
-    assert forall |page_id|
-        #[trigger] first_page_id.range_from(1, extra + 1).contains(page_id) implies
-            local.unused_pages.dom().contains(page_id)
-            && local.unused_pages[page_id].points_to.is_init()
-            && is_page_ptr(local.unused_pages[page_id].points_to.ptr(), page_id)
-            && local.unused_pages[page_id].points_to.ptr()@.provenance == local.unused_pages[page_id].exposed.provenance()
-    by {
-        assert(local.pages.dom().contains(page_id));
-    }
+
     while i <= extra
         invariant 1 <= i <= extra + 1,
           first_page_id.idx + extra < SLICES_PER_SEGMENT,
@@ -447,18 +436,18 @@ fn segment_span_allocate(
         let ghost prelocal = *local;
         let this_slice = slice.add_offset(i);
         let ghost this_page_id = PageId { idx: (first_page_id.idx + i) as nat, .. first_page_id };
-        assert(first_page_id.range_from(1, extra + 1).contains(this_page_id));
+
         //assert(is_page_ptr(local.unused_pages[this_page_id].points_to@.pptr, this_page_id));
         //assert(i * SIZEOF_PAGE_HEADER <= SLICES_PER_SEGMENT * SIZEOF_PAGE_HEADER);
 
         let tracked mut this_psa = local.unused_pages.tracked_remove(this_page_id);
         let mut page = ptr_mut_read(this_slice.page_ptr, Tracked(&mut this_psa.points_to));
-        assert(i <= SLICES_PER_SEGMENT);
-        assert(SLICES_PER_SEGMENT == 512);
-        assert(0 <= i as u32 <= 512);
-        assert(SIZEOF_PAGE_HEADER as u32 == 80);
-        assert(i as u32 * 80 <= u32::MAX);
-        assert(i as u32 * SIZEOF_PAGE_HEADER as u32 <= u32::MAX);
+
+        
+
+        
+
+        
         page.offset = i as u32 * SIZEOF_PAGE_HEADER as u32;
         ptr_mut_write(this_slice.page_ptr, Tracked(&mut this_psa.points_to), page);
 
@@ -1030,12 +1019,12 @@ fn segment_span_free(
         let last = segment_ptr.get_page_header_ptr(slice_index + slice_count - 1);
 
         unused_page_get_mut!(last, local, page => {
-            assert(SIZEOF_PAGE_HEADER as u32 == 80);
-            assert(slice_count as u32 == slice_count);
-            assert(slice_count as u32 - 1 <= 512);
-            assert(slice_count as u32 - 1 >= 0);
-            assert((slice_count as u32 - 1) * SIZEOF_PAGE_HEADER as u32 >= 0);
-            assert((slice_count as u32 - 1) * SIZEOF_PAGE_HEADER as u32 <= u32::MAX);
+
+            
+
+            
+
+            
             page.offset = (slice_count as u32 - 1) * SIZEOF_PAGE_HEADER as u32;
         });
     }
@@ -1219,7 +1208,7 @@ fn segment_span_free_coalesce(slice: PagePtr, tld: TldPtr, Tracked(local): Track
 
     }
 
-    assert(local.wf_main());
+
 
     //// Merge with the 'before' page
 

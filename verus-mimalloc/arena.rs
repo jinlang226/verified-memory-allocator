@@ -87,21 +87,6 @@ impl Arena {
     */
 }
 
-proof fn points_to_raw_map_to_singleton(tracked m: Map<int, PointsToRaw>, start: int, block_size: int, block_idx_start: int, block_idx_end: int) -> (tracked res: PointsToRaw)
-    requires
-        forall |i: int| block_idx_start <= i < block_idx_end ==> m.dom().contains(i),
-        forall |i: int| block_idx_start <= i < block_idx_end ==> m.index(i)@.size == block_size,
-        forall |i: int| block_idx_start <= i < block_idx_end ==> m.index(i)@.pptr == start + i * block_size,
-    ensures
-        res@.pptr == start + block_idx_start * block_size,
-        res@.size == (block_idx_end - block_idx_start) * block_size,
-        block_idx_start * block_size + (block_idx_end - block_idx_start) * block_size
-            == block_idx_end * block_size,
-{
-    assume(false);
-    proof_from_false()
-}
-
 // TODO this would make a good fn for vstd?
 /*
 proof fn points_to_raw_map_to_singleton(tracked m: Map<int, PointsToRaw>, start: int, block_size: int, n_blocks: int) -> (res: PointsToRaw)

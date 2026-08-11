@@ -22,7 +22,6 @@ use crate::segment::good_count_for_block_size;
 
 verus!{
 
-
 #[verifier::spinoff_prover]
 #[verifier::external_body]
 pub fn page_queue_remove(heap: HeapPtr, pq: usize, page: PagePtr, Tracked(local): Tracked<&mut Local>, Ghost(list_idx): Ghost<int>, Ghost(next_id): Ghost<PageId>)
@@ -55,7 +54,6 @@ pub fn page_queue_remove(heap: HeapPtr, pq: usize, page: PagePtr, Tracked(local)
     let ghost mut old_val;
     heap_get_pages!(heap, local, pages => {
         let mut cq = &mut pages[pq];
-
 
         if next.addr() == 0 {
             cq.last = prev;
@@ -175,7 +173,6 @@ pub fn page_queue_push_back(heap: HeapPtr, pq: usize, page: PagePtr, Tracked(loc
 
 }
 
-
 //spec fn local_direct_no_change_needed(loc1: Local, loc2: Local, pq: int) -> bool {
 //}
 
@@ -199,22 +196,6 @@ spec fn pfd_direct_update(pfd1: Seq<*mut Page>, pfd2: Seq<*mut Page>, i: int, j:
     &&& (forall |k| #![trigger pfd2.index(k)]
         0 <= k < pfd2.len() && i <= k < j ==>
             pages_free_direct_match(pfd2[k], p, emp))
-}
-
-#[verifier::external_body]
-proof fn holds_on_present_value(local: Local, pq: int)
-    requires local.wf_main(),
-        valid_bin_idx(pq as int) || pq == BIN_FULL,
-    ensures
-        pq != BIN_FULL ==> (forall |k: int| k < PAGES_DIRECT &&
-            pfd_lower(pq as int) <= k <= pfd_upper(pq as int) ==>
-                pages_free_direct_match(
-                    #[trigger] local.heap.pages_free_direct.value()@[k],
-                    local.heap.pages.value()@[pq].first,
-                    local.page_empty_global@.s.points_to.ptr())
-        )
-{
-    unimplemented!();
 }
 
 #[verifier::external_body]
@@ -299,7 +280,6 @@ fn heap_queue_first_update(heap: HeapPtr, pq: usize, Tracked(local): Tracked<&mu
         //let t = if s > idx { idx } else { s };
         //t
     };
-
 
     let mut sz = start;
     while sz <= idx

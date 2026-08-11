@@ -137,7 +137,8 @@ fn os_mem_alloc(
 }
 
 #[verifier::external_body]
-fn use_large_os_page(size: usize, alignment: usize) -> bool {
+fn use_large_os_page(size: usize, alignment: usize) -> bool
+{
     false
 }
 
@@ -172,13 +173,15 @@ exec static ALIGNED_BASE: core::sync::atomic::AtomicUsize = core::sync::atomic::
 
 #[inline]
 #[verifier::external_body]
-fn aligned_base_add(s: usize) -> usize {
+fn aligned_base_add(s: usize) -> usize
+{
     ALIGNED_BASE.fetch_add(s, core::sync::atomic::Ordering::AcqRel)
 }
 
 #[inline]
 #[verifier::external_body]
-fn aligned_base_cas(s: usize, t: usize) {
+fn aligned_base_cas(s: usize, t: usize)
+{
     let _ = ALIGNED_BASE.compare_exchange(s, t, core::sync::atomic::Ordering::AcqRel, core::sync::atomic::Ordering::Acquire);
 }
 

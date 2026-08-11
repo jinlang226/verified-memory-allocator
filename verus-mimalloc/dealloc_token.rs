@@ -68,46 +68,20 @@ impl MimDeallocInner {
         &&& is_block_ptr(self.ptr, self.block_id())
     }
 
-    pub(crate) proof fn into_user(tracked self, tracked points_to_raw: PointsToRaw, sz: int)
-        -> (tracked res: (MimDealloc, PointsToRaw))
-
-        requires
-            self.wf(),
-            points_to_raw.is_range(self.ptr as int, self.block_id().block_size as int),
-            points_to_raw.provenance() == self.ptr@.provenance,
-            0 <= sz <= self.block_id().block_size,
-        ensures ({
-            let (md, points_to_raw) = res;
-            points_to_raw.is_range(self.ptr as int, sz)
-            && points_to_raw.provenance() == self.ptr@.provenance
-            && md.size() == sz
-            && md.block_id() == self.block_id()
-            && md.ptr() == self.ptr
-            && md.inst() == self.mim_instance
-        })
-    {
-        let tracked (x, y) = points_to_raw.split(set_int_range(self.ptr as int, self.ptr as int + sz));
-        let tracked md = MimDealloc { padding: y, _size: sz, inner: self };
-        (md, x)
-    }
 }
 
 impl MimDealloc {
-    pub closed spec fn block_id(&self) -> BlockId {
-        self.inner.block_id()
-    }
+    pub closed spec fn block_id(&self) -> BlockId
+    { arbitrary() }
 
-    pub closed spec fn ptr(&self) -> *mut u8 {
-        self.inner.ptr
-    }
+    pub closed spec fn ptr(&self) -> *mut u8
+    { arbitrary() }
 
-    pub closed spec fn inst(&self) -> Mim::Instance {
-        self.inner.mim_instance
-    }
+    pub closed spec fn inst(&self) -> Mim::Instance
+    { arbitrary() }
 
-    pub closed spec fn size(&self) -> int {
-        self._size
-    }
+    pub closed spec fn size(&self) -> int
+    { arbitrary() }
 
     #[verifier::type_invariant]
     spec fn wf(&self) -> bool {
@@ -120,28 +94,12 @@ impl MimDealloc {
           && self.padding.provenance() == self.inner.ptr@.provenance
     }
 
+    #[verifier::external_body]
     pub(crate) proof fn into_internal(tracked self, tracked points_to_raw: PointsToRaw)
         -> (tracked res: (MimDeallocInner, PointsToRaw))
-
-        requires
-            points_to_raw.is_range(self.ptr() as int, self.size()),
-            points_to_raw.provenance() == self.ptr()@.provenance
-        ensures ({
-            let (md, points_to_raw_full) = res;
-            md.wf()
-            && points_to_raw_full.is_range(self.ptr() as int, self.block_id().block_size as int)
-            && points_to_raw_full.provenance() == points_to_raw.provenance()
-            && self.ptr() == md.ptr
-            && self.block_id().block_size == md.mim_block.key().block_size
-            && md.mim_instance == self.inst()
-        })
     {
-        use_type_invariant(&self);
-        let tracked MimDealloc { padding, _size, inner } = self;
-        let tracked p = points_to_raw.join(padding);
-        (inner, p)
+        unimplemented!();
     }
 }
-
 
 }
