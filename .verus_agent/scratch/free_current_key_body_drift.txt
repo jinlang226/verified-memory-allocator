@@ -1,0 +1,133 @@
+===== valid_block_token =====
+--- BEFORE verus-mimalloc/dealloc_token.rs::valid_block_token ---
+{
+    &&& block.key().wf()
+    &&& block.instance_id() == instance.id()
+
+    // TODO factor this stuff into wf predicates
+
+    // Valid segment
+
+    &&& is_segment_ptr(
+        block.value().segment_shared_access.points_to.ptr(),
+        block.key().page_id.segment_id)
+    &&& block.value().segment_shared_access.points_to.is_init()
+    &&& block.value().segment_shared_access.points_to.value()
+        .wf(instance, block.key().page_id.segment_id)
+
+    // Valid slice page
+
+    &&& is_page_ptr(
+        block.value().page_slice_shared_access.points_to.ptr(),
+        block.key().page_id_for_slice())
+    &&& block.value().page_slice_shared_access.points_to.is_init()
+    &&& block.value().page_slice_shared_access.points_to.value().offset as int
+          == (block.key().slice_idx - block.key().page_id.idx) * crate::config::SIZEOF_PAGE_HEADER
+
+    // Valid main page
+
+    &&& block.value().page_shared_access.wf(
+        block.key().page_id,
+        block.key().block_size,
+        instance)
+}
+--- AFTER verus-mimalloc/dealloc_token.rs::valid_block_token ---
+{
+    &&& block.key().wf()
+    &&& block.key().slice_idx_is_right()
+    &&& block.instance_id() == instance.id()
+
+    // TODO factor this stuff into wf predicates
+
+    // Valid segment
+
+    &&& is_segment_ptr(
+        block.value().segment_shared_access.points_to.ptr(),
+        block.key().page_id.segment_id)
+    &&& block.value().segment_shared_access.points_to.is_init()
+    &&& block.value().segment_shared_access.points_to.value()
+        .wf(instance, block.key().page_id.segment_id)
+
+    // Valid slice page
+
+    &&& is_page_ptr(
+        block.value().page_slice_shared_access.points_to.ptr(),
+        block.key().page_id_for_slice())
+    &&& block.value().page_slice_shared_access.points_to.is_init()
+    &&& block.value().page_slice_shared_access.points_to.value().offset as int
+          == (block.key().slice_idx - block.key().page_id.idx) * crate::config::SIZEOF_PAGE_HEADER
+
+    // Valid main page
+
+    &&& block.value().page_shared_access.wf(
+        block.key().page_id,
+        block.key().block_size,
+        instance)
+}
+===== PageInner::wf =====
+--- BEFORE verus-mimalloc/types.rs::PageInner::wf ---
+{
+        &&& page_state.block_size == self.xblock_size as nat
+
+        &&& self.free.wf()
+        &&& self.free.fixed_page()
+        &&& self.free.page_id() == page_id
+        &&& self.free.block_size() == page_state.block_size
+        &&& self.free.instance() == mim_instance
+        &&& self.free.heap_id().is_none()
+
+        &&& self.local_free.wf()
+        &&& self.local_free.fixed_page()
+        &&& self.local_free.page_id() == page_id
+        &&& self.local_free.block_size() == page_state.block_size
+        &&& self.local_free.instance() == mim_instance
+        &&& self.local_free.heap_id().is_none()
+
+        &&& self.used + self.free.len() + self.local_free.len() == page_state.num_blocks
+
+        &&& self.local_free.fixed_page()
+        &&& self.free.fixed_page()
+
+        &&& self.local_free.block_size() == page_state.block_size
+        &&& self.free.block_size() == page_state.block_size
+
+        &&& self.capacity <= self.reserved
+        &&& self.capacity == page_state.num_blocks
+
+        &&& self.xblock_size > 0
+    }
+--- AFTER verus-mimalloc/types.rs::PageInner::wf ---
+{
+        &&& page_state.block_size == self.xblock_size as nat
+
+        &&& self.free.wf()
+        &&& self.free.fixed_page()
+        &&& self.free.page_id() == page_id
+        &&& self.free.block_size() == page_state.block_size
+        &&& self.free.instance() == mim_instance
+        &&& self.free.heap_id().is_none()
+        &&& self.free.idx_bound() == page_state.num_blocks
+
+        &&& self.local_free.wf()
+        &&& self.local_free.fixed_page()
+        &&& self.local_free.page_id() == page_id
+        &&& self.local_free.block_size() == page_state.block_size
+        &&& self.local_free.instance() == mim_instance
+        &&& self.local_free.heap_id().is_none()
+        &&& self.local_free.idx_bound() == page_state.num_blocks
+
+        &&& self.free.block_ids().disjoint(self.local_free.block_ids())
+
+        &&& self.used + self.free.len() + self.local_free.len() == page_state.num_blocks
+
+        &&& self.local_free.fixed_page()
+        &&& self.free.fixed_page()
+
+        &&& self.local_free.block_size() == page_state.block_size
+        &&& self.free.block_size() == page_state.block_size
+
+        &&& self.capacity <= self.reserved
+        &&& self.capacity == page_state.num_blocks
+
+        &&& self.xblock_size > 0
+    }

@@ -1,0 +1,79 @@
+### proof_state next
+proof_state: 193 reachable functions, 519 edges; 37 WIP nodes/37 trust leaves, 0 unentered, 2 unknown; 0 unmapped trust; 29 unreachable trust; topology cache rebuilt.
+  top frontier: 4; bottom frontier: 11
+wip_trust    verus-mimalloc/alloc_fast.rs:102 heap_get_free_small_page  [verus-mimalloc/alloc_fast.rs::heap_get_free_small_page@L102]
+wip_trust    verus-mimalloc/alloc_generic.rs:99 page_free_list_extend  [verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99]
+wip_trust    verus-mimalloc/alloc_generic.rs:77 page_thread_free_collect  [verus-mimalloc/alloc_generic.rs::page_thread_free_collect@L77]
+wip_trust    verus-mimalloc/commit_segment.rs:456 segment_delayed_decommit  [verus-mimalloc/commit_segment.rs::segment_delayed_decommit@L456]
+unknown      verus-mimalloc/linked_list.rs:1123 new  [verus-mimalloc/linked_list.rs::new@L1123]
+wip_trust    verus-mimalloc/os_alloc.rs:287 unix_mmapx  [verus-mimalloc/os_alloc.rs::unix_mmapx@L287]
+wip_trust    verus-mimalloc/os_commit.rs:152 os_commitx  [verus-mimalloc/os_commit.rs::os_commitx@L152]
+wip_trust    verus-mimalloc/page.rs:833 page_try_use_delayed_free  [verus-mimalloc/page.rs::page_try_use_delayed_free@L833]
+wip_trust    verus-mimalloc/queues.rs:400 page_queue_push  [verus-mimalloc/queues.rs::page_queue_push@L400]
+wip_trust    verus-mimalloc/segment.rs:751 segment_span_allocate  [verus-mimalloc/segment.rs::segment_span_allocate@L751]
+wip_trust    verus-mimalloc/types.rs:1910 SegmentPtr::is_abandoned  [verus-mimalloc/types.rs::SegmentPtr::is_abandoned@L1910]
+proof_state next_STATUS=0
+
+### boundary_guard
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+boundary_guard_STATUS=0
+
+### middle_guard spec-drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.6s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+middle_guard spec-drift_STATUS=0
+
+### middle_guard ast-consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  checked 28 exec file(s); 0 with body edits
+middle_guard: exec bodies unchanged vs frozen baseline. ✅
+middle_guard ast-consistency_STATUS=0
+
+### operator_decisions gate
+operator_decisions: gate PASS (no unresolved decisions)
+operator_decisions gate_STATUS=0
+
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  39 reachable proof-node obligation(s) remain:
+    wip_trust: heap_get_free_small_page (verus-mimalloc/alloc_fast.rs:102)
+    wip_trust: page_free_list_extend (verus-mimalloc/alloc_generic.rs:99)
+    wip_trust: page_thread_free_collect (verus-mimalloc/alloc_generic.rs:77)
+    wip_trust: segment_delayed_decommit (verus-mimalloc/commit_segment.rs:456)
+    unknown: new (verus-mimalloc/linked_list.rs:1123)
+    wip_trust: unix_mmapx (verus-mimalloc/os_alloc.rs:287)
+    wip_trust: os_commitx (verus-mimalloc/os_commit.rs:152)
+    wip_trust: page_try_use_delayed_free (verus-mimalloc/page.rs:833)
+    wip_trust: page_queue_push (verus-mimalloc/queues.rs:400)
+    wip_trust: segment_span_allocate (verus-mimalloc/segment.rs:751)
+    wip_trust: SegmentPtr::is_abandoned (verus-mimalloc/types.rs:1910)
+completion_gate_STATUS=1
+
+### operator audit
+trusted markers os_mem.rs          ok (18)
+trusted markers thread.rs          ok (12)
+trusted markers types.rs           ok (3)
+sanctioned paths                   ok (unmodified)
+vendored verus deps                ok (frozen)
+operator baseline files            ok (committed)
+admit()                            ok (0)
+assume()                           ok (6, all pre-existing)
+todo() call sites                  ok (48)
+todo() ensures false               ok (2/2 cfg arms)
+uninterp spec fn                   ok (2)
+RATCHET                            FAIL .verus_agent/operator_ratchet.json missing (external_body=90 verus_verify=135)
+
+operator_audit: FAIL — see above
+operator audit_STATUS=1
+
+### page_organization blind-spot scans
+page_organization_assume_false_count=0
+page_organization_true_braces_count=0

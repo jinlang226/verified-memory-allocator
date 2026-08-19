@@ -1,0 +1,29 @@
+error: multiple input filenames provided (first two filenames are `lib.rs` and `page`)
+
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:               0 ms
+    rust-time:                   0 ms
+        init-and-types:              0 ms
+        trait-conflicts:             0 ms
+        compile-time:                0 ms
+    verification-time:           0 ms
+        vir-time:                    0 ms
+            hir-time:                    0 ms
+            import-time:                 0 ms
+            rust-to-vir:                 0 ms
+        verify-crate-time:           0 ms
+    unaccounted-time:            0 ms
+
+verify-crate-time-breakdown
+    total verify-time:              0 ms   (1 threads)
+        total air-time:                 0 ms   (1 threads)
+        total smt-time:                 0 ms   (1 threads)
+            total smt-init:                 0 ms,        0 rlimit (1 threads)
+            total smt-run:                  0 ms,        0 rlimit (1 threads)

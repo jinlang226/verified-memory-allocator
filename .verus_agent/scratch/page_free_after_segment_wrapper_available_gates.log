@@ -1,0 +1,14 @@
+### make verify
+2012:verification results:: 960 verified, 0 errors
+### focused page_free
+2013:verification results:: 1 verified, 0 errors (partial verification with `--verify-*`)
+### focused segment_page_free
+2013:verification results:: 1 verified, 0 errors (partial verification with `--verify-*`)
+### rlimit scan
+no rlimit annotations above 200
+### assume(false) page_organization
+0
+### operator audit
+operator_audit: PASS
+### gate tools
+boundary_guard=middle_guard=operator_decisions=completion_gate=proof_state=

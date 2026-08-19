@@ -1,0 +1,32 @@
+diff --git a/verus-mimalloc/bin_sizes.rs b/verus-mimalloc/bin_sizes.rs
+--- a/verus-mimalloc/bin_sizes.rs
++++ b/verus-mimalloc/bin_sizes.rs
+@@ -368,17 +368,26 @@ spec fn id(i:int) -> bool { true }
+ // non-linearly with recursion depth
+ 
+ // Used to compute a bin for a given size
+-#[verifier::external_body]
+ pub fn bin(size: usize) -> (bin_idx: u8)
++    ensures
++        bin_idx as int == smallest_bin_fitting_size(size as int),
++        valid_bin_idx(bin_idx as int),
+ {
+     let bytes_per_word = usize::BITS as usize / 8;
+ 
+-    let wsize = (size + bytes_per_word - 1) / bytes_per_word;
++    let word_rounding = bytes_per_word - 1;
++    let wsize = if size > usize::MAX - word_rounding {
++        usize::MAX / bytes_per_word
++    } else {
++        (size + word_rounding) / bytes_per_word
++    };
+ 
+     if wsize <= 1 {
+         1
+     } else if wsize <= 8 {
+         wsize as u8
++    } else if wsize > MEDIUM_OBJ_WSIZE_MAX as usize {
++        BIN_HUGE as u8
+     } else {
+ 
+         let w: u64 = (wsize - 1) as u64;

@@ -1,0 +1,51 @@
+### proof_state next
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+proof_state: 192 reachable functions, 519 edges; 21 WIP nodes/21 trust leaves, 0 unentered, 2 unknown; 0 unmapped trust; 24 unreachable trust; topology cache rebuilt.
+  top frontier: 2; bottom frontier: 4
+wip_trust    verus-mimalloc/alloc_generic.rs:99 page_free_list_extend  [verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99]
+wip_trust    verus-mimalloc/alloc_generic.rs:77 page_thread_free_collect  [verus-mimalloc/alloc_generic.rs::page_thread_free_collect@L77]
+unknown      verus-mimalloc/linked_list.rs:1123 new  [verus-mimalloc/linked_list.rs::new@L1123]
+wip_trust    verus-mimalloc/page.rs:833 page_try_use_delayed_free  [verus-mimalloc/page.rs::page_try_use_delayed_free@L833]
+proof_state_STATUS=0
+### boundary_guard check
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+boundary_guard_STATUS=0
+### middle_guard spec-drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/segment.rs: 1 protected contract change(s)
+       - segment_alloc
+  checked 29 module(s) in one global snapshot; 1 with contract drift; 1.8s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.
+spec_drift_STATUS=1
+### middle_guard ast-consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/segment.rs: exec body changed (mismatched=2 missing=0 extra=0)
+       - segment_alloc: MISMATCH
+       - segment_os_alloc: MISMATCH
+  checked 28 exec file(s); 1 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+ast_consistency_STATUS=1
+### operator_decisions check
+usage: operator_decisions [-h] [--project-root PROJECT_ROOT]
+                          {record-attempt,add,list,show,audit,gate,needs-evidence,migrate-legacy,certify,supersede,resolve}
+                          ...
+operator_decisions: error: argument cmd: invalid choice: '.' (choose from 'record-attempt', 'add', 'list', 'show', 'audit', 'gate', 'needs-evidence', 'migrate-legacy', 'certify', 'supersede', 'resolve')
+operator_decisions_STATUS=2
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  23 reachable proof-node obligation(s) remain:
+    wip_trust: page_free_list_extend (verus-mimalloc/alloc_generic.rs:99)
+    wip_trust: page_thread_free_collect (verus-mimalloc/alloc_generic.rs:77)
+    unknown: new (verus-mimalloc/linked_list.rs:1123)
+    wip_trust: page_try_use_delayed_free (verus-mimalloc/page.rs:833)
+completion_gate_STATUS=1
+### PageOrg counters
+0

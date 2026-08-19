@@ -32,39 +32,172 @@ impl MemChunk {
         self.pointsto_has_range(start, len) && self.os_has_range_read_write(start, len)
     }
 
-    #[verifier::external_body]
     pub proof fn split(
         tracked &mut self,
         start: int,
         len: int
     ) -> (tracked t: Self)
+        requires
+            0 <= len,
+            old(self).wf(),
+            old(self).os_has_range(start, len),
+        ensures
+            final(self).wf(),
+            t.wf(),
+            final(self).os == old(self).os.remove_keys(set_int_range(start, start + len)),
+            t.os == old(self).os.restrict(set_int_range(start, start + len)),
+            t.os_exact_range(start, len),
+            final(self).points_to.provenance() == old(self).points_to.provenance(),
+            t.points_to.provenance() == old(self).points_to.provenance(),
+            final(self).points_to.dom() == old(self).points_to.dom().difference(set_int_range(start, start + len)),
+            t.points_to.dom() == old(self).points_to.dom().intersect(set_int_range(start, start + len)),
+            old(self).has_pointsto_for_all_read_write() ==> t.has_pointsto_for_all_read_write(),
     {
-        unimplemented!();
+        let ghost range = set_int_range(start, start + len);
+        let tracked os = self.os.tracked_remove_keys(range);
+
+        let ghost points_range = self.points_to.dom().intersect(range);
+        assert(points_range.subset_of(self.points_to.dom()));
+        let tracked mut all_points_to = PointsToRaw::empty(self.points_to.provenance());
+        tracked_swap(&mut all_points_to, &mut self.points_to);
+        let tracked (points_to, mut rest) = all_points_to.split(points_range);
+        tracked_swap(&mut rest, &mut self.points_to);
+
+        let tracked t = MemChunk { os, points_to };
+
+        assert(t.os.dom() =~= range);
+        assert(t.os_exact_range(start, len));
+        assert forall |addr: int| #[trigger] t.os.dom().contains(addr) implies
+            t.os[addr]@.byte_addr == addr
+        by {
+            assert(old(self).os.dom().contains(addr));
+            assert(t.os[addr] == old(self).os[addr]);
+            assert(old(self).wf());
+        }
+        assert(t.wf());
+
+        assert forall |addr: int| #[trigger] self.os.dom().contains(addr) implies
+            self.os[addr]@.byte_addr == addr
+        by {
+            assert(old(self).os.dom().contains(addr));
+            assert(self.os[addr] == old(self).os[addr]);
+            assert(old(self).wf());
+        }
+        assert(self.wf());
+
+        assert(self.points_to.dom() =~= old(self).points_to.dom().difference(range));
+
+        if old(self).has_pointsto_for_all_read_write() {
+            assert forall |addr: int|
+                #[trigger] t.os.dom().contains(addr)
+                    && t.os[addr]@.mem_protect == MemProtect { read: true, write: true }
+                implies t.points_to.dom().contains(addr)
+            by {
+                assert(range.contains(addr));
+                assert(old(self).os.dom().contains(addr));
+                assert(t.os[addr] == old(self).os[addr]);
+                assert(old(self).range_os_rw().contains(addr));
+                assert(old(self).points_to.dom().contains(addr));
+                assert(t.points_to.dom().contains(addr));
+            }
+        }
+        t
     }
 
     pub proof fn join(
         tracked &mut self,
         tracked t: Self,
     )
-    { }
+        requires
+            old(self).wf(),
+            t.wf(),
+            old(self).os.dom().disjoint(t.os.dom()),
+            old(self).points_to.provenance() == t.points_to.provenance(),
+        ensures
+            final(self).wf(),
+            final(self).os == old(self).os.union_prefer_right(t.os),
+            final(self).points_to.provenance() == old(self).points_to.provenance(),
+            final(self).points_to.dom() == old(self).points_to.dom() + t.points_to.dom(),
+    {
+        let tracked MemChunk { os, points_to } = t;
+        self.os.tracked_union_prefer_right(os);
 
-    #[verifier::external_body]
+        let tracked mut self_points_to = PointsToRaw::empty(self.points_to.provenance());
+        tracked_swap(&mut self_points_to, &mut self.points_to);
+        let tracked mut joined = self_points_to.join(points_to);
+        tracked_swap(&mut joined, &mut self.points_to);
+
+        assert forall |addr: int| #[trigger] self.os.dom().contains(addr) implies
+            self.os[addr]@.byte_addr == addr
+        by {
+            if old(self).os.dom().contains(addr) {
+                assert(self.os[addr] == old(self).os[addr]);
+                assert(old(self).wf());
+            } else {
+                assert(t.os.dom().contains(addr));
+                assert(self.os[addr] == t.os[addr]);
+                assert(t.wf());
+            }
+        }
+        assert(self.wf());
+    }
+
     pub proof fn take_points_to_set(
         tracked &mut self,
         s: Set<int>,
     ) -> (tracked points_to: PointsToRaw)
+        requires
+            s.subset_of(old(self).points_to.dom()),
+        ensures
+            final(self).os == old(self).os,
+            final(self).points_to.provenance() == old(self).points_to.provenance(),
+            points_to.provenance() == old(self).points_to.provenance(),
+            final(self).points_to.dom() == old(self).points_to.dom().difference(s),
+            points_to.dom() == s,
+            s.disjoint(old(self).os_rw_bytes()) && old(self).has_pointsto_for_all_read_write()
+                ==> final(self).has_pointsto_for_all_read_write(),
     {
-        unimplemented!();
+        let tracked mut all_points_to = PointsToRaw::empty(self.points_to.provenance());
+        tracked_swap(&mut all_points_to, &mut self.points_to);
+        let tracked (points_to, mut rest) = all_points_to.split(s);
+        tracked_swap(&mut rest, &mut self.points_to);
+
+        if s.disjoint(old(self).os_rw_bytes()) && old(self).has_pointsto_for_all_read_write() {
+            assert forall |addr: int|
+                #[trigger] self.os.dom().contains(addr)
+                    && self.os[addr]@.mem_protect == MemProtect { read: true, write: true }
+                implies self.points_to.dom().contains(addr)
+            by {
+                assert(old(self).os.dom().contains(addr));
+                assert(self.os[addr] == old(self).os[addr]);
+                assert(old(self).range_os_rw().contains(addr));
+                assert(!s.contains(addr));
+                assert(old(self).points_to.dom().contains(addr));
+            }
+        }
+        points_to
     }
 
-    #[verifier::external_body]
     pub proof fn take_points_to_range(
         tracked &mut self,
         start: int,
         len: int
     ) -> (tracked points_to: PointsToRaw)
+        requires
+            0 <= len,
+            old(self).pointsto_has_range(start, len),
+        ensures
+            points_to.is_range(start, len),
+            points_to.provenance() == old(self).points_to.provenance(),
+            final(self).points_to.provenance() == old(self).points_to.provenance(),
+            final(self).points_to.dom() == old(self).points_to.dom().difference(set_int_range(start, start + len)),
+            final(self).os == old(self).os,
     {
-        unimplemented!();
+        let tracked mut all_points_to = PointsToRaw::empty(self.points_to.provenance());
+        tracked_swap(&mut all_points_to, &mut self.points_to);
+        let tracked (points_to, mut rest) = all_points_to.split(set_int_range(start, start + len));
+        tracked_swap(&mut rest, &mut self.points_to);
+        points_to
     }
 
 }
@@ -99,6 +232,37 @@ pub open spec fn mem_chunk_good1(
             + pages_range_total
 }
 
+
+#[verifier::rlimit(200)]
+pub proof fn lemma_os_exact_range_contains_subrange(
+    mem: MemChunk,
+    start: int,
+    len: int,
+    substart: int,
+    sublen: int,
+)
+    requires
+        0 <= sublen,
+        start <= substart,
+        substart + sublen <= start + len,
+        mem.os_exact_range(start, len),
+    ensures
+        mem.os_has_range(substart, sublen),
+{
+    assert(set_int_range(start, start + len) =~= mem.range_os());
+    assert forall |addr: int| #[trigger] set_int_range(substart, substart + sublen).contains(addr)
+        implies mem.range_os().contains(addr) by {
+        assert(substart <= addr < substart + sublen);
+        assert(start <= addr < start + len) by(nonlinear_arith)
+            requires
+                start <= substart,
+                substart <= addr,
+                addr < substart + sublen,
+                substart + sublen <= start + len;
+        assert(set_int_range(start, start + len).contains(addr));
+    }
+}
+
 impl Local {
     spec fn segment_page_range(&self, segment_id: SegmentId, page_id: PageId) -> Set<int> {
         if page_id.segment_id == segment_id && self.is_used_primary(page_id) {
@@ -112,7 +276,16 @@ impl Local {
         }
     }
 
-    pub uninterp spec fn segment_pages_range_total(&self, segment_id: SegmentId) -> Set<int>;
+    pub closed spec fn segment_pages_range_total(&self, segment_id: SegmentId) -> Set<int> {
+        self.page_organization.pages.dom().map(
+            |page_id| self.segment_page_range(segment_id, page_id)
+        ).flatten()
+        /* The following old way of building the set isn't evidently finite:
+        Set::<int>::new(|addr| exists |page_id|
+            self.segment_page_range(segment_id, page_id).contains(addr)
+        )
+        */
+    }
 
     spec fn segment_page_used(&self, segment_id: SegmentId, page_id: PageId) -> Set<int> {
         if page_id.segment_id == segment_id && self.is_used_primary(page_id) {
@@ -125,7 +298,16 @@ impl Local {
         }
     }
 
-    pub uninterp spec fn segment_pages_used_total(&self, segment_id: SegmentId) -> Set<int>;
+    pub closed spec fn segment_pages_used_total(&self, segment_id: SegmentId) -> Set<int> {
+        self.page_organization.pages.dom().map(
+            |page_id| self.segment_page_used(segment_id, page_id)
+        ).flatten()
+        /* The following old way of building the set isn't evidently finite:
+        Set::<int>::new(|addr| exists |page_id|
+            self.segment_page_used(segment_id, page_id).contains(addr)
+        )
+        */
+    }
 
     /*spec fn segment_page_range_reserved(&self, segment_id: SegmentId, page_id: PageId) -> Set<int> {
         if page_id.segment_id == segment_id && self.is_used_primary(page_id) {
@@ -155,6 +337,1880 @@ impl Local {
             self.segment_pages_range_total(segment_id),
             self.segment_pages_used_total(segment_id),
         )
+    }
+
+    pub proof fn used_queue_update_preserves_mem_chunk_good(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments == old_local.segments,
+            self.page_organization.pages.dom() == old_local.page_organization.pages.dom(),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_count(pid) == old_local.page_count(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_capacity(pid) == old_local.page_capacity(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.block_size(pid) == old_local.block_size(pid),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        assert(self.segments.dom().contains(segment_id));
+        assert(self.commit_mask(segment_id) == old_local.commit_mask(segment_id));
+        assert(self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id));
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_range(segment_id, pid) =~= old_local.segment_page_range(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+            assert(self.block_size(pid) == old_local.block_size(pid));
+        };
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_used(segment_id, pid) =~= old_local.segment_page_used(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            assert(self.page_count(pid) == old_local.page_count(pid));
+        };
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+        assert(range_map =~= old_range_map) by {
+            assert forall |r: Set<int>| #[trigger] range_map.contains(r) implies old_range_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_range(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_range(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_range_map.contains(r) implies range_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_range(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_range(segment_id, pid));
+            };
+        };
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+        assert(used_map =~= old_used_map) by {
+            assert forall |r: Set<int>| #[trigger] used_map.contains(r) implies old_used_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_used(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_used_map.contains(r) implies used_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_used(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_used(segment_id, pid));
+            };
+        };
+        assert(self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id));
+        assert(self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    pub proof fn segment_page_totals_preserved(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            self.page_organization.pages.dom() == old_local.page_organization.pages.dom(),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_count(pid) == old_local.page_count(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_capacity(pid) == old_local.page_capacity(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.block_size(pid) == old_local.block_size(pid),
+        ensures
+            self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id),
+    {
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_range(segment_id, pid) =~= old_local.segment_page_range(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+            assert(self.block_size(pid) == old_local.block_size(pid));
+        };
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_used(segment_id, pid) =~= old_local.segment_page_used(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            assert(self.page_count(pid) == old_local.page_count(pid));
+        };
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+        assert(range_map =~= old_range_map) by {
+            assert forall |r: Set<int>| #[trigger] range_map.contains(r) implies old_range_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_range(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_range(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_range_map.contains(r) implies range_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_range(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_range(segment_id, pid));
+            };
+        };
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+        assert(used_map =~= old_used_map) by {
+            assert forall |r: Set<int>| #[trigger] used_map.contains(r) implies old_used_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_used(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_used_map.contains(r) implies used_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_used(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_used(segment_id, pid));
+            };
+        };
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn segment_page_totals_preserved_by_capacity_increase(
+        &self,
+        old_local: Local,
+        segment_id: SegmentId,
+        changed_page: PageId,
+    )
+        requires
+            self.page_organization.pages.dom() == old_local.page_organization.pages.dom(),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_count(pid) == old_local.page_count(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.block_size(pid) == old_local.block_size(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) && pid != changed_page ==>
+                self.page_capacity(pid) == old_local.page_capacity(pid),
+            old_local.page_capacity(changed_page) <= self.page_capacity(changed_page),
+        ensures
+            old_local.segment_pages_range_total(segment_id) <= self.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id),
+    {
+        assert forall |addr: int| #[trigger] old_local.segment_pages_range_total(segment_id).contains(addr) implies
+            self.segment_pages_range_total(segment_id).contains(addr) by {
+            reveal(Local::segment_pages_range_total);
+            let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+            let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+            assert(old_range_map.flatten().contains(addr));
+            let r = choose |r: Set<int>| old_range_map.contains(r) && r.contains(addr);
+            let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                && r == old_local.segment_page_range(segment_id, pid);
+            reveal(Local::segment_page_range);
+            assert(old_local.segment_page_range(segment_id, pid).contains(addr));
+            if pid.segment_id == segment_id && old_local.is_used_primary(pid) {
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(self.is_used_primary(pid));
+                assert(self.block_size(pid) == old_local.block_size(pid));
+                if pid == changed_page {
+                    assert(old_local.page_capacity(pid) <= self.page_capacity(pid));
+                    assert(old_local.segment_page_range(segment_id, pid) <= self.segment_page_range(segment_id, pid)) by {
+                        assert forall |a: int| #[trigger] old_local.segment_page_range(segment_id, pid).contains(a) implies
+                            self.segment_page_range(segment_id, pid).contains(a) by {
+                            assert(page_start(pid) + start_offset(old_local.block_size(pid)) <= a);
+                            assert(a < page_start(pid) + start_offset(old_local.block_size(pid))
+                                + old_local.page_capacity(pid) * old_local.block_size(pid));
+                            assert(self.block_size(pid) == old_local.block_size(pid));
+                            assert(old_local.page_capacity(pid) <= self.page_capacity(pid));
+                            assert(0 <= old_local.block_size(pid));
+                            assert(a < page_start(pid) + start_offset(self.block_size(pid))
+                                + self.page_capacity(pid) * self.block_size(pid)) by(nonlinear_arith)
+                                requires
+                                    a < page_start(pid) + start_offset(old_local.block_size(pid))
+                                        + old_local.page_capacity(pid) * old_local.block_size(pid),
+                                    self.block_size(pid) == old_local.block_size(pid),
+                                    old_local.page_capacity(pid) <= self.page_capacity(pid),
+                                    0 <= old_local.block_size(pid);
+                        };
+                    };
+                } else {
+                    assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                    assert(old_local.segment_page_range(segment_id, pid) =~= self.segment_page_range(segment_id, pid));
+                }
+                assert(self.segment_page_range(segment_id, pid).contains(addr));
+                assert(range_map.contains(self.segment_page_range(segment_id, pid)));
+                assert(range_map.flatten().contains(addr));
+            } else {
+                assert(old_local.segment_page_range(segment_id, pid) =~= Set::<int>::empty());
+                assert(false);
+            }
+        };
+
+        assert(self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id)) by {
+            reveal(Local::segment_pages_used_total);
+            let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+            let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+            assert forall |addr: int| #[trigger] self.segment_pages_used_total(segment_id).contains(addr) implies
+                old_local.segment_pages_used_total(segment_id).contains(addr) by {
+                assert(used_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| used_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(segment_id, pid);
+                reveal(Local::segment_page_used);
+                if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                    assert(old_local.page_organization.pages.dom().contains(pid));
+                    assert(old_local.is_used_primary(pid));
+                    assert(self.page_count(pid) == old_local.page_count(pid));
+                    assert(self.segment_page_used(segment_id, pid) =~= old_local.segment_page_used(segment_id, pid));
+                    assert(old_used_map.contains(old_local.segment_page_used(segment_id, pid)));
+                    assert(old_used_map.flatten().contains(addr));
+                } else {
+                    assert(self.segment_page_used(segment_id, pid) =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+            assert forall |addr: int| #[trigger] old_local.segment_pages_used_total(segment_id).contains(addr) implies
+                self.segment_pages_used_total(segment_id).contains(addr) by {
+                assert(old_used_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| old_used_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_used(segment_id, pid);
+                reveal(Local::segment_page_used);
+                if pid.segment_id == segment_id && old_local.is_used_primary(pid) {
+                    assert(self.page_organization.pages.dom().contains(pid));
+                    assert(self.is_used_primary(pid));
+                    assert(self.page_count(pid) == old_local.page_count(pid));
+                    assert(old_local.segment_page_used(segment_id, pid) =~= self.segment_page_used(segment_id, pid));
+                    assert(used_map.contains(self.segment_page_used(segment_id, pid)));
+                    assert(used_map.flatten().contains(addr));
+                } else {
+                    assert(old_local.segment_page_used(segment_id, pid) =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+        };
+    }
+
+
+
+
+    #[verifier::rlimit(200)]
+    pub proof fn segment_creating_pages_totals_empty(&self, segment_id: SegmentId)
+        requires
+            self.page_organization.invariant(),
+            self.page_organization.popped == Popped::SegmentCreating(segment_id),
+        ensures
+            self.segment_pages_used_total(segment_id) =~= Set::empty(),
+            self.segment_pages_range_total(segment_id) =~= Set::empty(),
+    {
+        self.page_organization.segment_creating_facts(segment_id);
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        assert forall |addr: int| #[trigger] self.segment_pages_used_total(segment_id).contains(addr) implies
+            false by {
+            reveal(Local::segment_pages_used_total);
+            assert(used_map.flatten().contains(addr));
+            let r = choose |r: Set<int>| used_map.contains(r) && r.contains(addr);
+            let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                && r == self.segment_page_used(segment_id, pid);
+            reveal(Local::segment_page_used);
+            reveal(Local::is_used_primary);
+            if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                reveal(PageOrg::State::page_id_domain);
+                assert(pid.idx <= SLICES_PER_SEGMENT);
+                assert(!self.page_organization.pages[pid].is_used);
+                assert(false);
+            } else {
+                assert(self.segment_page_used(segment_id, pid) =~= Set::empty());
+                assert(false);
+            }
+        }
+        assert(self.segment_pages_used_total(segment_id) =~= Set::empty());
+        assert forall |addr: int| #[trigger] self.segment_pages_range_total(segment_id).contains(addr) implies
+            false by {
+            reveal(Local::segment_pages_range_total);
+            assert(range_map.flatten().contains(addr));
+            let r = choose |r: Set<int>| range_map.contains(r) && r.contains(addr);
+            let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                && r == self.segment_page_range(segment_id, pid);
+            reveal(Local::segment_page_range);
+            reveal(Local::is_used_primary);
+            if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                reveal(PageOrg::State::page_id_domain);
+                assert(pid.idx <= SLICES_PER_SEGMENT);
+                assert(!self.page_organization.pages[pid].is_used);
+                assert(false);
+            } else {
+                assert(self.segment_page_range(segment_id, pid) =~= Set::empty());
+                assert(false);
+            }
+        }
+        assert(self.segment_pages_range_total(segment_id) =~= Set::empty());
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn segment_pages_range_total_subset_used_total(&self, segment_id: SegmentId)
+        requires
+            self.wf_main_for_page_access(),
+        ensures
+            self.segment_pages_range_total(segment_id) <= self.segment_pages_used_total(segment_id),
+    {
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        assert forall |addr: int| #[trigger] self.segment_pages_range_total(segment_id).contains(addr) implies
+            self.segment_pages_used_total(segment_id).contains(addr) by {
+            assert(range_map.flatten().contains(addr));
+            let r = choose |r: Set<int>| range_map.contains(r) && r.contains(addr);
+            let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                && r == self.segment_page_range(segment_id, pid);
+            assert(self.segment_page_range(segment_id, pid).contains(addr));
+            if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(page_organization_pages_match(self.page_organization.pages, self.pages, self.psa, self.page_organization.popped));
+                assert(self.pages.dom().contains(pid));
+                assert(!self.unused_pages.dom().contains(pid));
+                assert(self.thread_token.value().pages.dom().contains(pid));
+                assert(self.pages.index(pid).wf(pid, self.thread_token.value().pages.index(pid), self.instance));
+                let bs = self.block_size(pid);
+                let cap = self.page_capacity(pid);
+                let reserved = self.page_reserved(pid);
+                let count = self.page_count(pid);
+                assert(cap <= reserved);
+                assert(bs > 0);
+                assert(wf_reserved(bs, reserved, count));
+                lemma_start_offset_bounds(bs);
+                assert(0 <= start_offset(bs));
+                assert(cap * bs <= reserved * bs) by(nonlinear_arith)
+                    requires cap <= reserved, bs > 0;
+                assert(start_offset(bs) + cap * bs <= count * SLICE_SIZE) by(nonlinear_arith)
+                    requires
+                        wf_reserved(bs, reserved, count),
+                        cap * bs <= reserved * bs;
+                assert(page_start(pid) + start_offset(bs) <= addr < page_start(pid) + start_offset(bs) + cap * bs);
+                assert(page_start(pid) <= addr) by(nonlinear_arith)
+                    requires
+                        page_start(pid) + start_offset(bs) <= addr,
+                        0 <= start_offset(bs);
+                assert(addr < page_start(pid) + count * SLICE_SIZE) by(nonlinear_arith)
+                    requires
+                        addr < page_start(pid) + start_offset(bs) + cap * bs,
+                        start_offset(bs) + cap * bs <= count * SLICE_SIZE;
+                assert(self.segment_page_used(segment_id, pid).contains(addr));
+                assert(used_map.contains(self.segment_page_used(segment_id, pid)));
+                assert(used_map.flatten().contains(addr));
+            } else {
+                assert(!self.segment_page_range(segment_id, pid).contains(addr));
+                assert(false);
+            }
+        }
+    }
+
+    #[verifier::rlimit(200)]
+    proof fn used_primary_page_suffix_not_in_pages_range_total(&self, page_id: PageId, addr: int)
+        requires
+            self.wf_main_for_page_access(),
+            self.is_used_primary(page_id),
+            set_int_range(
+                block_start_at(page_id, self.block_size(page_id), self.page_capacity(page_id)),
+                block_start_at(page_id, self.block_size(page_id), self.page_reserved(page_id)),
+            ).contains(addr),
+        ensures
+            !self.segment_pages_range_total(page_id.segment_id).contains(addr),
+    {
+        let sid = page_id.segment_id;
+        let bs = self.block_size(page_id);
+        let cap = self.page_capacity(page_id);
+        let reserved = self.page_reserved(page_id);
+        let count = self.page_count(page_id);
+
+        reveal(Local::wf_main_for_page_access);
+        reveal(Local::page_organization_valid);
+        reveal(PageLocalAccess::wf);
+        reveal(PageInner::wf);
+        reveal(page_organization_pages_match);
+        reveal(page_organization_pages_match_data);
+        assert(self.pages.dom().contains(page_id));
+        assert(self.thread_token.value().pages.dom().contains(page_id));
+        assert(self.pages[page_id].wf(page_id, self.thread_token.value().pages[page_id], self.instance));
+        assert(self.thread_token.value().pages[page_id].offset == 0);
+        assert(self.page_inner(page_id).wf(page_id, self.thread_token.value().pages[page_id], self.instance));
+        assert(bs > 0);
+        assert(cap <= reserved);
+        assert(wf_reserved(bs, reserved, count));
+        lemma_start_offset_bounds(bs);
+        assert(0 <= start_offset(bs));
+
+        self.page_organization.used_header_has_good_range(page_id);
+        assert(self.page_organization.pages[page_id].count.is_some());
+        assert(self.page_organization.pages[page_id].count.unwrap() == count);
+        assert(page_id.idx + count <= SLICES_PER_SEGMENT);
+        assert(page_start(page_id) <= addr) by(nonlinear_arith)
+            requires
+                block_start_at(page_id, bs, cap) <= addr,
+                block_start_at(page_id, bs, cap) == page_start(page_id) + start_offset(bs) + cap * bs,
+                0 <= start_offset(bs),
+                0 <= cap * bs;
+        assert(addr < block_start_at(page_id, bs, reserved));
+        assert(addr < page_start(page_id) + count * SLICE_SIZE) by(nonlinear_arith)
+            requires
+                addr < block_start_at(page_id, bs, reserved),
+                block_start_at(page_id, bs, reserved) == page_start(page_id) + start_offset(bs) + reserved * bs,
+                wf_reserved(bs, reserved, count);
+
+        reveal(Local::segment_pages_range_total);
+        reveal(Local::segment_page_range);
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(sid, pid));
+        if self.segment_pages_range_total(sid).contains(addr) {
+            assert(range_map.flatten().contains(addr));
+            let r = choose |r: Set<int>| range_map.contains(r) && r.contains(addr);
+            let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                && r == self.segment_page_range(sid, pid);
+            assert(self.segment_page_range(sid, pid).contains(addr));
+            assert(pid.segment_id == sid && self.is_used_primary(pid));
+            assert(self.page_organization.pages[pid].is_used);
+            assert(self.page_organization.pages[pid].offset == Some(0nat));
+
+            if pid == page_id {
+                assert(addr < block_start_at(page_id, bs, cap));
+                assert(false);
+            } else {
+                assert(self.pages.dom().contains(pid));
+                assert(self.thread_token.value().pages.dom().contains(pid));
+                assert(self.pages[pid].wf(pid, self.thread_token.value().pages[pid], self.instance));
+                assert(self.thread_token.value().pages[pid].offset == 0);
+                assert(self.page_inner(pid).wf(pid, self.thread_token.value().pages[pid], self.instance));
+                self.page_organization.used_header_has_good_range(pid);
+                assert(self.page_organization.pages[pid].count.is_some());
+                assert(page_organization_pages_match_data(
+                    self.page_organization.pages[pid],
+                    self.pages[pid],
+                    self.psa[pid],
+                    pid,
+                    self.page_organization.popped));
+                let pcount = self.page_organization.pages[pid].count.unwrap();
+                assert(self.page_count(pid) == pcount);
+                let pbs = self.block_size(pid);
+                let pcap = self.page_capacity(pid);
+                let preserved = self.page_reserved(pid);
+                assert(pbs > 0);
+                assert(pcap <= preserved);
+                assert(wf_reserved(pbs, preserved, pcount as int));
+                lemma_start_offset_bounds(pbs);
+                assert(0 <= start_offset(pbs));
+                assert(page_start(pid) <= addr) by(nonlinear_arith)
+                    requires
+                        block_start_at(pid, pbs, 0) <= addr,
+                        block_start_at(pid, pbs, 0) == page_start(pid) + start_offset(pbs),
+                        0 <= start_offset(pbs);
+                assert(addr < block_start_at(pid, pbs, pcap));
+                assert(addr < page_start(pid) + pcount * SLICE_SIZE) by(nonlinear_arith)
+                    requires
+                        addr < block_start_at(pid, pbs, pcap),
+                        block_start_at(pid, pbs, pcap) == page_start(pid) + start_offset(pbs) + pcap * pbs,
+                        pcap <= preserved,
+                        pbs > 0,
+                        wf_reserved(pbs, preserved, pcount as int);
+
+                self.page_organization.lemma_range_disjoint_used2(page_id, pid);
+                if page_id.idx + count <= pid.idx {
+                    assert(page_start(page_id) + count * SLICE_SIZE <= page_start(pid)) by(nonlinear_arith)
+                        requires
+                            page_start(page_id) == segment_start(sid) + SLICE_SIZE * page_id.idx,
+                            page_start(pid) == segment_start(sid) + SLICE_SIZE * pid.idx,
+                            page_id.idx + count <= pid.idx,
+                            0 <= SLICE_SIZE;
+                    assert(false);
+                } else {
+                    assert(pid.idx + pcount <= page_id.idx);
+                    assert(page_start(pid) + pcount * SLICE_SIZE <= page_start(page_id)) by(nonlinear_arith)
+                        requires
+                            page_start(pid) == segment_start(sid) + SLICE_SIZE * pid.idx,
+                            page_start(page_id) == segment_start(sid) + SLICE_SIZE * page_id.idx,
+                            pid.idx + pcount <= page_id.idx,
+                            0 <= SLICE_SIZE;
+                    assert(false);
+                }
+            }
+        }
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn used_primary_page_reserved_available(&self, page_id: PageId)
+        requires
+            self.wf_main_for_page_access(),
+            self.mem_chunk_good(page_id.segment_id),
+            self.is_used_primary(page_id),
+        ensures
+            block_start_at(page_id, self.block_size(page_id), self.page_reserved(page_id))
+                <= segment_start(page_id.segment_id) + SEGMENT_SIZE,
+            self.segments[page_id.segment_id].mem.pointsto_has_range(
+                block_start_at(page_id, self.block_size(page_id), self.page_capacity(page_id)),
+                (self.page_reserved(page_id) - self.page_capacity(page_id)) * self.block_size(page_id)),
+    {
+        let sid = page_id.segment_id;
+        let bs = self.block_size(page_id);
+        let cap = self.page_capacity(page_id);
+        let reserved = self.page_reserved(page_id);
+        let count = self.page_count(page_id);
+        let start = block_start_at(page_id, bs, cap);
+        let end = block_start_at(page_id, bs, reserved);
+        let len = (reserved - cap) * bs;
+
+        reveal(Local::wf_main_for_page_access);
+        reveal(Local::page_organization_valid);
+        reveal(PageLocalAccess::wf);
+        reveal(PageInner::wf);
+        reveal(page_organization_pages_match);
+        reveal(page_organization_pages_match_data);
+        assert(self.pages.dom().contains(page_id));
+        assert(self.thread_token.value().pages.dom().contains(page_id));
+        assert(self.pages[page_id].wf(page_id, self.thread_token.value().pages[page_id], self.instance));
+        assert(self.thread_token.value().pages[page_id].offset == 0);
+        assert(self.page_inner(page_id).wf(page_id, self.thread_token.value().pages[page_id], self.instance));
+        assert(bs > 0);
+        assert(cap <= reserved);
+        assert(wf_reserved(bs, reserved, count));
+        lemma_start_offset_bounds(bs);
+        assert(0 <= start_offset(bs));
+        self.page_organization.used_header_has_good_range(page_id);
+        assert(self.page_organization.pages[page_id].count.is_some());
+        assert(self.page_organization.pages[page_id].count.unwrap() == count);
+        assert(page_id.idx + count <= SLICES_PER_SEGMENT);
+        assert((SLICES_PER_SEGMENT as int) * (SLICE_SIZE as int) == SEGMENT_SIZE as int) by(compute_only);
+        assert(end <= segment_start(sid) + SEGMENT_SIZE) by(nonlinear_arith)
+            requires
+                end == page_start(page_id) + start_offset(bs) + reserved * bs,
+                page_start(page_id) == segment_start(sid) + SLICE_SIZE * page_id.idx,
+                wf_reserved(bs, reserved, count),
+                page_id.idx + count <= SLICES_PER_SEGMENT,
+                (SLICES_PER_SEGMENT as int) * (SLICE_SIZE as int) == SEGMENT_SIZE as int;
+        assert(start + len == end) by(nonlinear_arith)
+            requires
+                start == page_start(page_id) + start_offset(bs) + cap * bs,
+                end == page_start(page_id) + start_offset(bs) + reserved * bs,
+                len == (reserved - cap) * bs;
+        assert(0 <= len) by(nonlinear_arith)
+            requires cap <= reserved, bs > 0, len == (reserved - cap) * bs;
+
+        assert forall |addr: int|
+            #[trigger] set_int_range(start, start + len).contains(addr)
+        implies
+            self.segments[sid].mem.points_to.dom().contains(addr)
+        by {
+            assert(start <= addr < start + len);
+            assert(set_int_range(start, end).contains(addr));
+            assert(page_start(page_id) <= addr) by(nonlinear_arith)
+                requires
+                    start <= addr,
+                    start == page_start(page_id) + start_offset(bs) + cap * bs,
+                    0 <= start_offset(bs),
+                    0 <= cap * bs;
+            assert(addr < page_start(page_id) + count * SLICE_SIZE) by(nonlinear_arith)
+                requires
+                    addr < end,
+                    end == page_start(page_id) + start_offset(bs) + reserved * bs,
+                    wf_reserved(bs, reserved, count);
+            reveal(Local::segment_page_used);
+            assert(self.segment_page_used(sid, page_id).contains(addr));
+            reveal(Local::segment_pages_used_total);
+            let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(sid, pid));
+            assert(used_map.contains(self.segment_page_used(sid, page_id)));
+            assert(used_map.flatten().contains(addr));
+            assert(self.segment_pages_used_total(sid).contains(addr));
+            assert(self.mem_chunk_good(sid));
+            assert(mem_chunk_good1(
+                self.segments[sid].mem,
+                sid,
+                self.commit_mask(sid).bytes(sid),
+                self.decommit_mask(sid).bytes(sid),
+                self.segment_pages_range_total(sid),
+                self.segment_pages_used_total(sid),
+            ));
+            assert((self.commit_mask(sid).bytes(sid) - self.decommit_mask(sid).bytes(sid)).contains(addr));
+            assert(self.commit_mask(sid).bytes(sid).contains(addr));
+            assert(self.segments[sid].mem.os_rw_bytes().contains(addr));
+            self.used_primary_page_suffix_not_in_pages_range_total(page_id, addr);
+            assert(!self.segment_pages_range_total(sid).contains(addr));
+            assert(!segment_info_range(sid).contains(addr)) by {
+                assert(page_id.idx != 0);
+                assert(SIZEOF_SEGMENT_HEADER as int + SIZEOF_PAGE_HEADER as int * (SLICES_PER_SEGMENT as int + 1) < SLICE_SIZE as int) by(compute_only);
+                assert(page_start(page_id) >= segment_start(sid) + SLICE_SIZE) by(nonlinear_arith)
+                    requires
+                        page_start(page_id) == segment_start(sid) + SLICE_SIZE * page_id.idx,
+                        page_id.idx != 0,
+                        0 <= SLICE_SIZE;
+                assert(addr >= segment_start(sid) + SLICE_SIZE);
+            };
+        };
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn used_primary_page_reserved_blocks_enabled(&self, page_id: PageId)
+        requires
+            self.wf_main_for_page_access(),
+            self.is_used_primary(page_id),
+        ensures
+            forall |idx: nat|
+                self.page_capacity(page_id) <= (idx as int)
+                    && (idx as int) < self.page_reserved(page_id)
+                ==> #[trigger] Mim::State::okay_to_add_block(
+                    self.thread_token.value(), page_id, idx, self.block_size(page_id) as nat),
+    {
+        let sid = page_id.segment_id;
+        let bs = self.block_size(page_id);
+        let reserved = self.page_reserved(page_id);
+        let count = self.page_count(page_id);
+
+        reveal(Local::wf_main_for_page_access);
+        reveal(Local::page_organization_valid);
+        reveal(PageLocalAccess::wf);
+        reveal(PageInner::wf);
+        reveal(page_organization_pages_match);
+        reveal(page_organization_pages_match_data);
+        assert(self.pages.dom().contains(page_id));
+        assert(self.thread_token.value().pages.dom().contains(page_id));
+        assert(self.thread_token.value().pages[page_id].offset == 0);
+        assert(self.pages[page_id].wf(page_id, self.thread_token.value().pages[page_id], self.instance));
+        assert(self.page_inner(page_id).wf(page_id, self.thread_token.value().pages[page_id], self.instance));
+        assert(bs > 0);
+        assert(wf_reserved(bs, reserved, count));
+        lemma_start_offset_bounds(bs);
+        self.page_organization.used_header_has_good_range(page_id);
+        assert(self.page_organization.pages[page_id].count.is_some());
+        assert(self.page_organization.pages[page_id].count.unwrap() == count);
+
+        assert forall |idx: nat|
+            self.page_capacity(page_id) <= (idx as int)
+                && (idx as int) < reserved
+        implies
+            #[trigger] Mim::State::okay_to_add_block(
+                self.thread_token.value(), page_id, idx, bs as nat)
+        by {
+            let offset = start_offset(bs) + idx as int * bs;
+            assert((bs as nat) as int == bs);
+            assert((idx * (bs as nat)) as int == idx as int * bs) by(nonlinear_arith)
+                requires bs > 0;
+            assert(0 <= idx as int);
+            assert(0 <= idx as int * bs) by(nonlinear_arith)
+                requires
+                    0 <= idx as int,
+                    bs > 0;
+            assert(0 <= offset) by(nonlinear_arith)
+                requires
+                    0 <= start_offset(bs),
+                    0 <= idx as int * bs,
+                    offset == start_offset(bs) + idx as int * bs;
+            assert(offset < count * SLICE_SIZE) by(nonlinear_arith)
+                requires
+                    offset == start_offset(bs) + idx as int * bs,
+                    (idx as int) < reserved,
+                    bs > 0,
+                    wf_reserved(bs, reserved, count);
+            assert(0 < SLICE_SIZE as int) by(compute_only);
+            vstd::arithmetic::div_mod::lemma_fundamental_div_mod(offset, SLICE_SIZE as int);
+            let q = offset / (SLICE_SIZE as int);
+            assert(0 <= q);
+            assert(q < count) by {
+                if !(q < count) {
+                    assert(offset >= count * SLICE_SIZE) by(nonlinear_arith)
+                        requires
+                            offset == q * (SLICE_SIZE as int) + offset % (SLICE_SIZE as int),
+                            0 <= offset % (SLICE_SIZE as int),
+                            count <= q,
+                            0 < SLICE_SIZE as int;
+                    assert(false);
+                }
+            };
+
+            let slice_id = PageId {
+                segment_id: sid,
+                idx: BlockId::get_slice_idx(page_id, idx, bs as nat),
+            };
+            assert(slice_id.idx as int == page_id.idx + q) by {
+                assert(BlockId::get_slice_idx(page_id, idx, bs as nat)
+                    == (page_id.idx + (start_offset((bs as nat) as int) + idx * (bs as nat)) / (SLICE_SIZE as int)) as nat);
+                assert(start_offset((bs as nat) as int) == start_offset(bs));
+                assert((start_offset((bs as nat) as int) + idx * (bs as nat)) == offset);
+                assert(q == offset / (SLICE_SIZE as int));
+            };
+            assert(page_id.idx <= slice_id.idx);
+            assert(slice_id.idx < page_id.idx + count) by(nonlinear_arith)
+                requires
+                    slice_id.idx as int == page_id.idx + q,
+                    q < count;
+
+            self.page_organization.used_header_range_page_facts(page_id, slice_id);
+            assert(self.page_organization.pages.dom().contains(slice_id));
+            assert(self.page_organization.pages[slice_id].is_used);
+            assert(self.page_organization.pages[slice_id].offset == Some((slice_id.idx - page_id.idx) as nat));
+            assert(page_organization_matches_token_page(
+                self.page_organization.pages[slice_id],
+                self.thread_token.value().pages[slice_id]));
+            assert(self.thread_token.value().pages[slice_id].offset == slice_id.idx - page_id.idx);
+            assert(!self.unused_pages.dom().contains(slice_id));
+            assert(self.thread_token.value().pages.dom().contains(slice_id));
+            assert(self.pages.dom().contains(slice_id));
+            assert(self.pages[slice_id].wf(
+                slice_id,
+                self.thread_token.value().pages[slice_id],
+                self.instance));
+            assert(self.thread_token.value().pages[slice_id].is_enabled);
+            assert(Mim::State::okay_to_add_block(
+                self.thread_token.value(), page_id, idx, bs as nat));
+        };
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn set_range_to_not_used_preserves_mem_chunk_good(
+        &self,
+        old_local: Local,
+        segment_id: SegmentId,
+        page_id: PageId,
+    )
+        requires
+            old_local.mem_chunk_good(segment_id),
+            old_local.page_organization.invariant(),
+            old_local.page_organization.popped.is_Used(),
+            old_local.page_organization.popped.get_Used_0() == page_id,
+            PageOrg::State::set_range_to_not_used_strong(old_local.page_organization, self.page_organization),
+            self.segments.dom() == old_local.segments.dom(),
+            self.segments[segment_id].mem.wf(),
+            self.segments[segment_id].mem.os == old_local.segments[segment_id].mem.os,
+            self.segments[segment_id].mem.points_to.provenance()
+                == old_local.segments[segment_id].mem.points_to.provenance(),
+            old_local.segments[segment_id].mem.points_to.dom()
+                <= self.segments[segment_id].mem.points_to.dom(),
+            self.commit_mask(segment_id) == old_local.commit_mask(segment_id),
+            self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id),
+            self.pages.dom() == old_local.pages.dom(),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid)
+                && self.is_used_primary(pid) ==>
+                    old_local.is_used_primary(pid)
+                    && self.page_count(pid) == old_local.page_count(pid)
+                    && self.page_capacity(pid) == old_local.page_capacity(pid)
+                    && self.block_size(pid) == old_local.block_size(pid),
+            segment_id == page_id.segment_id ==>
+                set_int_range(
+                    page_start(page_id) + start_offset(old_local.block_size(page_id)),
+                    page_start(page_id) + start_offset(old_local.block_size(page_id))
+                        + old_local.page_capacity(page_id) * old_local.block_size(page_id),
+                ) <= self.segments[segment_id].mem.points_to.dom(),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        PageOrg::State::set_range_to_not_used_page_facts(old_local.page_organization, self.page_organization);
+        let count = old_local.page_organization.pages[page_id].count.unwrap();
+        let changed_range = page_id_range(page_id.segment_id, page_id.idx, page_id.idx + count);
+        assert(self.segments.dom().contains(segment_id));
+        assert(self.page_organization.pages.dom() =~= old_local.page_organization.pages.dom());
+
+        assert forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid)
+            && self.is_used_primary(pid) implies old_local.is_used_primary(pid)
+        by {
+            assert(self.is_used_primary(pid));
+        };
+
+        assert forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_used(segment_id, pid) <= old_local.segment_page_used(segment_id, pid)
+        by {
+            if self.is_used_primary(pid) {
+                assert(old_local.is_used_primary(pid));
+                assert(self.page_count(pid) == old_local.page_count(pid));
+                assert(self.segment_page_used(segment_id, pid) =~= old_local.segment_page_used(segment_id, pid));
+            } else {
+                assert(self.segment_page_used(segment_id, pid) =~= Set::<int>::empty());
+            }
+        };
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+        assert(self.segment_pages_used_total(segment_id) <= old_local.segment_pages_used_total(segment_id)) by {
+            assert forall |addr: int| #[trigger] self.segment_pages_used_total(segment_id).contains(addr) implies
+                old_local.segment_pages_used_total(segment_id).contains(addr)
+            by {
+                assert(used_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| used_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(segment_id, pid);
+                assert(self.segment_page_used(segment_id, pid).contains(addr));
+                assert(old_local.segment_page_used(segment_id, pid).contains(addr));
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(old_used_map.contains(old_local.segment_page_used(segment_id, pid)));
+                assert(old_used_map.flatten().contains(addr));
+            };
+        };
+
+        assert forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid) implies
+            old_local.segment_page_range(segment_id, pid)
+                <= self.segments[segment_id].mem.points_to.dom() + self.segment_page_range(segment_id, pid)
+        by {
+            if old_local.is_used_primary(pid) {
+                if changed_range.contains(pid) {
+                    assert(pid.segment_id == page_id.segment_id);
+                    assert(page_id.idx <= pid.idx < page_id.idx + count);
+                    assert(old_local.page_organization.pages[pid].offset == Some(0nat));
+                    old_local.page_organization.used_popped_range_facts();
+                    assert(old_local.page_organization.pages[pid].offset.is_some());
+                    assert(old_local.page_organization.pages[pid].offset.unwrap() == pid.idx - page_id.idx);
+                    assert(pid.idx == page_id.idx);
+                    assert(pid == page_id);
+                    if segment_id == page_id.segment_id {
+                        assert(old_local.segment_page_range(segment_id, pid) =~= set_int_range(
+                            page_start(page_id) + start_offset(old_local.block_size(page_id)),
+                            page_start(page_id) + start_offset(old_local.block_size(page_id))
+                                + old_local.page_capacity(page_id) * old_local.block_size(page_id),
+                        ));
+                    } else {
+                        assert(old_local.segment_page_range(segment_id, pid) =~= Set::<int>::empty());
+                    }
+                } else {
+                    assert(self.page_organization.pages[pid] == old_local.page_organization.pages[pid]);
+                    assert(self.is_used_primary(pid));
+                    assert(self.page_count(pid) == old_local.page_count(pid));
+                    assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                    assert(self.block_size(pid) == old_local.block_size(pid));
+                    assert(self.segment_page_range(segment_id, pid) =~= old_local.segment_page_range(segment_id, pid));
+                }
+            } else {
+                assert(old_local.segment_page_range(segment_id, pid) =~= Set::<int>::empty());
+            }
+        };
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+        assert(old_local.segment_pages_range_total(segment_id)
+            <= self.segments[segment_id].mem.points_to.dom() + self.segment_pages_range_total(segment_id)) by {
+            assert forall |addr: int| #[trigger] old_local.segment_pages_range_total(segment_id).contains(addr) implies
+                (self.segments[segment_id].mem.points_to.dom() + self.segment_pages_range_total(segment_id)).contains(addr)
+            by {
+                assert(old_range_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| old_range_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_range(segment_id, pid);
+                assert(old_local.segment_page_range(segment_id, pid).contains(addr));
+                if self.segments[segment_id].mem.points_to.dom().contains(addr) {
+                } else {
+                    assert(self.segment_page_range(segment_id, pid).contains(addr));
+                    assert(self.page_organization.pages.dom().contains(pid));
+                    assert(range_map.contains(self.segment_page_range(segment_id, pid)));
+                    assert(range_map.flatten().contains(addr));
+                }
+            };
+        };
+
+        let mem = self.segments[segment_id].mem;
+        let old_mem = old_local.segments[segment_id].mem;
+        assert(mem.os_exact_range(segment_start(segment_id), SEGMENT_SIZE as int));
+        assert(mem.points_to.provenance() == segment_id.provenance);
+        assert(mem.os_rw_bytes() =~= old_mem.os_rw_bytes()) by {
+            assert forall |addr: int| #[trigger] mem.os_rw_bytes().contains(addr) implies
+                old_mem.os_rw_bytes().contains(addr)
+            by {
+                assert(mem.os.dom().contains(addr));
+                assert(mem.os[addr]@.mem_protect == MemProtect { read: true, write: true });
+                assert(old_mem.os[addr] == mem.os[addr]);
+            };
+            assert forall |addr: int| #[trigger] old_mem.os_rw_bytes().contains(addr) implies
+                mem.os_rw_bytes().contains(addr)
+            by {
+                assert(old_mem.os.dom().contains(addr));
+                assert(old_mem.os[addr]@.mem_protect == MemProtect { read: true, write: true });
+                assert(mem.os[addr] == old_mem.os[addr]);
+            };
+        };
+        assert(self.commit_mask(segment_id).bytes(segment_id)
+            =~= old_local.commit_mask(segment_id).bytes(segment_id));
+        assert(self.decommit_mask(segment_id).bytes(segment_id)
+            =~= old_local.decommit_mask(segment_id).bytes(segment_id));
+        assert(self.commit_mask(segment_id).bytes(segment_id).subset_of(mem.os_rw_bytes()));
+        assert(self.decommit_mask(segment_id).bytes(segment_id)
+            <= self.commit_mask(segment_id).bytes(segment_id));
+        assert(segment_info_range(segment_id)
+            <= self.commit_mask(segment_id).bytes(segment_id) - self.decommit_mask(segment_id).bytes(segment_id));
+        assert(self.segment_pages_used_total(segment_id)
+            <= self.commit_mask(segment_id).bytes(segment_id) - self.decommit_mask(segment_id).bytes(segment_id));
+        assert(mem.os_rw_bytes()
+            <= mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)) by {
+            assert forall |addr: int| #[trigger] mem.os_rw_bytes().contains(addr) implies
+                (mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)).contains(addr)
+            by {
+                assert(old_mem.os_rw_bytes().contains(addr));
+                if old_mem.points_to.dom().contains(addr) {
+                    assert(mem.points_to.dom().contains(addr));
+                } else if segment_info_range(segment_id).contains(addr) {
+                } else {
+                    assert(old_local.segment_pages_range_total(segment_id).contains(addr));
+                    if mem.points_to.dom().contains(addr) {
+                    } else {
+                        assert(self.segment_pages_range_total(segment_id).contains(addr));
+                    }
+                }
+            };
+        };
+        assert(mem_chunk_good1(
+            mem,
+            segment_id,
+            self.commit_mask(segment_id).bytes(segment_id),
+            self.decommit_mask(segment_id).bytes(segment_id),
+            self.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id),
+        ));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn very_unready_range_disjoint_used_total(&self, page_id: PageId, count: int)
+        requires
+            self.wf_main_for_page_access(),
+            self.page_organization.popped.is_VeryUnready(),
+            self.page_organization.popped.get_VeryUnready_0() == page_id.segment_id,
+            self.page_organization.popped.get_VeryUnready_1() == page_id.idx,
+            self.page_organization.popped.get_VeryUnready_2() == count,
+        ensures
+            set_int_range(page_start(page_id), page_start(page_id) + count * SLICE_SIZE as int)
+                .disjoint(self.segment_pages_used_total(page_id.segment_id)),
+    {
+        let sid = page_id.segment_id;
+        self.page_organization.very_unready_popped_range_facts();
+        let range = set_int_range(page_start(page_id), page_start(page_id) + count * SLICE_SIZE as int);
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(sid, pid));
+        assert forall |addr: int| #[trigger] range.contains(addr) implies
+            !self.segment_pages_used_total(sid).contains(addr) by {
+            assert(page_start(page_id) <= addr < page_start(page_id) + count * SLICE_SIZE as int);
+            if self.segment_pages_used_total(sid).contains(addr) {
+                assert(used_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| used_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(sid, pid);
+                assert(self.segment_page_used(sid, pid).contains(addr));
+                assert(pid.segment_id == sid && self.is_used_primary(pid));
+                assert(self.page_organization.pages[pid].is_used);
+                assert(self.page_organization.pages[pid].offset == Some(0nat));
+                self.page_organization.lemma_range_disjoint_very_unready(pid);
+                assert(self.page_organization.pages[pid].count.is_some());
+                let used_count = self.page_organization.pages[pid].count.unwrap();
+                assert(page_organization_pages_match(
+                    self.page_organization.pages,
+                    self.pages,
+                    self.psa,
+                    self.page_organization.popped));
+                assert(page_organization_pages_match_data(
+                    self.page_organization.pages[pid],
+                    self.pages[pid],
+                    self.psa[pid],
+                    pid,
+                    self.page_organization.popped));
+                assert(self.page_count(pid) == used_count);
+                assert(page_start(pid) <= addr < page_start(pid) + self.page_count(pid) * SLICE_SIZE as int);
+                assert(page_start(pid) <= addr < page_start(pid) + used_count * SLICE_SIZE as int);
+                if pid.idx + used_count <= page_id.idx {
+                    assert(page_start(pid) + used_count * SLICE_SIZE as int <= page_start(page_id)) by(nonlinear_arith)
+                        requires
+                            pid.segment_id == page_id.segment_id,
+                            page_start(pid) == segment_start(pid.segment_id) + SLICE_SIZE as int * pid.idx,
+                            page_start(page_id) == segment_start(page_id.segment_id) + SLICE_SIZE as int * page_id.idx,
+                            pid.idx + used_count <= page_id.idx,
+                            0 <= SLICE_SIZE as int;
+                    assert(false);
+                } else {
+                    assert(page_id.idx + count <= pid.idx);
+                    assert(page_start(page_id) + count * SLICE_SIZE as int <= page_start(pid)) by(nonlinear_arith)
+                        requires
+                            pid.segment_id == page_id.segment_id,
+                            page_start(pid) == segment_start(pid.segment_id) + SLICE_SIZE as int * pid.idx,
+                            page_start(page_id) == segment_start(page_id.segment_id) + SLICE_SIZE as int * page_id.idx,
+                            page_id.idx + count <= pid.idx,
+                            0 <= SLICE_SIZE as int;
+                    assert(false);
+                }
+            }
+        }
+    }
+
+    #[verifier::rlimit(200)]
+
+    #[verifier::rlimit(200)]
+    pub proof fn mem_chunk_good_preserved_by_page_totals(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments.dom().contains(segment_id),
+            self.segments[segment_id].mem == old_local.segments[segment_id].mem,
+            self.commit_mask(segment_id) == old_local.commit_mask(segment_id),
+            self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id),
+            self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        assert(mem_chunk_good1(
+            self.segments[segment_id].mem,
+            segment_id,
+            self.commit_mask(segment_id).bytes(segment_id),
+            self.decommit_mask(segment_id).bytes(segment_id),
+            self.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id),
+        ));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn mem_chunk_good_preserved_by_range_total_and_used_bound(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments.dom().contains(segment_id),
+            self.segments[segment_id].mem == old_local.segments[segment_id].mem,
+            self.commit_mask(segment_id) == old_local.commit_mask(segment_id),
+            self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id),
+            self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id)
+                <= self.commit_mask(segment_id).bytes(segment_id) - self.decommit_mask(segment_id).bytes(segment_id),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        let mem = self.segments[segment_id].mem;
+        let old_mem = old_local.segments[segment_id].mem;
+        let commit = self.commit_mask(segment_id).bytes(segment_id);
+        let decommit = self.decommit_mask(segment_id).bytes(segment_id);
+        let old_commit = old_local.commit_mask(segment_id).bytes(segment_id);
+        let old_decommit = old_local.decommit_mask(segment_id).bytes(segment_id);
+
+        assert(mem.wf());
+        assert(mem.os_exact_range(segment_start(segment_id), SEGMENT_SIZE as int));
+        assert(mem.points_to.provenance() == segment_id.provenance);
+        assert(commit =~= old_commit);
+        assert(decommit =~= old_decommit);
+        assert(commit.subset_of(mem.os_rw_bytes()));
+        assert(decommit <= commit);
+        assert(segment_info_range(segment_id) <= commit - decommit);
+        assert(self.segment_pages_used_total(segment_id) <= commit - decommit);
+        assert(mem.os_rw_bytes() <= mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)) by {
+            assert forall |addr: int| #[trigger] mem.os_rw_bytes().contains(addr) implies
+                (mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)).contains(addr) by {
+                assert(old_mem.os_rw_bytes().contains(addr));
+                if old_mem.points_to.dom().contains(addr) {
+                    assert(mem.points_to.dom().contains(addr));
+                } else if segment_info_range(segment_id).contains(addr) {
+                } else {
+                    assert(old_local.segment_pages_range_total(segment_id).contains(addr));
+                    assert(self.segment_pages_range_total(segment_id).contains(addr));
+                }
+            };
+        };
+        assert(mem_chunk_good1(
+            mem,
+            segment_id,
+            commit,
+            decommit,
+            self.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id),
+        ));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn mem_chunk_good_preserved_when_segment_pages_unchanged(
+        &self,
+        old_local: Local,
+        segment_id: SegmentId,
+    )
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments.dom().contains(segment_id),
+            self.segments[segment_id].mem == old_local.segments[segment_id].mem,
+            self.commit_mask(segment_id) == old_local.commit_mask(segment_id),
+            self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid)
+                && pid.segment_id == segment_id ==> self.page_organization.pages.dom().contains(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid)
+                && pid.segment_id == segment_id ==> old_local.page_organization.pages.dom().contains(pid),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid)
+                && pid.segment_id == segment_id ==> self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid)
+                && pid.segment_id == segment_id && old_local.is_used_primary(pid) ==>
+                    self.page_count(pid) == old_local.page_count(pid)
+                    && self.page_capacity(pid) == old_local.page_capacity(pid)
+                    && self.block_size(pid) == old_local.block_size(pid),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        assert(self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id)) by {
+            reveal(Local::segment_pages_range_total);
+            reveal(Local::segment_page_range);
+            let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+            let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+            assert forall |addr: int| #[trigger] self.segment_pages_range_total(segment_id).contains(addr) implies
+                old_local.segment_pages_range_total(segment_id).contains(addr) by {
+                assert(range_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| range_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid) && r == self.segment_page_range(segment_id, pid);
+                assert(self.segment_page_range(segment_id, pid).contains(addr));
+                if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                    assert(old_local.page_organization.pages.dom().contains(pid));
+                    assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+                    assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                    assert(self.block_size(pid) == old_local.block_size(pid));
+                    assert(r =~= old_local.segment_page_range(segment_id, pid));
+                    assert(old_range_map.contains(old_local.segment_page_range(segment_id, pid)));
+                    assert(old_range_map.flatten().contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+            assert forall |addr: int| #[trigger] old_local.segment_pages_range_total(segment_id).contains(addr) implies
+                self.segment_pages_range_total(segment_id).contains(addr) by {
+                assert(old_range_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| old_range_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid) && r == old_local.segment_page_range(segment_id, pid);
+                assert(old_local.segment_page_range(segment_id, pid).contains(addr));
+                if pid.segment_id == segment_id && old_local.is_used_primary(pid) {
+                    assert(self.page_organization.pages.dom().contains(pid));
+                    assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+                    assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                    assert(self.block_size(pid) == old_local.block_size(pid));
+                    assert(r =~= self.segment_page_range(segment_id, pid));
+                    assert(range_map.contains(self.segment_page_range(segment_id, pid)));
+                    assert(range_map.flatten().contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+        };
+        assert(self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id)) by {
+            reveal(Local::segment_pages_used_total);
+            reveal(Local::segment_page_used);
+            let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+            let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+            assert forall |addr: int| #[trigger] self.segment_pages_used_total(segment_id).contains(addr) implies
+                old_local.segment_pages_used_total(segment_id).contains(addr) by {
+                assert(used_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| used_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid) && r == self.segment_page_used(segment_id, pid);
+                assert(self.segment_page_used(segment_id, pid).contains(addr));
+                if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                    assert(old_local.page_organization.pages.dom().contains(pid));
+                    assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+                    assert(self.page_count(pid) == old_local.page_count(pid));
+                    assert(r =~= old_local.segment_page_used(segment_id, pid));
+                    assert(old_used_map.contains(old_local.segment_page_used(segment_id, pid)));
+                    assert(old_used_map.flatten().contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+            assert forall |addr: int| #[trigger] old_local.segment_pages_used_total(segment_id).contains(addr) implies
+                self.segment_pages_used_total(segment_id).contains(addr) by {
+                assert(old_used_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| old_used_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid) && r == old_local.segment_page_used(segment_id, pid);
+                assert(old_local.segment_page_used(segment_id, pid).contains(addr));
+                if pid.segment_id == segment_id && old_local.is_used_primary(pid) {
+                    assert(self.page_organization.pages.dom().contains(pid));
+                    assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+                    assert(self.page_count(pid) == old_local.page_count(pid));
+                    assert(r =~= self.segment_page_used(segment_id, pid));
+                    assert(used_map.contains(self.segment_page_used(segment_id, pid)));
+                    assert(used_map.flatten().contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+        };
+        self.mem_chunk_good_preserved_by_page_totals(old_local, segment_id);
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn ready_to_used_zero_capacity_preserves_mem_chunk_good(
+        &self,
+        old_local: Local,
+        page_id: PageId,
+    )
+        requires
+            old_local.wf_main_for_page_access(),
+            self.wf_main_for_page_access(),
+            old_local.mem_chunk_good(page_id.segment_id),
+            old_local.page_organization.popped == Popped::Ready(page_id, true),
+            self.page_organization.popped == Popped::Used(page_id, true),
+            self.segments == old_local.segments,
+            self.page_organization.pages.dom() == old_local.page_organization.pages.dom(),
+            old_local.page_organization.pages[page_id].count.is_some(),
+            self.page_organization.pages[page_id].count == old_local.page_organization.pages[page_id].count,
+            self.page_count(page_id) == old_local.page_organization.pages[page_id].count.unwrap() as int,
+            self.page_capacity(page_id) == 0,
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid)
+                && !page_id.range_from(0, old_local.page_organization.pages[page_id].count.unwrap() as int).contains(pid) ==>
+                    self.page_organization.pages[pid] == old_local.page_organization.pages[pid]
+                    && self.pages[pid] == old_local.pages[pid],
+            set_int_range(
+                page_start(page_id),
+                page_start(page_id)
+                    + old_local.page_organization.pages[page_id].count.unwrap() as int * SLICE_SIZE as int)
+                <= self.commit_mask(page_id.segment_id).bytes(page_id.segment_id)
+                    - self.decommit_mask(page_id.segment_id).bytes(page_id.segment_id),
+        ensures
+            self.mem_chunk_good(page_id.segment_id),
+    {
+        let sid = page_id.segment_id;
+        let count = old_local.page_organization.pages[page_id].count.unwrap();
+        let changed_range = page_id.range_from(0, count as int);
+
+        old_local.page_organization.ready_popped_range_facts();
+        self.page_organization.used_popped_range_facts();
+        assert(self.segments.dom().contains(sid));
+        assert(self.commit_mask(sid) == old_local.commit_mask(sid));
+        assert(self.decommit_mask(sid) == old_local.decommit_mask(sid));
+
+        assert(self.segment_pages_range_total(sid) =~= old_local.segment_pages_range_total(sid)) by {
+            reveal(Local::segment_pages_range_total);
+            reveal(Local::segment_page_range);
+            let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(sid, pid));
+            let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(sid, pid));
+            assert forall |addr: int| #[trigger] self.segment_pages_range_total(sid).contains(addr) implies
+                old_local.segment_pages_range_total(sid).contains(addr) by {
+                assert(range_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| range_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid) && r == self.segment_page_range(sid, pid);
+                assert(self.segment_page_range(sid, pid).contains(addr));
+                if pid.segment_id == sid && self.is_used_primary(pid) {
+                    if changed_range.contains(pid) {
+                        assert(page_id.idx <= pid.idx < page_id.idx + count);
+                        assert(self.page_organization.pages[pid].offset.is_some());
+                        assert(self.page_organization.pages[pid].offset.unwrap() == pid.idx - page_id.idx);
+                        assert(self.page_organization.pages[pid].offset == Some(0nat));
+                        assert(pid.idx == page_id.idx);
+                        assert(pid == page_id);
+                        assert(self.page_capacity(page_id) == 0);
+                        assert(r =~= Set::<int>::empty());
+                        assert(false);
+                    } else {
+                        assert(old_local.page_organization.pages.dom().contains(pid));
+                        assert(self.page_organization.pages[pid] == old_local.page_organization.pages[pid]);
+                        assert(self.pages[pid] == old_local.pages[pid]);
+                        assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+                        assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                        assert(self.block_size(pid) == old_local.block_size(pid));
+                        assert(r =~= old_local.segment_page_range(sid, pid));
+                        assert(old_range_map.contains(old_local.segment_page_range(sid, pid)));
+                        assert(old_range_map.flatten().contains(addr));
+                    }
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+            assert forall |addr: int| #[trigger] old_local.segment_pages_range_total(sid).contains(addr) implies
+                self.segment_pages_range_total(sid).contains(addr) by {
+                assert(old_range_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| old_range_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid) && r == old_local.segment_page_range(sid, pid);
+                assert(old_local.segment_page_range(sid, pid).contains(addr));
+                if pid.segment_id == sid && old_local.is_used_primary(pid) {
+                    assert(!changed_range.contains(pid)) by {
+                        if changed_range.contains(pid) {
+                            assert(!old_local.page_organization.pages[pid].is_used);
+                            assert(false);
+                        }
+                    };
+                    assert(self.page_organization.pages.dom().contains(pid));
+                    assert(self.page_organization.pages[pid] == old_local.page_organization.pages[pid]);
+                    assert(self.pages[pid] == old_local.pages[pid]);
+                    assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+                    assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                    assert(self.block_size(pid) == old_local.block_size(pid));
+                    assert(r =~= self.segment_page_range(sid, pid));
+                    assert(range_map.contains(self.segment_page_range(sid, pid)));
+                    assert(range_map.flatten().contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+        };
+
+        assert(self.segment_pages_used_total(sid)
+            <= self.commit_mask(sid).bytes(sid) - self.decommit_mask(sid).bytes(sid)) by {
+            reveal(Local::segment_pages_used_total);
+            reveal(Local::segment_page_used);
+            let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(sid, pid));
+            let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(sid, pid));
+            assert forall |addr: int| #[trigger] self.segment_pages_used_total(sid).contains(addr) implies
+                (self.commit_mask(sid).bytes(sid) - self.decommit_mask(sid).bytes(sid)).contains(addr) by {
+                assert(used_map.flatten().contains(addr));
+                let r = choose |r: Set<int>| used_map.contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid) && r == self.segment_page_used(sid, pid);
+                assert(self.segment_page_used(sid, pid).contains(addr));
+                if pid.segment_id == sid && self.is_used_primary(pid) {
+                    if changed_range.contains(pid) {
+                        assert(page_id.idx <= pid.idx < page_id.idx + count);
+                        assert(self.page_organization.pages[pid].offset.is_some());
+                        assert(self.page_organization.pages[pid].offset.unwrap() == pid.idx - page_id.idx);
+                        assert(self.page_organization.pages[pid].offset == Some(0nat));
+                        assert(pid.idx == page_id.idx);
+                        assert(pid == page_id);
+                        assert(self.page_count(page_id) == count);
+                        assert(set_int_range(page_start(page_id), page_start(page_id) + count * SLICE_SIZE as int).contains(addr));
+                    } else {
+                        assert(old_local.page_organization.pages.dom().contains(pid));
+                        assert(self.page_organization.pages[pid] == old_local.page_organization.pages[pid]);
+                        assert(self.pages[pid] == old_local.pages[pid]);
+                        assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+                        assert(self.page_count(pid) == old_local.page_count(pid));
+                        assert(r =~= old_local.segment_page_used(sid, pid));
+                        assert(old_used_map.contains(old_local.segment_page_used(sid, pid)));
+                        assert(old_used_map.flatten().contains(addr));
+                        assert(old_local.segment_pages_used_total(sid).contains(addr));
+                        assert((old_local.commit_mask(sid).bytes(sid) - old_local.decommit_mask(sid).bytes(sid)).contains(addr));
+                    }
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+        };
+
+        self.mem_chunk_good_preserved_by_range_total_and_used_bound(old_local, sid);
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn page_capacity_increase_covers_points_to(
+        &self,
+        old_local: Local,
+        segment_id: SegmentId,
+        page_id: PageId,
+    )
+        requires
+            segment_id == page_id.segment_id,
+            self.page_organization.pages.dom().contains(page_id),
+            self.is_used_primary(page_id),
+            self.block_size(page_id) == old_local.block_size(page_id),
+            old_local.page_capacity(page_id) <= self.page_capacity(page_id),
+            old_local.segments[segment_id].mem.points_to.dom()
+                <= self.segments[segment_id].mem.points_to.dom()
+                    + set_int_range(
+                        block_start_at(page_id, old_local.block_size(page_id), old_local.page_capacity(page_id)),
+                        block_start_at(page_id, self.block_size(page_id), self.page_capacity(page_id))),
+        ensures
+            old_local.segments[segment_id].mem.points_to.dom()
+                <= self.segments[segment_id].mem.points_to.dom() + self.segment_pages_range_total(segment_id),
+    {
+        let removed = set_int_range(
+            block_start_at(page_id, old_local.block_size(page_id), old_local.page_capacity(page_id)),
+            block_start_at(page_id, self.block_size(page_id), self.page_capacity(page_id)));
+        assert forall |addr: int| #[trigger] old_local.segments[segment_id].mem.points_to.dom().contains(addr) implies
+            (self.segments[segment_id].mem.points_to.dom() + self.segment_pages_range_total(segment_id)).contains(addr) by {
+            if self.segments[segment_id].mem.points_to.dom().contains(addr) {
+            } else {
+                assert(removed.contains(addr));
+                reveal(Local::segment_page_range);
+                assert(self.segment_page_range(segment_id, page_id).contains(addr)) by {
+                    assert(block_start_at(page_id, old_local.block_size(page_id), old_local.page_capacity(page_id)) <= addr);
+                    assert(addr < block_start_at(page_id, self.block_size(page_id), self.page_capacity(page_id)));
+                    assert(self.block_size(page_id) == old_local.block_size(page_id));
+                    assert(segment_id == page_id.segment_id);
+                };
+                reveal(Local::segment_pages_range_total);
+                let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+                assert(range_map.contains(self.segment_page_range(segment_id, page_id)));
+                assert(range_map.flatten().contains(addr));
+            }
+        };
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn mem_chunk_good_preserved_by_range_transfer(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments.dom().contains(segment_id),
+            self.segments[segment_id].mem.os == old_local.segments[segment_id].mem.os,
+            self.segments[segment_id].mem.points_to.provenance()
+                == old_local.segments[segment_id].mem.points_to.provenance(),
+            old_local.segments[segment_id].mem.points_to.dom()
+                <= self.segments[segment_id].mem.points_to.dom() + self.segment_pages_range_total(segment_id),
+            self.commit_mask(segment_id) == old_local.commit_mask(segment_id),
+            self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id),
+            old_local.segment_pages_range_total(segment_id) <= self.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        let mem = self.segments[segment_id].mem;
+        let old_mem = old_local.segments[segment_id].mem;
+        let commit = self.commit_mask(segment_id).bytes(segment_id);
+        let decommit = self.decommit_mask(segment_id).bytes(segment_id);
+        let old_commit = old_local.commit_mask(segment_id).bytes(segment_id);
+        let old_decommit = old_local.decommit_mask(segment_id).bytes(segment_id);
+
+        assert(mem.wf()) by {
+            assert forall |addr: int| #[trigger] mem.os.dom().contains(addr) implies
+                mem.os[addr]@.byte_addr == addr by {
+                assert(old_mem.os.dom().contains(addr));
+                assert(mem.os[addr] == old_mem.os[addr]);
+                assert(old_mem.wf());
+            };
+        };
+        assert(mem.os_exact_range(segment_start(segment_id), SEGMENT_SIZE as int)) by {
+            assert(mem.os.dom() =~= old_mem.os.dom());
+            assert(old_mem.os_exact_range(segment_start(segment_id), SEGMENT_SIZE as int));
+        };
+        assert(mem.points_to.provenance() == segment_id.provenance);
+        assert(commit =~= old_commit);
+        assert(decommit =~= old_decommit);
+        assert(commit.subset_of(mem.os_rw_bytes())) by {
+            assert forall |addr: int| #[trigger] commit.contains(addr) implies
+                mem.os_rw_bytes().contains(addr) by {
+                assert(old_commit.contains(addr));
+                assert(old_mem.os_rw_bytes().contains(addr));
+                assert(old_mem.os.dom().contains(addr));
+                assert(old_mem.os[addr]@.mem_protect == MemProtect { read: true, write: true });
+                assert(mem.os[addr] == old_mem.os[addr]);
+            };
+        };
+        assert(decommit <= commit);
+        assert(segment_info_range(segment_id) <= commit - decommit) by {
+            assert forall |addr: int| #[trigger] segment_info_range(segment_id).contains(addr) implies
+                (commit - decommit).contains(addr) by {
+                assert((old_commit - old_decommit).contains(addr));
+            };
+        };
+        assert(self.segment_pages_used_total(segment_id) <= commit - decommit) by {
+            assert forall |addr: int| #[trigger] self.segment_pages_used_total(segment_id).contains(addr) implies
+                (commit - decommit).contains(addr) by {
+                assert(old_local.segment_pages_used_total(segment_id).contains(addr));
+                assert((old_commit - old_decommit).contains(addr));
+            };
+        };
+        assert(mem.os_rw_bytes()
+            <= mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)) by {
+            assert forall |addr: int| #[trigger] mem.os_rw_bytes().contains(addr) implies
+                (mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)).contains(addr) by {
+                assert(old_mem.os_rw_bytes().contains(addr));
+                if old_mem.points_to.dom().contains(addr) {
+                    assert((mem.points_to.dom() + self.segment_pages_range_total(segment_id)).contains(addr));
+                } else if segment_info_range(segment_id).contains(addr) {
+                } else {
+                    assert(old_local.segment_pages_range_total(segment_id).contains(addr));
+                    assert(self.segment_pages_range_total(segment_id).contains(addr));
+                }
+            };
+        };
+        assert(mem_chunk_good1(
+            mem,
+            segment_id,
+            commit,
+            decommit,
+            self.segment_pages_range_total(segment_id),
+            self.segment_pages_used_total(segment_id),
+        ));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn mem_chunk_good_preserved_by_commit_update(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments.dom() == old_local.segments.dom(),
+            self.segments[segment_id].mem.wf(),
+            self.segments[segment_id].mem.os_exact_range(segment_start(segment_id), SEGMENT_SIZE as int),
+            self.segments[segment_id].mem.points_to.provenance() == segment_id.provenance,
+            self.segments[segment_id].mem.has_new_pointsto(&old_local.segments[segment_id].mem),
+            old_local.commit_mask(segment_id).bytes(segment_id) <= self.commit_mask(segment_id).bytes(segment_id),
+            self.decommit_mask(segment_id).bytes(segment_id) <= old_local.decommit_mask(segment_id).bytes(segment_id),
+            self.commit_mask(segment_id).bytes(segment_id) <= self.segments[segment_id].mem.os_rw_bytes(),
+            self.page_organization.pages.dom() == old_local.page_organization.pages.dom(),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_count(pid) == old_local.page_count(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_capacity(pid) == old_local.page_capacity(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.block_size(pid) == old_local.block_size(pid),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        let mem = self.segments[segment_id].mem;
+        let old_mem = old_local.segments[segment_id].mem;
+        let old_commit = old_local.commit_mask(segment_id).bytes(segment_id);
+        let old_decommit = old_local.decommit_mask(segment_id).bytes(segment_id);
+        let commit = self.commit_mask(segment_id).bytes(segment_id);
+        let decommit = self.decommit_mask(segment_id).bytes(segment_id);
+
+        assert(self.segments.dom().contains(segment_id));
+        assert(old_decommit <= old_commit);
+        assert(decommit <= commit) by {
+            assert forall |addr: int| #[trigger] decommit.contains(addr) implies commit.contains(addr) by {
+                assert(old_decommit.contains(addr));
+                assert(old_commit.contains(addr));
+            }
+        };
+        assert((old_commit - old_decommit) <= (commit - decommit)) by {
+            assert forall |addr: int| #[trigger] (old_commit - old_decommit).contains(addr) implies
+                (commit - decommit).contains(addr) by {
+                assert(old_commit.contains(addr));
+                assert(!old_decommit.contains(addr));
+                assert(commit.contains(addr));
+                if decommit.contains(addr) {
+                    assert(old_decommit.contains(addr));
+                    assert(false);
+                }
+            }
+        };
+        assert(segment_info_range(segment_id) <= commit - decommit) by {
+            assert forall |addr: int| #[trigger] segment_info_range(segment_id).contains(addr) implies
+                (commit - decommit).contains(addr) by {
+                assert((old_commit - old_decommit).contains(addr));
+            }
+        };
+
+        self.segment_page_totals_preserved(old_local, segment_id);
+        assert(self.segment_pages_used_total(segment_id) <= commit - decommit) by {
+            assert forall |addr: int| #[trigger] self.segment_pages_used_total(segment_id).contains(addr) implies
+                (commit - decommit).contains(addr) by {
+                assert(old_local.segment_pages_used_total(segment_id).contains(addr));
+                assert((old_commit - old_decommit).contains(addr));
+            }
+        };
+        assert(mem.os_rw_bytes() <= mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)) by {
+            assert forall |addr: int| #[trigger] mem.os_rw_bytes().contains(addr) implies
+                (mem.points_to.dom() + segment_info_range(segment_id) + self.segment_pages_range_total(segment_id)).contains(addr) by {
+                assert(mem.has_new_pointsto(&old_mem));
+                if old_mem.os_rw_bytes().contains(addr) {
+                    if old_mem.points_to.dom().contains(addr) {
+                        assert(mem.points_to.dom().contains(addr));
+                    } else if segment_info_range(segment_id).contains(addr) {
+                    } else {
+                        assert(old_local.segment_pages_range_total(segment_id).contains(addr));
+                        assert(self.segment_pages_range_total(segment_id).contains(addr));
+                    }
+                } else {
+                    assert(mem.os.dom().contains(addr));
+                    assert(old_mem.os.dom().contains(addr));
+                    assert(old_mem.os[addr]@.mem_protect != MemProtect { read: true, write: true });
+                    assert(mem.points_to.dom().contains(addr));
+                }
+            }
+        };
+        assert(mem_chunk_good1(mem, segment_id, commit, decommit, self.segment_pages_range_total(segment_id), self.segment_pages_used_total(segment_id)));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    #[verifier::rlimit(200)]
+    pub proof fn mem_chunk_good_preserved_when_only_other_segment_pages_change(
+        &self,
+        old_local: Local,
+        segment_id: SegmentId,
+        changed_segment_id: SegmentId,
+    )
+        requires
+            old_local.mem_chunk_good(segment_id),
+            segment_id != changed_segment_id,
+            self.segments.dom().contains(segment_id),
+            self.segments[segment_id].mem == old_local.segments[segment_id].mem,
+            self.commit_mask(segment_id) == old_local.commit_mask(segment_id),
+            self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid) ==>
+                self.page_organization.pages.dom().contains(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                pid.segment_id == changed_segment_id || old_local.page_organization.pages.dom().contains(pid),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) ==> self.page_count(pid) == old_local.page_count(pid),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) ==> self.page_capacity(pid) == old_local.page_capacity(pid),
+            forall |pid: PageId| #[trigger] old_local.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) ==> self.block_size(pid) == old_local.block_size(pid),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        assert(self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id)) by {
+            reveal(Local::segment_pages_range_total);
+            assert forall |addr: int| #[trigger] self.segment_pages_range_total(segment_id).contains(addr) implies
+                old_local.segment_pages_range_total(segment_id).contains(addr) by {
+                let r = choose |r: Set<int>| self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid)).contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid) && r == self.segment_page_range(segment_id, pid);
+                reveal(Local::segment_page_range);
+                if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                    assert(pid.segment_id != changed_segment_id);
+                    assert(old_local.page_organization.pages.dom().contains(pid));
+                    assert(old_local.is_used_primary(pid));
+                    assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                    assert(self.block_size(pid) == old_local.block_size(pid));
+                    assert(r =~= old_local.segment_page_range(segment_id, pid));
+                    assert(old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid)).contains(old_local.segment_page_range(segment_id, pid)));
+                    assert(old_local.segment_page_range(segment_id, pid).contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+            assert forall |addr: int| #[trigger] old_local.segment_pages_range_total(segment_id).contains(addr) implies
+                self.segment_pages_range_total(segment_id).contains(addr) by {
+                let r = choose |r: Set<int>| old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid)).contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid) && r == old_local.segment_page_range(segment_id, pid);
+                reveal(Local::segment_page_range);
+                if pid.segment_id == segment_id && old_local.is_used_primary(pid) {
+                    assert(self.page_organization.pages.dom().contains(pid));
+                    assert(self.is_used_primary(pid));
+                    assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                    assert(self.block_size(pid) == old_local.block_size(pid));
+                    assert(r =~= self.segment_page_range(segment_id, pid));
+                    assert(self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid)).contains(self.segment_page_range(segment_id, pid)));
+                    assert(self.segment_page_range(segment_id, pid).contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+        }
+        assert(self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id)) by {
+            reveal(Local::segment_pages_used_total);
+            assert forall |addr: int| #[trigger] self.segment_pages_used_total(segment_id).contains(addr) implies
+                old_local.segment_pages_used_total(segment_id).contains(addr) by {
+                let r = choose |r: Set<int>| self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid)).contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid) && r == self.segment_page_used(segment_id, pid);
+                reveal(Local::segment_page_used);
+                if pid.segment_id == segment_id && self.is_used_primary(pid) {
+                    assert(pid.segment_id != changed_segment_id);
+                    assert(old_local.page_organization.pages.dom().contains(pid));
+                    assert(old_local.is_used_primary(pid));
+                    assert(self.page_count(pid) == old_local.page_count(pid));
+                    assert(r =~= old_local.segment_page_used(segment_id, pid));
+                    assert(old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid)).contains(old_local.segment_page_used(segment_id, pid)));
+                    assert(old_local.segment_page_used(segment_id, pid).contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+            assert forall |addr: int| #[trigger] old_local.segment_pages_used_total(segment_id).contains(addr) implies
+                self.segment_pages_used_total(segment_id).contains(addr) by {
+                let r = choose |r: Set<int>| old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid)).contains(r) && r.contains(addr);
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid) && r == old_local.segment_page_used(segment_id, pid);
+                reveal(Local::segment_page_used);
+                if pid.segment_id == segment_id && old_local.is_used_primary(pid) {
+                    assert(self.page_organization.pages.dom().contains(pid));
+                    assert(self.is_used_primary(pid));
+                    assert(self.page_count(pid) == old_local.page_count(pid));
+                    assert(r =~= self.segment_page_used(segment_id, pid));
+                    assert(self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid)).contains(self.segment_page_used(segment_id, pid)));
+                    assert(self.segment_page_used(segment_id, pid).contains(addr));
+                } else {
+                    assert(r =~= Set::<int>::empty());
+                    assert(false);
+                }
+            };
+        }
+        self.mem_chunk_good_preserved_by_page_totals(old_local, segment_id);
+    }
+
+    pub proof fn used_page_fields_preserved_mem_chunk_good(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments == old_local.segments,
+            self.page_organization.pages.dom() == old_local.page_organization.pages.dom(),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) ==> self.page_count(pid) == old_local.page_count(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) ==> self.page_capacity(pid) == old_local.page_capacity(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) ==> self.block_size(pid) == old_local.block_size(pid),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        assert(self.segments.dom().contains(segment_id));
+        assert(self.commit_mask(segment_id) == old_local.commit_mask(segment_id));
+        assert(self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id));
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_range(segment_id, pid) =~= old_local.segment_page_range(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            if self.is_used_primary(pid) {
+                assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                assert(self.block_size(pid) == old_local.block_size(pid));
+            }
+        };
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_used(segment_id, pid) =~= old_local.segment_page_used(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            if self.is_used_primary(pid) {
+                assert(self.page_count(pid) == old_local.page_count(pid));
+            }
+        };
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+        assert(range_map =~= old_range_map) by {
+            assert forall |r: Set<int>| #[trigger] range_map.contains(r) implies old_range_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_range(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_range(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_range_map.contains(r) implies range_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_range(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_range(segment_id, pid));
+            };
+        };
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+        assert(used_map =~= old_used_map) by {
+            assert forall |r: Set<int>| #[trigger] used_map.contains(r) implies old_used_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_used(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_used_map.contains(r) implies used_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_used(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_used(segment_id, pid));
+            };
+        };
+        assert(self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id));
+        assert(self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    pub proof fn segment_metadata_update_preserves_mem_chunk_good(&self, old_local: Local, segment_id: SegmentId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments.dom() == old_local.segments.dom(),
+            self.segments[segment_id].mem == old_local.segments[segment_id].mem,
+            self.commit_mask(segment_id) == old_local.commit_mask(segment_id),
+            self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id),
+            self.page_organization.pages.dom() == old_local.page_organization.pages.dom(),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.is_used_primary(pid) == old_local.is_used_primary(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_count(pid) == old_local.page_count(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.page_capacity(pid) == old_local.page_capacity(pid),
+            forall |pid: PageId| #[trigger] self.page_organization.pages.dom().contains(pid) ==>
+                self.block_size(pid) == old_local.block_size(pid),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        assert(self.segments.dom().contains(segment_id));
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_range(segment_id, pid) =~= old_local.segment_page_range(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+            assert(self.block_size(pid) == old_local.block_size(pid));
+        };
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_used(segment_id, pid) =~= old_local.segment_page_used(segment_id, pid) by {
+            assert(self.is_used_primary(pid) == old_local.is_used_primary(pid));
+            assert(self.page_count(pid) == old_local.page_count(pid));
+        };
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+        assert(range_map =~= old_range_map) by {
+            assert forall |r: Set<int>| #[trigger] range_map.contains(r) implies old_range_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_range(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_range(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_range_map.contains(r) implies range_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_range(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_range(segment_id, pid));
+            };
+        };
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+        assert(used_map =~= old_used_map) by {
+            assert forall |r: Set<int>| #[trigger] used_map.contains(r) implies old_used_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_used(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_used_map.contains(r) implies used_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_used(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_used(segment_id, pid));
+            };
+        };
+        assert(self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id));
+        assert(self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id));
+        assert(self.mem_chunk_good(segment_id));
+    }
+
+    pub proof fn page_inner_update_preserves_mem_chunk_good(&self, old_local: Local, segment_id: SegmentId, page_id: PageId)
+        requires
+            old_local.mem_chunk_good(segment_id),
+            self.segments == old_local.segments,
+            self.page_organization == old_local.page_organization,
+            self.pages.dom() == old_local.pages.dom(),
+            forall |pid: PageId| self.page_organization.pages.dom().contains(pid) && pid != page_id ==>
+                self.pages[pid] == old_local.pages[pid],
+            self.page_count(page_id) == old_local.page_count(page_id),
+            self.page_capacity(page_id) == old_local.page_capacity(page_id),
+            self.block_size(page_id) == old_local.block_size(page_id),
+        ensures
+            self.mem_chunk_good(segment_id),
+    {
+        assert(self.segments.dom().contains(segment_id));
+        assert(self.commit_mask(segment_id) == old_local.commit_mask(segment_id));
+        assert(self.decommit_mask(segment_id) == old_local.decommit_mask(segment_id));
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.is_used_primary(pid) == old_local.is_used_primary(pid) by {
+            assert(self.page_organization == old_local.page_organization);
+        };
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_range(segment_id, pid) =~= old_local.segment_page_range(segment_id, pid) by {
+            if pid == page_id {
+                assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                assert(self.block_size(pid) == old_local.block_size(pid));
+            } else {
+                assert(self.pages[pid] == old_local.pages[pid]);
+                assert(self.page_capacity(pid) == old_local.page_capacity(pid));
+                assert(self.block_size(pid) == old_local.block_size(pid));
+            }
+        };
+        assert forall |pid: PageId| self.page_organization.pages.dom().contains(pid) implies
+            self.segment_page_used(segment_id, pid) =~= old_local.segment_page_used(segment_id, pid) by {
+            if pid == page_id {
+                assert(self.page_count(pid) == old_local.page_count(pid));
+            } else {
+                assert(self.pages[pid] == old_local.pages[pid]);
+                assert(self.page_count(pid) == old_local.page_count(pid));
+            }
+        };
+        let range_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_range(segment_id, pid));
+        let old_range_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_range(segment_id, pid));
+        assert(range_map =~= old_range_map) by {
+            assert forall |r: Set<int>| #[trigger] range_map.contains(r) implies old_range_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_range(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_range(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_range_map.contains(r) implies range_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_range(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_range(segment_id, pid));
+            };
+        };
+        let used_map = self.page_organization.pages.dom().map(|pid: PageId| self.segment_page_used(segment_id, pid));
+        let old_used_map = old_local.page_organization.pages.dom().map(|pid: PageId| old_local.segment_page_used(segment_id, pid));
+        assert(used_map =~= old_used_map) by {
+            assert forall |r: Set<int>| #[trigger] used_map.contains(r) implies old_used_map.contains(r) by {
+                let pid = choose |pid: PageId| self.page_organization.pages.dom().contains(pid)
+                    && r == self.segment_page_used(segment_id, pid);
+                assert(old_local.page_organization.pages.dom().contains(pid));
+                assert(r =~= old_local.segment_page_used(segment_id, pid));
+            };
+            assert forall |r: Set<int>| #[trigger] old_used_map.contains(r) implies used_map.contains(r) by {
+                let pid = choose |pid: PageId| old_local.page_organization.pages.dom().contains(pid)
+                    && r == old_local.segment_page_used(segment_id, pid);
+                assert(self.page_organization.pages.dom().contains(pid));
+                assert(r =~= self.segment_page_used(segment_id, pid));
+            };
+        };
+        assert(self.segment_pages_range_total(segment_id) =~= old_local.segment_pages_range_total(segment_id));
+        assert(self.segment_pages_used_total(segment_id) =~= old_local.segment_pages_used_total(segment_id));
+        assert(self.mem_chunk_good(segment_id));
     }
 }
 

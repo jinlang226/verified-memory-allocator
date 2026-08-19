@@ -1,0 +1,47 @@
+### make verify tail
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:991:9
+    |
+991 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+verification results:: 1384 verified, 0 errors
+warning: 281 warnings emitted
+
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:           72614 ms    (estimated total cpu time 314255 ms)
+    rust-time:               12476 ms
+        init-and-types:           8467 ms
+        trait-conflicts:            87 ms
+        compile-time:             3922 ms
+    verification-time:       58468 ms
+        vir-time:                 7314 ms
+            hir-time:                  909 ms
+            import-time:               205 ms
+            rust-to-vir:              1563 ms
+        verify-crate-time:       51154 ms
+    unaccounted-time:         1669 ms
+
+verify-crate-time-breakdown
+    total verify-time:         292255 ms   (63 threads)
+        total air-time:             79837 ms   (63 threads)
+        total smt-time:            155881 ms   (63 threads)
+            total smt-init:                40 ms,   541385 rlimit (63 threads)
+            total smt-run:             155841 ms, 682374219 rlimit (63 threads)
+### direct trust counts
+page_organization external_body=0
+crate external_body=36
+crate assume(false)=3
+crate admit=0
+crate uninterp=2

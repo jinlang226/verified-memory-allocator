@@ -1,0 +1,476 @@
+## segment_commitx (full): MISMATCH
+
+--- source
++++ verus
+@@ -5,15 +5,141 @@
+     size: usize,
+     Tracked(local): Tracked<&mut Local>,
+ ) -> (success: bool)
++    requires
++        commit ==> local.wf_main(),
++        !commit ==> local.wf_main(),
++        !commit ==> local.wf_main_for_page_access(),
++        !commit ==> size <= SEGMENT_SIZE as usize,
++        !commit && size != 0 ==> p as int % COMMIT_SIZE as int == 0,
++        !commit && size != 0 ==> size as int % COMMIT_SIZE as int == 0,
++        !commit && size != 0 ==> p as int + size as int <= segment.segment_ptr as int + SEGMENT_SIZE as int,
++        !commit && size != 0 ==> forall |j: int|
++            (p as int - segment.segment_ptr as int) / COMMIT_SIZE as int <= j
++                < (p as int - segment.segment_ptr as int + size as int) / COMMIT_SIZE as int ==>
++                    local.decommit_mask(segment.segment_id@)@.contains(j),
++        segment.wf(),
++        segment.is_in(*local),
++        size != 0 && size <= SEGMENT_SIZE as usize ==> segment.segment_ptr.addr() <= p,
++    ensures
++        common_preserves(*old(local), *final(local)),
++        !commit ==> final(local).wf_main(),
++        !commit ==> final(local).wf_main_for_page_access(),
++        !commit ==> segment.is_in(*final(local)),
++        !commit ==> final(local).page_organization == old(local).page_organization,
++        !commit ==> final(local).pages == old(local).pages,
++        !commit ==> final(local).psa == old(local).psa,
+ {
+     let ghost sid = segment.segment_id@;
++    let ghost local_snap = *local;
+ 
+     let mut mask: CommitMask = CommitMask::empty();
++    proof {
++        assert(mask.concrete_empty());
++        assert((segment.segment_ptr as int) + (SEGMENT_SIZE as int) < (usize::MAX as int));
++        assert((segment.segment_ptr.addr() as int) + (SEGMENT_SIZE as int) <= (usize::MAX as int));
++            lemma_segment_start_page_aligned(segment.segment_id@);
++            assert(segment.segment_ptr as int == segment_start(segment.segment_id@));
++            assert(segment.segment_ptr as int % page_size() == 0);
++            assert(SEGMENT_SIZE as int % page_size() == 0) by(compute_only);
++            lemma_page_aligned_end_fits(segment.segment_ptr as int, SEGMENT_SIZE as int);
++            assert(segment.segment_ptr.addr() as int + SEGMENT_SIZE as int + page_size() - 1 <= usize::MAX as int);
++    }
+     let (start, full_size) = segment_commit_mask(
+         segment.segment_ptr as *mut u8, !commit, p, size, &mut mask);
+ 
+     if mask.is_empty() || full_size == 0 {
+         return true;
++    }
++
++    proof {
++        if !commit {
++            lemma_segment_commit_mask_constants();
++            lemma_segment_start_basics(sid);
++            assert(segment.segment_ptr as int == segment_start(sid));
++            assert(segment.segment_ptr as int % SEGMENT_SIZE as int == 0);
++            lemma_fundamental_div_mod(segment.segment_ptr as int, SEGMENT_SIZE as int);
++            assert(segment.segment_ptr as int == SEGMENT_SIZE as int * ((segment.segment_ptr as int) / SEGMENT_SIZE as int));
++            assert(segment.segment_ptr as int == COMMIT_SIZE as int * (COMMIT_MASK_BITS as int * ((segment.segment_ptr as int) / SEGMENT_SIZE as int))) by(nonlinear_arith)
++                requires
++                    segment.segment_ptr as int == SEGMENT_SIZE as int * ((segment.segment_ptr as int) / SEGMENT_SIZE as int),
++                    SEGMENT_SIZE as int == COMMIT_MASK_BITS as int * COMMIT_SIZE as int;
++            lemma_mod_multiples_basic(COMMIT_MASK_BITS as int * ((segment.segment_ptr as int) / SEGMENT_SIZE as int), COMMIT_SIZE as int);
++            assert(segment.segment_ptr as int % COMMIT_SIZE as int == 0);
++            assert(size != 0);
++            assert(size <= SEGMENT_SIZE as usize);
++            assert(segment.segment_ptr.addr() <= p);
++            assert(segment.segment_ptr.addr() as int <= p as int);
++            assert(segment.segment_ptr.addr() as int == segment.segment_ptr as int);
++            assert(p as int + size as int <= segment.segment_ptr as int + SEGMENT_SIZE as int);
++            assert(start.addr() == p);
++            assert(full_size == size);
++            assert(start as int == p as int);
++            let lo = (p as int - segment.segment_ptr as int) / COMMIT_SIZE as int;
++            let hi = (p as int - segment.segment_ptr as int + size as int) / COMMIT_SIZE as int;
++            let rel = p as int - segment.segment_ptr as int;
++            let d = COMMIT_SIZE as int;
++            assert(mask@ =~= Set::range(lo, hi));
++            assert(rel >= 0) by(nonlinear_arith)
++                requires
++                    segment.segment_ptr.addr() as int <= p as int,
++                    segment.segment_ptr.addr() as int == segment.segment_ptr as int,
++                    rel == p as int - segment.segment_ptr as int;
++            lemma_fundamental_div_mod(p as int, d);
++            lemma_fundamental_div_mod(segment.segment_ptr as int, d);
++            assert(p as int == d * (p as int / d));
++            assert(segment.segment_ptr as int == d * (segment.segment_ptr as int / d));
++            assert(rel == d * ((p as int / d) - (segment.segment_ptr as int / d))) by(nonlinear_arith)
++                requires
++                    rel == p as int - segment.segment_ptr as int,
++                    p as int == d * (p as int / d),
++                    segment.segment_ptr as int == d * (segment.segment_ptr as int / d);
++            lemma_mod_multiples_basic((p as int / d) - (segment.segment_ptr as int / d), d);
++            assert(rel % d == 0);
++            lemma_div_pos_is_pos(rel, d);
++            assert(0 <= lo);
++            assert(size as int % d == 0);
++            assert(rel + size as int >= rel) by(nonlinear_arith);
++            lemma_div_is_ordered(rel, rel + size as int, d);
++            assert(lo <= hi);
++            assert(rel + size as int <= SEGMENT_SIZE as int) by(nonlinear_arith)
++                requires
++                    p as int + size as int <= segment.segment_ptr as int + SEGMENT_SIZE as int,
++                    rel == p as int - segment.segment_ptr as int;
++            lemma_div_is_ordered(rel + size as int, SEGMENT_SIZE as int, d);
++            lemma_div_multiples_vanish(COMMIT_MASK_BITS as int, d);
++            assert(SEGMENT_SIZE as int == d * COMMIT_MASK_BITS as int) by(nonlinear_arith)
++                requires SEGMENT_SIZE as int == COMMIT_MASK_BITS as int * COMMIT_SIZE as int,
++                    d == COMMIT_SIZE as int;
++            assert(SEGMENT_SIZE as int / d == COMMIT_MASK_BITS as int);
++            assert(hi <= COMMIT_MASK_BITS as int);
++            lemma_fundamental_div_mod(rel, d);
++            assert(rel == d * lo);
++            lemma_add_mod_noop(rel, size as int, d);
++            assert((rel + size as int) % d == 0);
++            lemma_fundamental_div_mod(rel + size as int, d);
++            assert(rel + size as int == d * hi);
++            mask.lemma_bytes_range(sid, lo, hi);
++            assert(segment_start(sid) + lo * d == start as int) by(nonlinear_arith)
++                requires
++                    segment.segment_ptr as int == segment_start(sid),
++                    rel == p as int - segment.segment_ptr as int,
++                    rel == d * lo,
++                    start as int == p as int;
++            assert(segment_start(sid) + hi * d == start as int + full_size as int) by(nonlinear_arith)
++                requires
++                    segment.segment_ptr as int == segment_start(sid),
++                    rel == p as int - segment.segment_ptr as int,
++                    rel + size as int == d * hi,
++                    start as int == p as int,
++                    full_size == size;
++            assert(mask.bytes(sid) =~= set_int_range(start as int, start as int + full_size as int));
++            assert(mask@ <= local_snap.decommit_mask(sid)@) by {
++                assert forall |j: int| #[trigger] mask@.contains(j) implies
++                    local_snap.decommit_mask(sid)@.contains(j) by {
++                    assert(lo <= j < hi);
++                }
++            }
++        }
+     }
+ 
+     if commit && !segment.get_commit_mask(Tracked(&*local)).all_set(&mask) {
+@@ -22,6 +148,25 @@
+         let mut cmask = CommitMask::empty();
+         segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
+ 
++        proof {
++            assert(local.mem_chunk_good(sid));
++            assert(local.segments[sid].mem.wf());
++            assert(local.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++            assert(local.segments[sid].mem.points_to.provenance() == sid.provenance);
++            assert(start@.provenance == segment.segment_ptr@.provenance);
++            assert(segment.segment_ptr@.provenance == sid.provenance);
++            assert(start@.provenance == local.segments[sid].mem.points_to.provenance());
++            assert(segment.segment_ptr as int == segment_start(sid));
++            assert(start as int + full_size as int <= segment.segment_ptr as int + SEGMENT_SIZE as int);
++            lemma_os_exact_range_contains_subrange(
++                local.segments[sid].mem,
++                segment_start(sid),
++                SEGMENT_SIZE as int,
++                start as int,
++                full_size as int,
++            );
++            assert(local.segments[sid].mem.os_has_range(start as int, full_size as int));
++        }
+         let success;
+         segment_get_mut_local!(segment, local, l => {
+             let (_success, _is_zero) =
+@@ -39,14 +184,100 @@
+     else if !commit && segment.get_commit_mask(Tracked(&*local)).any_set(&mask) {
+         let mut cmask = CommitMask::empty();
+         segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
++        let ghost local_before_os_decommit = *local;
+         if segment.get_allow_decommit(Tracked(&*local)) {
++            proof {
++                assert(local.mem_chunk_good(sid));
++                assert(local.segments[sid].mem.wf());
++                assert(local.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++                assert(local.segments[sid].mem.points_to.provenance() == sid.provenance);
++                assert(start@.provenance == segment.segment_ptr@.provenance);
++                assert(segment.segment_ptr@.provenance == sid.provenance);
++                assert(start@.provenance == local.segments[sid].mem.points_to.provenance());
++                assert(segment.segment_ptr as int == segment_start(sid));
++                assert(start as int + full_size as int <= segment.segment_ptr as int + SEGMENT_SIZE as int);
++                lemma_os_exact_range_contains_subrange(
++                    local.segments[sid].mem,
++                    segment_start(sid),
++                    SEGMENT_SIZE as int,
++                    start as int,
++                    full_size as int,
++                );
++                assert(local.segments[sid].mem.os_has_range(start as int, full_size as int));
++            }
+             segment_get_mut_local!(segment, local, l => {
+                 crate::os_commit::os_decommit(start, full_size, Tracked(&mut l.mem));
+             });
++            proof {
++                assert(local.segments[sid].mem.wf());
++                assert(local.segments[sid].mem.range_os() =~= local_before_os_decommit.segments[sid].mem.range_os());
++                assert(local_before_os_decommit.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++                assert(local.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++                assert(local.segments[sid].mem.points_to.provenance() == sid.provenance);
++                assert(mask.bytes(sid) =~= set_int_range(start as int, start as int + full_size as int));
++                assert(local.segments[sid].mem.os_rw_bytes() =~=
++                    local_before_os_decommit.segments[sid].mem.os_rw_bytes() - mask.bytes(sid));
++                assert((local_before_os_decommit.segments[sid].mem.os_rw_bytes() - mask.bytes(sid))
++                    <= local.segments[sid].mem.os_rw_bytes());
++            }
++        } else {
++            proof {
++                assert(local.segments[sid].mem == local_before_os_decommit.segments[sid].mem);
++                assert(local.segments[sid].mem.wf());
++                assert(local.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++                assert(local.segments[sid].mem.points_to.provenance() == sid.provenance);
++                assert((local_before_os_decommit.segments[sid].mem.os_rw_bytes() - mask.bytes(sid))
++                    <= local.segments[sid].mem.os_rw_bytes());
++            }
++        }
++        proof {
++            assert((local_before_os_decommit.segments[sid].mem.os_rw_bytes() - mask.bytes(sid))
++                <= local.segments[sid].mem.os_rw_bytes());
++        }
++        let ghost local_before_commit_mask_clear = *local;
++        proof {
++            assert(local_before_commit_mask_clear.segments[sid].mem.wf());
++            assert(local_before_commit_mask_clear.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++            assert(local_before_commit_mask_clear.segments[sid].mem.points_to.provenance() == sid.provenance);
+         }
+         segment_get_mut_main!(segment, local, main => {
+             main.commit_mask.clear(&mask);
+         });
++        proof {
++            assert(local.segments[sid].mem == local_before_commit_mask_clear.segments[sid].mem);
++            assert(local.segments[sid].mem.wf());
++            assert(local.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++            assert(local.segments[sid].mem.points_to.provenance() == sid.provenance);
++            let old_commit = local_snap.commit_mask(sid);
++            let final_commit = local.commit_mask(sid);
++            assert(local_before_os_decommit.commit_mask(sid) == old_commit);
++            assert(local_before_commit_mask_clear.commit_mask(sid) == old_commit);
++            assert(final_commit@ =~= old_commit@ - mask@);
++            assert(final_commit@ <= old_commit@);
++            final_commit.lemma_bytes_subset(&old_commit, sid);
++            assert(final_commit@.disjoint(mask@));
++            final_commit.lemma_bytes_disjoint(&mask, sid);
++            assert(local_snap.mem_chunk_good(sid));
++            assert(old_commit.bytes(sid).subset_of(local_snap.segments[sid].mem.os_rw_bytes()));
++            assert((local_snap.segments[sid].mem.os_rw_bytes() - mask.bytes(sid))
++                <= local.segments[sid].mem.os_rw_bytes());
++            assert forall |addr: int| #[trigger] final_commit.bytes(sid).contains(addr) implies
++                local.segments[sid].mem.os_rw_bytes().contains(addr) by {
++                assert(old_commit.bytes(sid).contains(addr));
++                assert(local_snap.segments[sid].mem.os_rw_bytes().contains(addr));
++                if mask.bytes(sid).contains(addr) {
++                    assert(false);
++                }
++                assert((local_snap.segments[sid].mem.os_rw_bytes() - mask.bytes(sid)).contains(addr));
++            }
++            assert(local.commit_mask(sid).bytes(sid).subset_of(local.segments[sid].mem.os_rw_bytes()));
++        }
++    }
++
++    proof {
++        if !commit {
++            assert(local.commit_mask(sid).bytes(sid).subset_of(local.segments[sid].mem.os_rw_bytes()));
++        }
+     }
+ 
+     if commit && segment.get_main_ref(Tracked(&*local)).decommit_mask.any_set(&mask) {
+@@ -55,10 +286,202 @@
+         });
+     }
+ 
++    let ghost local_before_decommit_mask_clear = *local;
+     segment_get_mut_main!(segment, local, main => {
+         main.decommit_mask.clear(&mask);
+     });
+ 
++    proof {
++        if !commit {
++            assert(local_snap.wf_main_for_page_access());
++            assert(local.segments.dom() == local_snap.segments.dom());
++            assert(local.segments.dom().contains(sid));
++            assert(segment.is_in(*local));
++            assert(is_tld_ptr(local.tld.ptr(), local.tld_id));
++            assert(local.thread_token.instance_id() == local.instance.id());
++            assert(local.thread_token.key() == local.thread_id);
++            assert(local.thread_id == local.is_thread@);
++            assert(local.checked_token.instance_id() == local.instance.id());
++            assert(local.checked_token.key() == local.thread_id);
++            assert(local.my_inst.instance_id() == local.instance.id());
++            assert(local.my_inst.value() == local.instance.id());
++            assert(local.thread_token.value().segments.dom() == local.segments.dom());
++            assert(local.thread_token.value().heap_id == local.heap_id);
++            assert(local.heap.wf(local.heap_id, local.thread_token.value().heap, local.tld_id, local.instance.id(), local.page_empty_global@.s.points_to.ptr()));
++            assert forall |page_id: PageId| #[trigger] local.pages.dom().contains(page_id) implies
++                (local.unused_pages.dom().contains(page_id) <==> !local.thread_token.value().pages.dom().contains(page_id))
++            by { }
++            assert(local.thread_token.value().pages.dom().subset_of(local.pages.dom()));
++            assert forall |page_id: PageId| #[trigger] local.pages.dom().contains(page_id) implies
++                local.thread_token.value().pages.dom().contains(page_id) ==>
++                    local.pages.index(page_id).wf(
++                        page_id,
++                        local.thread_token.value().pages.index(page_id),
++                        local.instance,
++                    )
++            by { }
++            assert forall |page_id: PageId| #[trigger] local.pages.dom().contains(page_id) implies
++                local.unused_pages.dom().contains(page_id) ==>
++                    local.pages.index(page_id).wf_unused(page_id, local.unused_pages[page_id], local.page_organization.popped, local.instance)
++            by { }
++            assert forall |segment_id: SegmentId| #[trigger] local.segments.dom().contains(segment_id) implies
++                local.segments[segment_id].wf(
++                    segment_id,
++                    local.thread_token.value().segments.index(segment_id),
++                    local.instance,
++                )
++            by {
++                if segment_id != sid {
++                    assert(local.segments[segment_id] == local_snap.segments[segment_id]);
++                } else {
++                    assert(local.segments[segment_id].main.id() == local_snap.segments[segment_id].main.id());
++                    assert(local.segments[segment_id].main2.id() == local_snap.segments[segment_id].main2.id());
++                    assert(local.thread_token.value().segments.index(segment_id).shared_access == local_snap.thread_token.value().segments.index(segment_id).shared_access);
++                }
++            }
++            assert(local.tld.is_init());
++            assert(local.page_organization.invariant());
++            assert(page_organization_queues_match(local.page_organization.unused_dlist_headers,
++                    local.tld.value().segments.span_queue_headers@));
++            assert(page_organization_used_queues_match(local.page_organization.used_dlist_headers,
++                    local.heap.pages.value()@));
++            assert(page_organization_pages_match(local.page_organization.pages,
++                    local.pages, local.psa, local.page_organization.popped));
++            assert(page_organization_segments_match(local.page_organization.segments, local.segments));
++            assert forall |page_id: PageId| #[trigger] local.page_organization.pages.dom().contains(page_id) implies
++                (!local.page_organization.pages[page_id].is_used <==> local.unused_pages.dom().contains(page_id))
++            by { }
++            assert forall |page_id: PageId| #[trigger] local.page_organization.pages.dom().contains(page_id) implies
++                local.page_organization.pages[page_id].is_used ==>
++                    page_organization_matches_token_page(
++                        local.page_organization.pages[page_id],
++                        local.thread_token.value().pages[page_id])
++            by { }
++            assert forall |page_id: PageId| (#[trigger] local.unused_pages.dom().contains(page_id)) implies
++                local.page_organization.pages.dom().contains(page_id)
++            by { }
++            assert forall |page_id: PageId| #[trigger] local.unused_pages.dom().contains(page_id) implies
++                local.unused_pages[page_id] == local.psa[page_id]
++            by { }
++            assert forall |page_id: PageId| #[trigger] local.thread_token.value().pages.dom().contains(page_id) implies
++                local.thread_token.value().pages[page_id].shared_access == local.psa[page_id]
++            by { }
++            assert(local.page_organization_valid());
++            assert(local.page_empty_global@.wf_empty_page_global());
++            assert(local.wf_main_for_page_access());
++            assert forall |segment_id: SegmentId| #[trigger] local.segments.dom().contains(segment_id) implies
++                local.mem_chunk_good(segment_id)
++            by {
++                if segment_id != sid {
++                    assert(local.segments.dom() == local_snap.segments.dom());
++                    assert(local.segments[segment_id] == local_snap.segments[segment_id]);
++                    assert(local.segments[segment_id].mem == local_snap.segments[segment_id].mem);
++                    assert(local.commit_mask(segment_id) == local_snap.commit_mask(segment_id));
++                    assert(local.decommit_mask(segment_id) == local_snap.decommit_mask(segment_id));
++                    assert(local.page_organization.pages.dom() == local_snap.page_organization.pages.dom());
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.is_used_primary(pid) == local_snap.is_used_primary(pid) by {
++                        assert(local.page_organization == local_snap.page_organization);
++                    }
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.page_count(pid) == local_snap.page_count(pid) by {
++                        assert(local.pages == local_snap.pages);
++                    }
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.page_capacity(pid) == local_snap.page_capacity(pid) by {
++                        assert(local.pages == local_snap.pages);
++                    }
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.block_size(pid) == local_snap.block_size(pid) by {
++                        assert(local.pages == local_snap.pages);
++                    }
++                    local.segment_metadata_update_preserves_mem_chunk_good(local_snap, segment_id);
++                } else {
++                    assert(segment_id == sid);
++                    assert(local.segments.dom().contains(sid));
++                    assert(local_snap.mem_chunk_good(sid));
++                    assert(local.segments[sid].mem == local_before_decommit_mask_clear.segments[sid].mem);
++                    assert(local_before_decommit_mask_clear.segments[sid].mem.wf());
++                    assert(local_before_decommit_mask_clear.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++                    assert(local_before_decommit_mask_clear.segments[sid].mem.points_to.provenance() == sid.provenance);
++                    assert(local.segments[sid].mem.wf());
++                    assert(local.segments[sid].mem.os_exact_range(segment_start(sid), SEGMENT_SIZE as int));
++                    assert(local.segments[sid].mem.points_to.provenance() == sid.provenance);
++                    assert(local.commit_mask(sid).bytes(sid).subset_of(local.segments[sid].mem.os_rw_bytes()));
++                    let old_commit = local_snap.commit_mask(sid);
++                    let old_decommit = local_snap.decommit_mask(sid);
++                    let final_commit = local.commit_mask(sid);
++                    let final_decommit = local.decommit_mask(sid);
++                    assert(old_decommit.bytes(sid) <= old_commit.bytes(sid));
++                    old_decommit.lemma_view_subset_from_bytes_subset(&old_commit, sid);
++                    assert(mask@ <= old_decommit@);
++                    mask.lemma_bytes_subset(&old_decommit, sid);
++                    assert(local_before_decommit_mask_clear.decommit_mask(sid) == old_decommit);
++                    assert(final_decommit@ =~= old_decommit@ - mask@);
++                    assert(final_decommit@ <= old_decommit@);
++                    final_decommit.lemma_bytes_subset(&old_decommit, sid);
++                    assert((old_commit@ - mask@) <= final_commit@);
++                    assert(final_decommit@ <= final_commit@) by {
++                        assert forall |bit: int| #[trigger] final_decommit@.contains(bit) implies
++                            final_commit@.contains(bit) by {
++                            assert(old_decommit@.contains(bit));
++                            assert(!mask@.contains(bit));
++                            assert(old_commit@.contains(bit));
++                            assert((old_commit@ - mask@).contains(bit));
++                        }
++                    }
++                    final_decommit.lemma_bytes_subset(&final_commit, sid);
++                    assert((old_commit.bytes(sid) - old_decommit.bytes(sid))
++                        <= (final_commit.bytes(sid) - final_decommit.bytes(sid))) by {
++                        assert forall |addr: int| #[trigger] (old_commit.bytes(sid) - old_decommit.bytes(sid)).contains(addr) implies
++                            (final_commit.bytes(sid) - final_decommit.bytes(sid)).contains(addr) by {
++                            old_commit.lemma_bytes_contains(sid, addr);
++                            old_decommit.lemma_bytes_contains(sid, addr);
++                            final_decommit.lemma_bytes_contains(sid, addr);
++                            let bit = commit_mask_byte_bit(sid, addr);
++                            assert(old_commit@.contains(bit));
++                            assert(!old_decommit.bytes(sid).contains(addr));
++                            if final_decommit.bytes(sid).contains(addr) {
++                                assert(old_decommit.bytes(sid).contains(addr));
++                                assert(false);
++                            }
++                            if mask@.contains(bit) {
++                                mask.lemma_bytes_contains(sid, addr);
++                                assert(mask.bytes(sid).contains(addr));
++                                assert(old_decommit.bytes(sid).contains(addr));
++                                assert(false);
++                            }
++                            assert((old_commit@ - mask@).contains(bit));
++                            assert(final_commit@.contains(bit));
++                            final_commit.lemma_bytes_contains(sid, addr);
++                            assert(final_commit.bytes(sid).contains(addr));
++                        }
++                    }
++                    assert(local.decommit_mask(sid).bytes(sid) <= local.commit_mask(sid).bytes(sid));
++                    assert(segment_info_range(sid) <= local.commit_mask(sid).bytes(sid) - local.decommit_mask(sid).bytes(sid));
++                    assert(local.page_organization == local_snap.page_organization);
++                    assert(local.pages == local_snap.pages);
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.is_used_primary(pid) == local_snap.is_used_primary(pid) by { }
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.page_count(pid) == local_snap.page_count(pid) by { }
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.page_capacity(pid) == local_snap.page_capacity(pid) by { }
++                    assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
++                        local.block_size(pid) == local_snap.block_size(pid) by { }
++                    local.segment_page_totals_preserved(local_snap, sid);
++                    assert(local_snap.segment_pages_used_total(sid) <= old_commit.bytes(sid) - old_decommit.bytes(sid));
++                    assert(local.segment_pages_used_total(sid) <= local.commit_mask(sid).bytes(sid) - local.decommit_mask(sid).bytes(sid));
++                    assert(local.segments[sid].mem.os_rw_bytes() <=
++                        local.segments[sid].mem.points_to.dom()
++                            + segment_info_range(sid)
++                            + local.segment_pages_range_total(sid));
++                    assert(local.mem_chunk_good(segment_id));
++                }
++            }
++            assert(local.wf_main());
++        }
++    }
+ 
+     return true;
+ }

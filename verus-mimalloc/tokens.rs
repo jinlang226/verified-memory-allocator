@@ -458,6 +458,7 @@ tokenized_state_machine!{ Mim {
             assert ts.pages.dom().contains(page_id);
             assert ts.pages[page_id].block_size == block_id.block_size;
             assert ts.pages[page_id].offset == 0;
+            assert block_id.idx < ts.pages[page_id].num_blocks;
         }
     }
 
@@ -686,7 +687,7 @@ tokenized_state_machine!{ Mim {
         }
     }
 
-    pub closed spec fn mk_fresh_segment_id(tos: Map<SegmentId, ThreadId>, sid: SegmentId) -> SegmentId {
+    pub open spec fn mk_fresh_segment_id(tos: Map<SegmentId, ThreadId>, sid: SegmentId) -> SegmentId {
         let uniq = segment_get_unused_uniq_field(tos.dom());
         SegmentId { id: sid.id, provenance: sid.provenance, uniq: uniq }
     }
@@ -1040,6 +1041,19 @@ tokenized_state_machine!{ Mim {
             have heap_of_page >= [ page_id => let heap_id ];
             require ts.pages.dom().contains(page_id);
             assert(ts.heap_id == heap_id);
+        }
+    }
+
+
+    transition!{
+        block_tokens_distinct_retain(block_id1: BlockId, block_id2: BlockId) {
+            require block_id1.page_id == block_id2.page_id;
+            require block_id1.idx == block_id2.idx;
+            remove block -= [block_id1 => let block_state1];
+            remove block -= [block_id2 => let block_state2];
+            assert false;
+            add block += [block_id1 => block_state1];
+            add block += [block_id2 => block_state2];
         }
     }
 
@@ -1613,6 +1627,9 @@ tokenized_state_machine!{ Mim {
         assert(!pre.delay_actor.dom().contains(page_id));
     }
    
+    #[inductive(block_tokens_distinct_retain)]
+    fn block_tokens_distinct_retain_inductive(pre: Self, post: Self, block_id1: BlockId, block_id2: BlockId) { }
+
     #[inductive(block_tokens_distinct)]
     fn block_tokens_distinct_inductive(pre: Self, post: Self, block_id1: BlockId, block_id2: BlockId) { }
    

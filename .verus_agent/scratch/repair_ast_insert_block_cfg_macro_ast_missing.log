@@ -1,0 +1,5 @@
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/linked_list.rs: exec body changed (mismatched=0 missing=1 extra=0)
+       - LL::insert_block: MISSING_IN_VERUS
+  checked 28 exec file(s); 1 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.

@@ -1,0 +1,46 @@
+2026-08-19T02:07:58-04:00
+direct verus_verify count=135
+
+### operator audit
+trusted markers os_mem.rs          ok (18)
+trusted markers thread.rs          ok (12)
+trusted markers types.rs           ok (3)
+sanctioned paths                   ok (unmodified)
+vendored verus deps                ok (frozen)
+operator baseline files            ok (committed)
+admit()                            ok (0)
+assume()                           ok (6, all pre-existing)
+assume(false)                      ok (3, all pre-existing)
+todo() call sites                  ok (50)
+todo(); loop{}                     ok (28, all pre-existing)
+todo() ensures false               ok (2/2 cfg arms)
+uninterp spec fn                   ok (2)
+external_body                      ok (41 <= ratchet 72, upstream 19)
+verus_verify                       ok (135 <= ratchet 135, inert)
+
+operator_audit: PASS
+
+### boundary_guard
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+
+### middle_guard spec-drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 2.0s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+
+### middle_guard ast-consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  checked 28 exec file(s); 0 with body edits
+middle_guard: exec bodies unchanged vs frozen baseline. ✅
+
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (16s).
+completion_gate: PASS — mission is done-certifiable.
+  reachable source-derived graph is closed to sanctioned TCB; 0 net-new trust leaves.
+  (combine with a green `make verify` for the full DONE verdict.)

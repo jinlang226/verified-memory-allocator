@@ -1,0 +1,6 @@
+# Ground truth facts
+
+- Live source now contradicts the previous failure summary for `verus-mimalloc/types.rs::todo`: both cfg variants carry `ensures false`, while the executable bodies still abort/panic (`verus-mimalloc/types.rs:3329-3345`). The earlier statement that both variants had no `ensures` clauses is stale.
+- `research/operator_decisions.jsonl` entry `od-7` records that the operator rejected adding `loop { }` after the `todo()` calls and identified the intended fix as restoring `todo()`'s non-return contract. The live source now reflects that recorded restoration.
+- `verus-mimalloc/os_mem.rs::mmap_prot_read_write` exposes all memory, alignment, and provenance facts only under the guard `pt.0.addr() != MAP_FAILED` (`verus-mimalloc/os_mem.rs:143-154`). With `todo()` carrying `ensures false`, Verus treats the `MAP_FAILED` branches in the init callers as non-returning.
+- Current full verification no longer fails at the init mmap/todo frontier: `make verify` reports `verification results:: 884 verified, 0 errors`, covering the former `thread_data_alloc` postcondition at `verus-mimalloc/init.rs:1064` and `init_empty_page_ptr` precondition at `verus-mimalloc/init.rs:1227`.

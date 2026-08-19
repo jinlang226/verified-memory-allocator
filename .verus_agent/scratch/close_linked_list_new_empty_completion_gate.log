@@ -1,0 +1,7 @@
+completion_gate: NOT DONE — derived proof obligations remain.
+  21 reachable proof-node obligation(s) remain:
+    wip_trust: page_free_list_extend (verus-mimalloc/alloc_generic.rs:99)
+    wip_trust: page_thread_free_collect (verus-mimalloc/alloc_generic.rs:77)
+    wip_trust: page_try_use_delayed_free (verus-mimalloc/page.rs:833)
+    wip_trust: segment_alloc (verus-mimalloc/segment.rs:1284)
+completion_gate_STATUS=1

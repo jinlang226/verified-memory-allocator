@@ -1,0 +1,6 @@
+{
+  "git_sha": "05a6305688419c79fbddd15e7bf901d3af9e9ed6",
+  "ref_input": "operator-baseline",
+  "captured_at": "2026-08-17T16:22:59.279564+00:00",
+  "crate_root": "/users/jinlang/verified-memory-allocator-test"
+}

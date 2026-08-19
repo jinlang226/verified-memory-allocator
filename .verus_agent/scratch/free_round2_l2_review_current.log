@@ -1,0 +1,117 @@
+### make verify tail
+verification results:: 955 verified, 0 errors
+warning: 206 warnings emitted
+
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:           61055 ms    (estimated total cpu time 176073 ms)
+    rust-time:                9877 ms
+        init-and-types:           6549 ms
+        trait-conflicts:            75 ms
+        compile-time:             3251 ms
+    verification-time:       50055 ms
+        vir-time:                 4707 ms
+            hir-time:                  624 ms
+            import-time:               206 ms
+            rust-to-vir:              1119 ms
+        verify-crate-time:       45348 ms
+    unaccounted-time:         1122 ms
+
+verify-crate-time-breakdown
+    total verify-time:         160019 ms   (63 threads)
+        total air-time:             36127 ms   (63 threads)
+        total smt-time:             79089 ms   (63 threads)
+            total smt-init:                25 ms,   341772 rlimit (63 threads)
+            total smt-run:              79064 ms, 428438528 rlimit (63 threads)
+### proof_state next
+proof_state: 192 reachable functions, 519 edges; 41 WIP nodes/41 trust leaves, 5 unentered, 17 unknown; 0 unmapped trust; 31 unreachable trust; topology cache hit.
+  top frontier: 11; bottom frontier: 14
+unknown      .verus_deps/builtin/src/lib.rs:494 Ghost::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Ghost::assume_new_fallback@L494]
+unknown      .verus_deps/builtin/src/lib.rs:545 Tracked::assume_new  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new@L545]
+unknown      .verus_deps/builtin/src/lib.rs:552 Tracked::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new_fallback@L552]
+unknown      .verus_deps/vstd/atomic_ghost.rs:197 new  [.verus_deps/vstd/atomic_ghost.rs::new@L197]
+unknown      .verus_deps/vstd/atomic_ghost.rs:67 new  [.verus_deps/vstd/atomic_ghost.rs::new@L67]
+unknown      .verus_deps/vstd/cell/pcell.rs:145 borrow  [.verus_deps/vstd/cell/pcell.rs::borrow@L145]
+unknown      .verus_deps/vstd/cell/pcell.rs:159 borrow_mut  [.verus_deps/vstd/cell/pcell.rs::borrow_mut@L159]
+unknown      .verus_deps/vstd/layout.rs:118 layout_for_type_is_valid  [.verus_deps/vstd/layout.rs::layout_for_type_is_valid@L118]
+unknown      .verus_deps/vstd/raw_ptr.rs:602 ptr_mut_read  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_read@L602]
+unknown      .verus_deps/vstd/raw_ptr.rs:636 ptr_mut_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_ref@L636]
+unknown      .verus_deps/vstd/raw_ptr.rs:579 ptr_mut_write  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_write@L579]
+unknown      .verus_deps/vstd/raw_ptr.rs:620 ptr_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_ref@L620]
+unknown      .verus_deps/vstd/raw_ptr.rs:744 with_exposed_provenance  [.verus_deps/vstd/raw_ptr.rs::with_exposed_provenance@L744]
+unentered    verus-mimalloc/os_mem.rs:12 get_page_size  [verus-mimalloc/os_mem.rs::get_page_size@L12]
+PROOF_STATE_STATUS=0
+### proof_state free/free_generic nodes and frontier
+verus-mimalloc/free.rs::free@L111 proof_status=in_verification entered=True trust_leaves=[] direct_callers=[]
+verus-mimalloc/free.rs::free_generic@L290 proof_status=unentered entered=False trust_leaves=[] direct_callers=['verus-mimalloc/free.rs::free@L111']
+top_frontier_contains_free_generic= True
+top_frontier= ['.verus_deps/builtin/src/lib.rs::Ghost::assume_new_fallback@L494', '.verus_deps/builtin/src/lib.rs::Tracked::assume_new_fallback@L552', '.verus_deps/vstd/cell/pcell.rs::borrow@L145', '.verus_deps/vstd/cell/pcell.rs::new@L132', '.verus_deps/vstd/layout.rs::layout_for_type_is_valid@L118', '.verus_deps/vstd/raw_ptr.rs::ptr_mut_write@L579', '.verus_deps/vstd/raw_ptr.rs::ptr_ref@L620', 'verus-mimalloc/alloc_fast.rs::heap_malloc_zero_ex@L77', 'verus-mimalloc/free.rs::free_generic@L290', 'verus-mimalloc/init.rs::init_empty_page_ptr@L1212', 'verus-mimalloc/page.rs::page_retire@L295']
+summary= {'reachable_functions': 192, 'reachable_obligation_nodes': 192, 'reachable_edges': 519, 'wip_trust': 41, 'unentered': 5, 'unknown': 17, 'sanctioned_tcb': 11, 'global_unsanctioned_trust': 72, 'reachable_unsanctioned_trust': 41, 'unmapped_unsanctioned_trust': 0, 'unreachable_unsanctioned_trust': 31, 'unresolved_reachable': 63}
+### source audit
+111:pub fn free(ptr: *mut u8, Tracked(user_perm): Tracked<PointsToRaw>, Tracked(user_dealloc): Tracked<Option<MimDealloc>>, Tracked(local): Tracked<&mut Local>)
+275:#[cfg(not(verus_keep_ghost))]
+276:#[verifier::external_body]
+277:fn free_generic(segment: *mut SegmentHeader, page: PagePtr, is_local: bool, p: *mut u8, Tracked(perm): Tracked<PointsToRaw>, Tracked(dealloc): Tracked<MimDeallocInner>, Tracked(local): Tracked<&mut Local>)
+287:#[cfg(verus_keep_ghost)]
+290:fn free_generic(segment: *mut SegmentHeader, page: PagePtr, is_local: bool, p: *mut u8, Tracked(perm): Tracked<PointsToRaw>, Tracked(dealloc): Tracked<MimDeallocInner>, Tracked(local): Tracked<&mut Local>)
+714:#[verifier::external_body]
+free pub count: 1
+free_generic definitions: 2
+### boundary_guard
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+BOUNDARY_STATUS=0
+### spec_drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.6s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+SPEC_DRIFT_STATUS=0
+### ast_consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/free.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - free_block_mt: MISMATCH
+  ❌ verus-mimalloc/linked_list.rs: exec body changed (mismatched=2 missing=0 extra=0)
+       - LL::block_write_ptr: MISMATCH
+       - ThreadLLSimple::atomic_insert_block: MISMATCH
+  ❌ verus-mimalloc/page.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - page_unfull: MISMATCH
+  ❌ verus-mimalloc/queues.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - heap_queue_first_update: MISMATCH
+  ❌ verus-mimalloc/types.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - PagePtr::get_heap: MISMATCH
+  checked 28 exec file(s); 5 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+AST_STATUS=1
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+OP_DECISIONS_STATUS=0
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  63 reachable proof-node obligation(s) remain:
+    unknown: Ghost::assume_new_fallback (.verus_deps/builtin/src/lib.rs:494)
+    unknown: Tracked::assume_new (.verus_deps/builtin/src/lib.rs:545)
+    unknown: Tracked::assume_new_fallback (.verus_deps/builtin/src/lib.rs:552)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:197)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:67)
+    unknown: borrow (.verus_deps/vstd/cell/pcell.rs:145)
+    unknown: borrow_mut (.verus_deps/vstd/cell/pcell.rs:159)
+    unknown: layout_for_type_is_valid (.verus_deps/vstd/layout.rs:118)
+    unknown: ptr_mut_read (.verus_deps/vstd/raw_ptr.rs:602)
+    unknown: ptr_mut_ref (.verus_deps/vstd/raw_ptr.rs:636)
+    unknown: ptr_mut_write (.verus_deps/vstd/raw_ptr.rs:579)
+    unknown: ptr_ref (.verus_deps/vstd/raw_ptr.rs:620)
+    unknown: with_exposed_provenance (.verus_deps/vstd/raw_ptr.rs:744)
+    unentered: get_page_size (verus-mimalloc/os_mem.rs:12)
+COMPLETION_STATUS=1

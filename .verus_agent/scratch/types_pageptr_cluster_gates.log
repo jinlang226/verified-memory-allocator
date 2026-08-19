@@ -1,0 +1,57 @@
+### boundary_guard
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 3 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+### spec_drift
+middle_guard spec-drift: baseline 4f0be60b7d3c -> working tree (goal-scoped: 3 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.4s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+### ast_consistency
+middle_guard ast-consistency: baseline 4f0be60b7d3c -> working tree
+  checked 29 exec file(s); 0 with body edits
+middle_guard: exec bodies unchanged vs frozen baseline. ✅
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+### proof_state next
+proof_state: 192 reachable functions, 518 edges; 85 WIP nodes/85 trust leaves, 1 unentered, 15 unknown; 0 unmapped trust; 31 unreachable trust; topology cache hit.
+  top frontier: 3; bottom frontier: 14
+unknown      .verus_deps/builtin/src/lib.rs:494 Ghost::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Ghost::assume_new_fallback@L494]
+unknown      .verus_deps/builtin/src/lib.rs:545 Tracked::assume_new  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new@L545]
+unknown      .verus_deps/builtin/src/lib.rs:552 Tracked::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new_fallback@L552]
+unknown      .verus_deps/vstd/atomic_ghost.rs:197 new  [.verus_deps/vstd/atomic_ghost.rs::new@L197]
+unknown      .verus_deps/vstd/atomic_ghost.rs:67 new  [.verus_deps/vstd/atomic_ghost.rs::new@L67]
+unknown      .verus_deps/vstd/cell/pcell.rs:145 borrow  [.verus_deps/vstd/cell/pcell.rs::borrow@L145]
+unknown      .verus_deps/vstd/cell/pcell.rs:159 borrow_mut  [.verus_deps/vstd/cell/pcell.rs::borrow_mut@L159]
+unknown      .verus_deps/vstd/layout.rs:118 layout_for_type_is_valid  [.verus_deps/vstd/layout.rs::layout_for_type_is_valid@L118]
+unknown      .verus_deps/vstd/raw_ptr.rs:602 ptr_mut_read  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_read@L602]
+unknown      .verus_deps/vstd/raw_ptr.rs:636 ptr_mut_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_ref@L636]
+unknown      .verus_deps/vstd/raw_ptr.rs:579 ptr_mut_write  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_write@L579]
+unknown      .verus_deps/vstd/raw_ptr.rs:620 ptr_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_ref@L620]
+unknown      .verus_deps/vstd/raw_ptr.rs:744 with_exposed_provenance  [.verus_deps/vstd/raw_ptr.rs::with_exposed_provenance@L744]
+unentered    verus-mimalloc/os_mem.rs:12 get_page_size  [verus-mimalloc/os_mem.rs::get_page_size@L12]
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  101 reachable proof-node obligation(s) remain:
+    unknown: Ghost::assume_new_fallback (.verus_deps/builtin/src/lib.rs:494)
+    unknown: Tracked::assume_new (.verus_deps/builtin/src/lib.rs:545)
+    unknown: Tracked::assume_new_fallback (.verus_deps/builtin/src/lib.rs:552)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:197)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:67)
+    unknown: borrow (.verus_deps/vstd/cell/pcell.rs:145)
+    unknown: borrow_mut (.verus_deps/vstd/cell/pcell.rs:159)
+    unknown: layout_for_type_is_valid (.verus_deps/vstd/layout.rs:118)
+    unknown: ptr_mut_read (.verus_deps/vstd/raw_ptr.rs:602)
+    unknown: ptr_mut_ref (.verus_deps/vstd/raw_ptr.rs:636)
+    unknown: ptr_mut_write (.verus_deps/vstd/raw_ptr.rs:579)
+    unknown: ptr_ref (.verus_deps/vstd/raw_ptr.rs:620)
+    unknown: with_exposed_provenance (.verus_deps/vstd/raw_ptr.rs:744)
+    unentered: get_page_size (verus-mimalloc/os_mem.rs:12)
+  3 goal target(s) not yet PROVEN (the proof GOAL must be proven against its frozen contract, not trusted/admitted):
+    heap_init in verus-mimalloc/init.rs is TRUSTED/ADMITTED (external_body) — a goal must be PROVEN, not trusted or admitted
+    heap_malloc in verus-mimalloc/alloc_fast.rs is TRUSTED/ADMITTED (external_body) — a goal must be PROVEN, not trusted or admitted
+    free in verus-mimalloc/free.rs is TRUSTED/ADMITTED (external_body) — a goal must be PROVEN, not trusted or admitted

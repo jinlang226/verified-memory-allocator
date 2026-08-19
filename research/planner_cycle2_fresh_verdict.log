@@ -1,0 +1,101 @@
+### make verify tail
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:397:9
+    |
+397 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:401:9
+    |
+401 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:670:9
+    |
+670 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:674:9
+    |
+674 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:987:9
+    |
+987 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:991:9
+    |
+991 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+verification results:: 1384 verified, 0 errors
+warning: 280 warnings emitted
+
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:           72171 ms    (estimated total cpu time 313902 ms)
+    rust-time:               12636 ms
+        init-and-types:           8567 ms
+        trait-conflicts:           121 ms
+        compile-time:             3947 ms
+    verification-time:       57806 ms
+        vir-time:                 7238 ms
+            hir-time:                  886 ms
+            import-time:               208 ms
+            rust-to-vir:              1545 ms
+        verify-crate-time:       50568 ms
+    unaccounted-time:         1727 ms
+
+verify-crate-time-breakdown
+    total verify-time:         291819 ms   (63 threads)
+        total air-time:             79499 ms   (63 threads)
+        total smt-time:            156274 ms   (63 threads)
+            total smt-init:                41 ms,   541385 rlimit (63 threads)
+            total smt-run:             156233 ms, 682374219 rlimit (63 threads)
+make_verify_exit=0
+### boundary_guard
+/usr/bin/python: Error while finding module specification for 'argus_skill.verticals.verus.tools.boundary_guard' (ModuleNotFoundError: No module named 'argus_skill')
+### middle_guard spec-drift
+/usr/bin/python: Error while finding module specification for 'argus_skill.verticals.verus.tools.middle_guard' (ModuleNotFoundError: No module named 'argus_skill')
+### middle_guard ast-consistency
+/usr/bin/python: Error while finding module specification for 'argus_skill.verticals.verus.tools.middle_guard' (ModuleNotFoundError: No module named 'argus_skill')
+### operator_decisions gate
+/usr/bin/python: Error while finding module specification for 'argus_skill.verticals.verus.tools.operator_decisions' (ModuleNotFoundError: No module named 'argus_skill')
+### completion_gate
+/usr/bin/python: Error while finding module specification for 'argus_skill.verticals.verus.tools.completion_gate' (ModuleNotFoundError: No module named 'argus_skill')
+### proof_state next
+/usr/bin/python: Error while finding module specification for 'argus_skill.verticals.verus.tools.proof_state' (ModuleNotFoundError: No module named 'argus_skill')
+### direct counts
+page_organization assume(false)=0
+page_organization { true }=0
+crate external_body=36
+crate assume(false)=3
+crate admit=0
+crate uninterp=2

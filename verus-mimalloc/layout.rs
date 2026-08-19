@@ -2,6 +2,10 @@
 
 use verus_state_machines_macros::*;
 use vstd::prelude::*;
+use vstd::arithmetic::div_mod::{
+    lemma_div_by_multiple, lemma_div_multiples_vanish_fancy, lemma_div_pos_is_pos,
+    lemma_fundamental_div_mod, lemma_mod_multiples_basic, lemma_remainder,
+};
 use vstd::raw_ptr::*;
 use vstd::*;
 use vstd::layout::*;
@@ -35,7 +39,9 @@ pub open spec fn is_tld_ptr(ptr: *mut Tld, tld_id: TldId) -> bool {
     tld_id.id == ptr.addr() && ptr@.provenance == tld_id.provenance
 }
 
-pub uninterp spec fn segment_start(segment_id: SegmentId) -> int;
+pub closed spec fn segment_start(segment_id: SegmentId) -> int {
+    segment_id.id * (SEGMENT_SIZE as int)
+}
 
 pub open spec fn page_header_start(page_id: PageId) -> int {
     segment_start(page_id.segment_id) + SIZEOF_SEGMENT_HEADER + page_id.idx * SIZEOF_PAGE_HEADER
@@ -45,7 +51,14 @@ pub open spec fn page_start(page_id: PageId) -> int {
     segment_start(page_id.segment_id) + SLICE_SIZE * page_id.idx
 }
 
-pub uninterp spec fn start_offset(block_size: int) -> int;
+pub closed spec fn start_offset(block_size: int) -> int {
+    // Based on _mi_segment_page_start_from_slice
+    if block_size >= INTPTR_SIZE as int && block_size <= 1024 {
+        3 * MAX_ALIGN_GUARANTEE
+    } else {
+        0
+    }
+}
 
 pub open spec fn block_start_at(page_id: PageId, block_size: int, block_idx: int) -> int {
     page_start(page_id)
@@ -53,7 +66,9 @@ pub open spec fn block_start_at(page_id: PageId, block_size: int, block_idx: int
          + block_idx * block_size
 }
 
-pub uninterp spec fn block_start(block_id: BlockId) -> int;
+pub closed spec fn block_start(block_id: BlockId) -> int {
+    block_start_at(block_id.page_id, block_id.block_size as int, block_id.idx as int)
+}
 
 pub open spec fn is_block_ptr(ptr: *mut u8, block_id: BlockId) -> bool {
     &&& ptr@.provenance == block_id.page_id.segment_id.provenance
@@ -102,6 +117,403 @@ pub proof fn block_size_ge_word()
 pub proof fn block_ptr_aligned_to_word()
 { }
 
+#[verifier::rlimit(200)]
+pub proof fn lemma_is_block_ptr_aligned_to_node(ptr: *mut u8, block_id: BlockId)
+    requires
+        is_block_ptr(ptr, block_id),
+        size_of::<crate::linked_list::Node>() == 8,
+        align_of::<crate::linked_list::Node>() == 8,
+    ensures
+        block_id.block_size >= size_of::<crate::linked_list::Node>(),
+        ptr.addr() as int % (align_of::<crate::linked_list::Node>() as int) == 0,
+{
+    reveal(is_block_ptr1);
+    reveal(block_start);
+    reveal(segment_start);
+    reveal(start_offset);
+
+    assert(size_of::<crate::linked_list::Node>() == 8);
+    assert(align_of::<crate::linked_list::Node>() == 8);
+    assert(INTPTR_SIZE as int == 8) by(compute_only);
+    assert(block_id.block_size >= size_of::<crate::linked_list::Node>());
+
+    let segment_id = block_id.page_id.segment_id;
+    let bs = block_id.block_size as int;
+    assert(bs % 8 == 0);
+    lemma_fundamental_div_mod(bs, 8);
+    assert(bs == 8 * (bs / 8));
+
+    assert(SEGMENT_SIZE as int == 33554432) by(compute_only);
+    assert(SLICE_SIZE as int == 65536) by(compute_only);
+    assert(MAX_ALIGN_GUARANTEE as int == 128) by(compute_only);
+    assert(3 * (MAX_ALIGN_GUARANTEE as int) == 384) by(compute_only);
+    assert(segment_start(segment_id) == 8 * ((segment_id.id as int) * 4194304)) by(nonlinear_arith)
+        requires
+            segment_start(segment_id) == segment_id.id * (SEGMENT_SIZE as int),
+            SEGMENT_SIZE as int == 33554432;
+    assert((SLICE_SIZE as int) * (block_id.page_id.idx as int) == 8 * ((block_id.page_id.idx as int) * 8192)) by(nonlinear_arith)
+        requires
+            SLICE_SIZE as int == 65536;
+
+    if bs >= INTPTR_SIZE as int && bs <= 1024 {
+        assert(start_offset(bs) == 3 * (MAX_ALIGN_GUARANTEE as int));
+        assert(start_offset(bs) == 384);
+    } else {
+        assert(start_offset(bs) == 0);
+    }
+    let start_mult: int = if bs >= INTPTR_SIZE as int && bs <= 1024 { 48 } else { 0 };
+    assert(start_offset(bs) == 8 * start_mult);
+    assert((block_id.idx as int) * bs == 8 * ((block_id.idx as int) * (bs / 8))) by(nonlinear_arith)
+        requires
+            bs == 8 * (bs / 8);
+
+    let seg_mult = (segment_id.id as int) * 4194304;
+    let slice_mult = (block_id.page_id.idx as int) * 8192;
+    let idx_mult = (block_id.idx as int) * (bs / 8);
+    let k = seg_mult + slice_mult + start_mult + idx_mult;
+    assert(block_start(block_id) == block_start_at(block_id.page_id, bs, block_id.idx as int));
+    assert(block_start_at(block_id.page_id, bs, block_id.idx as int) == page_start(block_id.page_id) + start_offset(bs) + (block_id.idx as int) * bs);
+    assert(page_start(block_id.page_id) == segment_start(segment_id) + (SLICE_SIZE as int) * (block_id.page_id.idx as int));
+    assert(block_start(block_id) == 8 * seg_mult + 8 * slice_mult + 8 * start_mult + 8 * idx_mult) by(nonlinear_arith)
+        requires
+            block_start(block_id) == block_start_at(block_id.page_id, bs, block_id.idx as int),
+            block_start_at(block_id.page_id, bs, block_id.idx as int) == page_start(block_id.page_id) + start_offset(bs) + (block_id.idx as int) * bs,
+            page_start(block_id.page_id) == segment_start(segment_id) + (SLICE_SIZE as int) * (block_id.page_id.idx as int),
+            segment_start(segment_id) == 8 * seg_mult,
+            (SLICE_SIZE as int) * (block_id.page_id.idx as int) == 8 * slice_mult,
+            start_offset(bs) == 8 * start_mult,
+            (block_id.idx as int) * bs == 8 * idx_mult;
+    assert(8 * seg_mult + 8 * slice_mult + 8 * start_mult + 8 * idx_mult == 8 * k) by(nonlinear_arith)
+        requires k == seg_mult + slice_mult + start_mult + idx_mult;
+    assert(block_start(block_id) == 8 * k);
+    lemma_mod_multiples_basic(k, 8);
+    assert(block_start(block_id) % 8 == 0);
+    assert(ptr as int == block_start(block_id));
+    assert(ptr.addr() as int == ptr as int);
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_align_down_div_mul(x: int, y: int)
+    requires
+        0 <= x,
+        0 < y,
+    ensures
+        0 <= (x / y) * y,
+        (x / y) * y <= x,
+        ((x / y) * y) % y == 0,
+        x < (x / y) * y + y,
+{
+    lemma_div_pos_is_pos(x, y);
+    lemma_remainder(x, y);
+    lemma_mod_multiples_basic(x / y, y);
+    assert(0 <= x - (x / y * y) < y);
+    assert(0 <= (x / y) * y) by(nonlinear_arith)
+        requires
+            0 <= x / y,
+            0 < y;
+    assert((x / y) * y <= x) by(nonlinear_arith)
+        requires 0 <= x - (x / y * y);
+    assert(x < (x / y) * y + y) by(nonlinear_arith)
+        requires x - (x / y * y) < y;
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_align_up_div_mul(x: int, y: int)
+    requires
+        0 <= x,
+        0 < y,
+    ensures
+        x <= ((x + y - 1) / y) * y,
+        ((x + y - 1) / y) * y <= x + y - 1,
+        (((x + y - 1) / y) * y) % y == 0,
+{
+    let a = x + y - 1;
+    assert(0 <= a) by(nonlinear_arith)
+        requires
+            0 <= x,
+            0 < y,
+            a == x + y - 1;
+    lemma_remainder(a, y);
+    lemma_mod_multiples_basic(a / y, y);
+    assert(0 <= a - (a / y * y) < y);
+    assert((a / y) * y <= a) by(nonlinear_arith)
+        requires 0 <= a - (a / y * y);
+    assert(x <= (a / y) * y) by(nonlinear_arith)
+        requires
+            a == x + y - 1,
+            a - (a / y * y) < y;
+}
+
+#[verifier::rlimit(200)]
+pub proof fn lemma_round_multiple_le_cap(res: int, x: int, y: int, cap: int)
+    requires
+        0 <= x <= cap,
+        0 < y,
+        x <= res <= x + y - 1,
+        res % y == 0,
+        cap % y == 0,
+    ensures
+        res <= cap,
+{
+    if cap < res {
+        lemma_fundamental_div_mod(res, y);
+        lemma_fundamental_div_mod(cap, y);
+        assert(res == y * (res / y) + res % y);
+        assert(cap == y * (cap / y) + cap % y);
+        assert(res == y * (res / y));
+        assert(cap == y * (cap / y));
+        assert(cap / y < res / y) by(nonlinear_arith)
+            requires
+                cap == y * (cap / y),
+                res == y * (res / y),
+                cap < res,
+                0 < y;
+        assert(cap / y + 1 <= res / y);
+        assert(cap + y <= res) by(nonlinear_arith)
+            requires
+                cap == y * (cap / y),
+                res == y * (res / y),
+                cap / y + 1 <= res / y,
+                0 < y;
+        assert(res <= cap + y - 1) by(nonlinear_arith)
+            requires
+                res <= x + y - 1,
+                x <= cap;
+        assert(false) by(nonlinear_arith)
+            requires
+                cap + y <= res,
+                res <= cap + y - 1;
+    }
+}
+
+
+#[verifier::rlimit(200)]
+pub proof fn lemma_segment_start_basics(segment_id: SegmentId)
+    ensures
+        0 <= segment_start(segment_id),
+        segment_start(segment_id) % (SEGMENT_SIZE as int) == 0,
+{
+    reveal(segment_start);
+    assert(SEGMENT_SIZE as int > 0) by(compute_only);
+    lemma_mod_multiples_basic(segment_id.id as int, SEGMENT_SIZE as int);
+    assert(segment_start(segment_id) == (segment_id.id as int) * (SEGMENT_SIZE as int));
+}
+
+#[verifier::rlimit(200)]
+pub proof fn lemma_segment_start_eq_id(segment_id1: SegmentId, segment_id2: SegmentId)
+    requires
+        segment_id1.id == segment_id2.id,
+    ensures
+        segment_start(segment_id1) == segment_start(segment_id2),
+{
+    reveal(segment_start);
+}
+
+#[verifier::rlimit(200)]
+pub proof fn lemma_segment_start_usize_align(segment_id: SegmentId)
+    requires
+        segment_start(segment_id) + SEGMENT_SIZE < usize::MAX,
+    ensures
+        segment_start(segment_id) % 8 == 0,
+        (segment_start(segment_id) as usize) as int == segment_start(segment_id),
+{
+    lemma_segment_start_basics(segment_id);
+    assert(SEGMENT_SIZE as int % 8 == 0) by(compute_only);
+    assert(segment_start(segment_id) % 8 == 0) by(nonlinear_arith)
+        requires
+            segment_start(segment_id) % (SEGMENT_SIZE as int) == 0,
+            SEGMENT_SIZE as int % 8 == 0;
+    assert(0 <= segment_start(segment_id));
+    assert(0 < SEGMENT_SIZE as int) by(compute_only);
+    assert(segment_start(segment_id) < usize::MAX as int) by(nonlinear_arith)
+        requires
+            segment_start(segment_id) + SEGMENT_SIZE < usize::MAX,
+            0 < SEGMENT_SIZE as int;
+    assert(segment_start(segment_id) <= usize::MAX as int) by(nonlinear_arith)
+        requires segment_start(segment_id) < usize::MAX as int;
+    assert((segment_start(segment_id) as usize) as int == segment_start(segment_id)) by(nonlinear_arith)
+        requires
+            0 <= segment_start(segment_id),
+            segment_start(segment_id) <= usize::MAX as int;
+}
+
+#[verifier::rlimit(200)]
+pub proof fn lemma_page_header_first_commit_range(segment_id: SegmentId, idx: int)
+    requires
+        segment_start(segment_id) + SEGMENT_SIZE < usize::MAX,
+        0 <= idx <= SLICES_PER_SEGMENT,
+    ensures
+        0 <= page_header_start(PageId { segment_id, idx: idx as nat }),
+        page_header_start(PageId { segment_id, idx: idx as nat }) % 8 == 0,
+        page_header_start(PageId { segment_id, idx: idx as nat }) + SIZEOF_PAGE_HEADER as int <= segment_start(segment_id) + COMMIT_SIZE as int,
+        page_header_start(PageId { segment_id, idx: idx as nat }) + SIZEOF_PAGE_HEADER as int <= usize::MAX as int,
+        (page_header_start(PageId { segment_id, idx: idx as nat }) as usize) as int == page_header_start(PageId { segment_id, idx: idx as nat }),
+{
+    lemma_segment_start_usize_align(segment_id);
+    let ph = page_header_start(PageId { segment_id, idx: idx as nat });
+    assert(ph == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + idx * SIZEOF_PAGE_HEADER);
+    assert(SIZEOF_SEGMENT_HEADER as int % 8 == 0) by(compute_only);
+    assert(SIZEOF_PAGE_HEADER as int % 8 == 0) by(compute_only);
+    assert(ph % 8 == 0) by(nonlinear_arith)
+        requires
+            segment_start(segment_id) % 8 == 0,
+            SIZEOF_SEGMENT_HEADER as int % 8 == 0,
+            SIZEOF_PAGE_HEADER as int % 8 == 0,
+            ph == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + idx * SIZEOF_PAGE_HEADER;
+    assert(SIZEOF_SEGMENT_HEADER as int + SLICES_PER_SEGMENT as int * SIZEOF_PAGE_HEADER as int + SIZEOF_PAGE_HEADER as int <= COMMIT_SIZE as int) by(compute_only);
+    assert(ph + SIZEOF_PAGE_HEADER as int <= segment_start(segment_id) + COMMIT_SIZE as int) by(nonlinear_arith)
+        requires
+            idx <= SLICES_PER_SEGMENT,
+            ph == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + idx * SIZEOF_PAGE_HEADER,
+            SIZEOF_SEGMENT_HEADER as int + SLICES_PER_SEGMENT as int * SIZEOF_PAGE_HEADER as int + SIZEOF_PAGE_HEADER as int <= COMMIT_SIZE as int;
+    assert(COMMIT_SIZE as int <= SEGMENT_SIZE as int) by(compute_only);
+    assert(ph + SIZEOF_PAGE_HEADER as int <= usize::MAX as int) by(nonlinear_arith)
+        requires
+            ph + SIZEOF_PAGE_HEADER as int <= segment_start(segment_id) + COMMIT_SIZE as int,
+            COMMIT_SIZE as int <= SEGMENT_SIZE as int,
+            segment_start(segment_id) + SEGMENT_SIZE < usize::MAX;
+    assert(0 <= ph) by(nonlinear_arith)
+        requires
+            0 <= segment_start(segment_id),
+            0 <= idx,
+            ph == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + idx * SIZEOF_PAGE_HEADER;
+    assert(ph <= usize::MAX as int) by(nonlinear_arith)
+        requires
+            ph + SIZEOF_PAGE_HEADER as int <= usize::MAX as int,
+            0 <= SIZEOF_PAGE_HEADER as int;
+    assert((ph as usize) as int == ph) by(nonlinear_arith)
+        requires
+            0 <= ph,
+            ph <= usize::MAX as int;
+}
+
+#[verifier::rlimit(200)]
+pub proof fn lemma_start_offset_bounds(block_size: int)
+    ensures
+        0 <= start_offset(block_size) <= 3 * (MAX_ALIGN_GUARANTEE as int),
+{
+    reveal(start_offset);
+    assert(MAX_ALIGN_GUARANTEE as int > 0) by(compute_only);
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_multiple_order_step(a: int, b: int, d: int)
+    requires
+        0 < d,
+        a % d == 0,
+        b % d == 0,
+        a < b,
+    ensures
+        a + d <= b,
+{
+    lemma_fundamental_div_mod(a, d);
+    lemma_fundamental_div_mod(b, d);
+    assert(a == d * (a / d));
+    assert(b == d * (b / d));
+    assert(a / d < b / d) by(nonlinear_arith)
+        requires
+            a == d * (a / d),
+            b == d * (b / d),
+            a < b,
+            0 < d;
+    assert(a / d + 1 <= b / d);
+    assert(a + d <= b) by(nonlinear_arith)
+        requires
+            a == d * (a / d),
+            b == d * (b / d),
+            a / d + 1 <= b / d,
+            0 < d;
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_div_exact_with_remainder(q: int, r: int, d: int)
+    requires
+        0 < d,
+        0 <= r < d,
+    ensures
+        (q * d + r) / d == q,
+{
+    lemma_div_multiples_vanish_fancy(q, r, d);
+    assert(q * d + r == d * q + r) by(nonlinear_arith);
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_segment_end_plus_small_fits(segment_id: SegmentId, extra: int)
+    requires
+        segment_start(segment_id) + SEGMENT_SIZE < usize::MAX,
+        0 <= extra <= 3 * (MAX_ALIGN_GUARANTEE as int),
+    ensures
+        segment_start(segment_id) + SEGMENT_SIZE + extra <= usize::MAX,
+{
+    reveal(segment_start);
+    let n: int = segment_id.id as int + 1;
+    let seg: int = SEGMENT_SIZE as int;
+    let max_segments: int = 549755813888;
+    assert(SEGMENT_SIZE as int > 0) by(compute_only);
+    assert(seg > 0);
+    assert(usize::MAX as int == 549755813888 * (SEGMENT_SIZE as int) - 1) by(compute_only);
+    assert(usize::MAX as int == max_segments * seg - 1);
+    assert(segment_start(segment_id) == (segment_id.id as int) * seg);
+    assert(segment_start(segment_id) + (SEGMENT_SIZE as int) == n * seg) by(nonlinear_arith)
+        requires
+            segment_start(segment_id) == (segment_id.id as int) * seg,
+            n == segment_id.id as int + 1,
+            seg == SEGMENT_SIZE as int;
+    assert(n * seg < max_segments * seg - 1);
+    assert(n * seg < max_segments * seg) by(nonlinear_arith)
+        requires n * seg < max_segments * seg - 1;
+    assert(n < max_segments) by(nonlinear_arith)
+        requires
+            n * seg < max_segments * seg,
+            0 < seg;
+    assert(n <= max_segments - 1);
+    assert(n * seg <= (max_segments - 1) * seg) by(nonlinear_arith)
+        requires
+            n <= max_segments - 1,
+            0 < seg;
+    assert(3 * (MAX_ALIGN_GUARANTEE as int) <= (SEGMENT_SIZE as int) - 1) by(compute_only);
+    assert(3 * (MAX_ALIGN_GUARANTEE as int) <= seg - 1);
+    assert((549755813888 - 1) * (SEGMENT_SIZE as int) + ((SEGMENT_SIZE as int) - 1) == usize::MAX as int) by(compute_only);
+    assert((max_segments - 1) * seg + (seg - 1) == usize::MAX as int);
+    assert(n * seg + extra <= (max_segments - 1) * seg + (seg - 1)) by(nonlinear_arith)
+        requires
+            n * seg <= (max_segments - 1) * seg,
+            extra <= seg - 1;
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_aligned_segment_unique(x: int, aligned: int, segment_id: SegmentId)
+    requires
+        aligned <= x,
+        x < aligned + SEGMENT_SIZE,
+        aligned % (SEGMENT_SIZE as int) == 0,
+        segment_start(segment_id) <= x,
+        x < segment_start(segment_id) + SEGMENT_SIZE,
+    ensures
+        aligned == segment_start(segment_id),
+{
+    let t: int = SEGMENT_SIZE as int;
+    lemma_segment_start_basics(segment_id);
+    if aligned < segment_start(segment_id) {
+        lemma_multiple_order_step(aligned, segment_start(segment_id), t);
+        assert(false) by(nonlinear_arith)
+            requires
+                aligned + t <= segment_start(segment_id),
+                segment_start(segment_id) <= x,
+                x < aligned + t,
+                t == SEGMENT_SIZE as int;
+    }
+    if segment_start(segment_id) < aligned {
+        lemma_multiple_order_step(segment_start(segment_id), aligned, t);
+        assert(false) by(nonlinear_arith)
+            requires
+                segment_start(segment_id) + t <= aligned,
+                aligned <= x,
+                x < segment_start(segment_id) + t,
+                t == SEGMENT_SIZE as int;
+    }
+}
+
 // Bit lemmas
 
 /*proof fn bitmask_is_mod(t: usize)
@@ -144,24 +556,95 @@ pub proof fn block_ptr_aligned_to_word()
 
 // Executable calculations
 
-#[verifier::external_body]
+#[verus_verify]
 pub fn calculate_segment_ptr_from_block(ptr: *mut u8, Ghost(block_id): Ghost<BlockId>) -> (res: *mut SegmentHeader)
+    requires
+        is_block_ptr(ptr, block_id),
+    ensures
+        is_segment_ptr(res, block_id.page_id.segment_id),
 {
     let block_p = ptr.addr();
+
+    proof {
+        reveal(is_block_ptr1);
+        let segment_id = block_id.page_id.segment_id;
+        lemma_segment_start_basics(segment_id);
+        assert(block_p as int == ptr as int);
+        assert(segment_start(segment_id) < block_p as int);
+        assert(block_p as int <= segment_start(segment_id) + SEGMENT_SIZE);
+        assert(segment_start(segment_id) + SEGMENT_SIZE < usize::MAX);
+        assert(block_p as int > 0) by(nonlinear_arith)
+            requires
+                0 <= segment_start(segment_id),
+                segment_start(segment_id) < block_p as int;
+    }
 
     // Based on _mi_ptr_segment
     let segment_p = (block_p - 1) & (!((SEGMENT_SIZE - 1) as usize));
 
-    /*proof {
-        let s = block_id.page_id.segment_id.id;
-        let t = SEGMENT_SIZE as int;
-        let r = block_p - 1 - segment_start(block_id.page_id.segment_id);
-
-        assert(block_p as int - 1 == s*t + r);
-        assert(segment_p as int ==
-            (block_p - 1) as int - ((block_p - 1) as int % SEGMENT_SIZE as int));
-        assert(segment_p as int == (s*t + r) - ((s*t + r) % t));
-    }*/
+    proof {
+        reveal(is_block_ptr1);
+        let segment_id = block_id.page_id.segment_id;
+        let x: usize = sub(block_p, 1);
+        let y: usize = SEGMENT_SIZE as usize;
+        let mask: usize = (SEGMENT_SIZE - 1) as usize;
+        assert(x == sub(block_p, 1));
+        assert(x as int == block_p as int - 1) by(bit_vector)
+            requires
+                x == sub(block_p, 1),
+                block_p > 0;
+        assert(segment_p == x & !mask);
+        assert((SEGMENT_SIZE as usize) != 0usize) by(compute_only);
+        assert(((SEGMENT_SIZE - 1) as usize) == (SEGMENT_SIZE as usize) - 1) by(compute_only);
+        assert(mask == y - 1);
+        assert(y != 0);
+        assert((y & mask) == 0usize) by(bit_vector)
+            requires
+                y == SEGMENT_SIZE as usize,
+                mask == y - 1;
+        assert(segment_p <= x) by(bit_vector)
+            requires
+                y != 0,
+                mask == y - 1,
+                y & mask == 0,
+                segment_p == x & !mask;
+        assert(segment_p % y == 0usize) by(bit_vector)
+            requires
+                y != 0,
+                mask == y - 1,
+                y & mask == 0,
+                segment_p == x & !mask;
+        assert(sub(x, segment_p) < y) by(bit_vector)
+            requires
+                y != 0,
+                mask == y - 1,
+                y & mask == 0,
+                segment_p == x & !mask;
+        assert(sub(x, segment_p) as int == x as int - segment_p as int) by(bit_vector)
+            requires segment_p <= x;
+        assert(((segment_p % y) as int) == ((segment_p as int) % (y as int))) by(nonlinear_arith);
+        assert(y as int == SEGMENT_SIZE as int);
+        assert(segment_p as int % (SEGMENT_SIZE as int) == 0);
+        assert((segment_p as int) <= (x as int));
+        assert((x as int) < (segment_p as int) + SEGMENT_SIZE) by(nonlinear_arith)
+            requires
+                sub(x, segment_p) as int == x as int - segment_p as int,
+                sub(x, segment_p) < y,
+                y as int == SEGMENT_SIZE as int;
+        assert(segment_start(segment_id) <= (x as int)) by(nonlinear_arith)
+            requires
+                segment_start(segment_id) < block_p as int,
+                x as int == block_p as int - 1;
+        assert((x as int) < segment_start(segment_id) + SEGMENT_SIZE) by(nonlinear_arith)
+            requires
+                block_p as int <= segment_start(segment_id) + SEGMENT_SIZE,
+                x as int == block_p as int - 1;
+        lemma_aligned_segment_unique(x as int, segment_p as int, segment_id);
+        assert(segment_p as int == segment_start(segment_id));
+        assert((ptr.with_addr(segment_p) as *mut SegmentHeader) as int == segment_start(segment_id));
+        assert((ptr.with_addr(segment_p) as *mut SegmentHeader)@.provenance == segment_id.provenance);
+        assert(segment_p as int + SEGMENT_SIZE < usize::MAX);
+    }
 
     ptr.with_addr(segment_p) as *mut SegmentHeader
 }
@@ -182,24 +665,175 @@ pub fn calculate_slice_idx_from_block(block_ptr: PPtr<u8>, segment_ptr: PPtr<Seg
 }
 */
 
-#[verifier::external_body]
+#[verus_verify]
 pub fn calculate_slice_page_ptr_from_block(block_ptr: *mut u8, segment_ptr: *mut SegmentHeader, Ghost(block_id): Ghost<BlockId>) -> (page_ptr: *mut Page)
+    requires
+        is_block_ptr(block_ptr, block_id),
+        is_segment_ptr(segment_ptr, block_id.page_id.segment_id),
+    ensures
+        is_page_ptr(page_ptr, block_id.page_id_for_slice()),
 {
     let b = block_ptr.addr();
     let s = segment_ptr.addr();
+    proof {
+        reveal(is_block_ptr1);
+        let segment_id = block_id.page_id.segment_id;
+        lemma_segment_start_basics(segment_id);
+        assert(b as int == block_ptr as int);
+        assert(s as int == segment_ptr as int);
+        assert(s as int == segment_start(segment_id));
+        assert(segment_start(segment_id) + block_id.slice_idx * SLICE_SIZE <= b as int);
+        assert((s as int) <= (b as int)) by(nonlinear_arith)
+            requires
+                s as int == segment_start(segment_id),
+                segment_start(segment_id) + block_id.slice_idx * SLICE_SIZE <= b as int,
+                0 <= block_id.slice_idx,
+                0 <= SLICE_SIZE;
+    }
     let q = (b - s) / SLICE_SIZE as usize;
+    proof {
+        reveal(is_block_ptr1);
+        let segment_id = block_id.page_id.segment_id;
+        let diff: usize = sub(b, s);
+        let rem: int = diff as int - (block_id.slice_idx as int) * (SLICE_SIZE as int);
+        assert(q == diff / SLICE_SIZE as usize);
+        assert(diff == sub(b, s));
+        assert(diff as int == b as int - s as int) by(bit_vector)
+            requires
+                diff == sub(b, s),
+                s <= b;
+        assert(s as int == segment_start(segment_id));
+        assert(0 <= rem < SLICE_SIZE as int) by(nonlinear_arith)
+            requires
+                diff as int == b as int - s as int,
+                s as int == segment_start(segment_id),
+                segment_start(segment_id) + (block_id.slice_idx as int) * (SLICE_SIZE as int) <= b as int,
+                (b as int) < segment_start(segment_id) + (block_id.slice_idx as int) * (SLICE_SIZE as int) + SLICE_SIZE,
+                rem == diff as int - (block_id.slice_idx as int) * (SLICE_SIZE as int);
+        assert(SLICE_SIZE as int > 0) by(compute_only);
+        lemma_div_exact_with_remainder(block_id.slice_idx as int, rem, SLICE_SIZE as int);
+        assert(diff as int == (block_id.slice_idx as int) * (SLICE_SIZE as int) + rem) by(nonlinear_arith)
+            requires rem == diff as int - (block_id.slice_idx as int) * (SLICE_SIZE as int);
+        assert((diff as int) / (SLICE_SIZE as int) == block_id.slice_idx as int);
+        assert((diff / SLICE_SIZE as usize) as int == (diff as int) / (SLICE_SIZE as int)) by(nonlinear_arith);
+        assert((q as int) == (diff as int) / (SLICE_SIZE as int)) by(nonlinear_arith)
+            requires
+                q == diff / SLICE_SIZE as usize,
+                (diff / SLICE_SIZE as usize) as int == (diff as int) / (SLICE_SIZE as int);
+        assert((q as int) == block_id.slice_idx as int);
+        assert((q as int) <= (SLICES_PER_SEGMENT as int));
+        assert(SIZEOF_SEGMENT_HEADER as int + (SLICES_PER_SEGMENT as int) * (SIZEOF_PAGE_HEADER as int) <= SEGMENT_SIZE as int) by(compute_only);
+        assert((q * SIZEOF_PAGE_HEADER) as int == q as int * SIZEOF_PAGE_HEADER as int) by(nonlinear_arith)
+            requires
+                (q as int) <= (SLICES_PER_SEGMENT as int);
+        assert((s as int) + SIZEOF_SEGMENT_HEADER as int + q as int * SIZEOF_PAGE_HEADER as int <= segment_start(segment_id) + SEGMENT_SIZE) by(nonlinear_arith)
+            requires
+                s as int == segment_start(segment_id),
+                (q as int) <= (SLICES_PER_SEGMENT as int),
+                SIZEOF_SEGMENT_HEADER as int + (SLICES_PER_SEGMENT as int) * (SIZEOF_PAGE_HEADER as int) <= SEGMENT_SIZE as int;
+        assert((s as int) + SIZEOF_SEGMENT_HEADER as int + q as int * SIZEOF_PAGE_HEADER as int <= usize::MAX as int) by(nonlinear_arith)
+            requires
+                (s as int) + SIZEOF_SEGMENT_HEADER as int + q as int * SIZEOF_PAGE_HEADER as int <= segment_start(segment_id) + SEGMENT_SIZE,
+                segment_start(segment_id) + SEGMENT_SIZE < usize::MAX;
+    }
     let h = s + SIZEOF_SEGMENT_HEADER + q * SIZEOF_PAGE_HEADER;
+    proof {
+        reveal(is_block_ptr1);
+        let segment_id = block_id.page_id.segment_id;
+        let page_id = block_id.page_id_for_slice();
+        assert((q as int) == block_id.slice_idx as int);
+        let sh: usize = add(s, SIZEOF_SEGMENT_HEADER);
+        let qh: usize = mul(q, SIZEOF_PAGE_HEADER);
+        assert(h == add(sh, qh));
+        assert((s as int) + (SIZEOF_SEGMENT_HEADER as int) <= usize::MAX as int) by(nonlinear_arith)
+            requires
+                (s as int) + SIZEOF_SEGMENT_HEADER as int + q as int * SIZEOF_PAGE_HEADER as int <= usize::MAX as int,
+                0 <= q as int * SIZEOF_PAGE_HEADER as int;
+        assert(sh as int == (s as int) + (SIZEOF_SEGMENT_HEADER as int)) by(nonlinear_arith)
+            requires
+                sh == add(s, SIZEOF_SEGMENT_HEADER),
+                (s as int) + (SIZEOF_SEGMENT_HEADER as int) <= usize::MAX as int;
+        assert(qh as int == (q as int) * (SIZEOF_PAGE_HEADER as int)) by(nonlinear_arith)
+            requires
+                qh == mul(q, SIZEOF_PAGE_HEADER),
+                (q as int) * (SIZEOF_PAGE_HEADER as int) <= usize::MAX as int;
+        assert((sh as int) + (qh as int) <= usize::MAX as int) by(nonlinear_arith)
+            requires
+                sh as int == (s as int) + (SIZEOF_SEGMENT_HEADER as int),
+                qh as int == (q as int) * (SIZEOF_PAGE_HEADER as int),
+                (s as int) + SIZEOF_SEGMENT_HEADER as int + q as int * SIZEOF_PAGE_HEADER as int <= usize::MAX as int;
+        assert(h as int == (sh as int) + (qh as int)) by(nonlinear_arith)
+            requires
+                h == add(sh, qh),
+                (sh as int) + (qh as int) <= usize::MAX as int;
+        assert(h as int == (s as int) + SIZEOF_SEGMENT_HEADER as int + q as int * SIZEOF_PAGE_HEADER as int) by(nonlinear_arith)
+            requires
+                h as int == (sh as int) + (qh as int),
+                sh as int == (s as int) + (SIZEOF_SEGMENT_HEADER as int),
+                qh as int == (q as int) * (SIZEOF_PAGE_HEADER as int);
+        assert(h as int == page_header_start(page_id));
+        assert(0 <= page_id.idx <= SLICES_PER_SEGMENT);
+        assert(segment_start(page_id.segment_id) + SEGMENT_SIZE < usize::MAX);
+        assert((block_ptr.with_addr(h) as *mut Page) as int == page_header_start(page_id));
+        assert((block_ptr.with_addr(h) as *mut Page)@.provenance == page_id.segment_id.provenance);
+    }
     block_ptr.with_addr(h) as *mut Page
 }
 
 #[inline(always)]
-#[verifier::external_body]
+#[verus_verify]
 pub fn calculate_page_ptr_subtract_offset(
     page_ptr: *mut Page, offset: u32, Ghost(page_id): Ghost<PageId>, Ghost(target_page_id): Ghost<PageId>) -> (result: *mut Page)
+    requires
+        is_page_ptr(page_ptr, page_id),
+        page_id.segment_id == target_page_id.segment_id,
+        offset as int == (page_id.idx as int - target_page_id.idx as int) * (SIZEOF_PAGE_HEADER as int),
+    ensures
+        is_page_ptr(result, target_page_id),
 {
 
     let p = page_ptr.addr();
+    proof {
+        lemma_segment_start_basics(page_id.segment_id);
+        assert(p as int == page_ptr as int);
+        assert(p as int == page_header_start(page_id));
+        assert(offset as int == (page_id.idx as int - target_page_id.idx as int) * (SIZEOF_PAGE_HEADER as int));
+        assert(0 <= offset as int);
+        assert(target_page_id.idx <= page_id.idx) by(nonlinear_arith)
+            requires
+                offset as int == (page_id.idx as int - target_page_id.idx as int) * (SIZEOF_PAGE_HEADER as int),
+                0 <= offset as int,
+                0 < SIZEOF_PAGE_HEADER as int;
+        assert(0 <= target_page_id.idx <= SLICES_PER_SEGMENT) by(nonlinear_arith)
+            requires
+                target_page_id.idx <= page_id.idx,
+                0 <= page_id.idx <= SLICES_PER_SEGMENT;
+        assert((offset as int) <= (p as int)) by(nonlinear_arith)
+            requires
+                p as int == segment_start(page_id.segment_id) + SIZEOF_SEGMENT_HEADER as int + (page_id.idx as int) * (SIZEOF_PAGE_HEADER as int),
+                offset as int == (page_id.idx as int - target_page_id.idx as int) * (SIZEOF_PAGE_HEADER as int),
+                target_page_id.idx <= page_id.idx,
+                0 <= segment_start(page_id.segment_id),
+                0 <= SIZEOF_SEGMENT_HEADER as int;
+    }
     let q = p - offset as usize;
+    proof {
+        assert(q == sub(p, offset as usize));
+        assert((q as int) == p as int - offset as int) by(bit_vector)
+            requires
+                q == sub(p, offset as usize),
+                (offset as usize) <= p;
+        assert((q as int) == page_header_start(target_page_id)) by(nonlinear_arith)
+            requires
+                (q as int) == p as int - offset as int,
+                p as int == page_header_start(page_id),
+                page_id.segment_id == target_page_id.segment_id,
+                offset as int == (page_id.idx as int - target_page_id.idx as int) * (SIZEOF_PAGE_HEADER as int);
+        assert((page_ptr.with_addr(q)) as int == page_header_start(target_page_id));
+        assert((page_ptr.with_addr(q))@.provenance == target_page_id.segment_id.provenance);
+        assert(0 <= target_page_id.idx <= SLICES_PER_SEGMENT);
+        assert(segment_start(target_page_id.segment_id) + SEGMENT_SIZE < usize::MAX);
+    }
     page_ptr.with_addr(q)
 }
 
@@ -227,38 +861,204 @@ pub fn calculate_segment_page_start(
 }
 */
 
-#[verifier::external_body]
+#[verus_verify]
 pub fn calculate_page_start(page_ptr: PagePtr, block_size: usize) -> (addr: usize)
+    requires
+        page_ptr.wf(),
+    ensures
+        block_size == 0 ==> addr as int == page_start(page_ptr.page_id@),
+        block_size > 0 ==> addr as int == block_start_at(page_ptr.page_id@, block_size as int, 0),
 {
     let segment_ptr = SegmentPtr::ptr_segment(page_ptr);
+    proof {
+        assert(segment_ptr.wf());
+        assert(page_ptr.wf());
+        assert(page_ptr.page_id@.segment_id == segment_ptr.segment_id@);
+    }
     segment_page_start_from_slice(segment_ptr, page_ptr, block_size)
 }
 
-#[verifier::external_body]
+#[verus_verify]
 pub fn calculate_page_block_at(
     page_start: usize,
     block_size: usize,
     idx: usize,
     Ghost(page_id): Ghost<PageId>
 ) -> (p: usize)
+    requires
+        page_start as int == block_start_at(page_id, block_size as int, 0),
+        (page_start as int) + (idx as int) * (block_size as int) <= segment_start(page_id.segment_id) + SEGMENT_SIZE,
+        segment_start(page_id.segment_id) + SEGMENT_SIZE < usize::MAX,
+    ensures
+        p as int == block_start_at(page_id, block_size as int, idx as int),
 {
+    proof {
+        lemma_segment_start_basics(page_id.segment_id);
+        lemma_start_offset_bounds(block_size as int);
+        assert(0 <= block_start_at(page_id, block_size as int, 0)) by(nonlinear_arith)
+            requires
+                0 <= segment_start(page_id.segment_id),
+                0 <= page_id.idx,
+                0 <= SLICE_SIZE,
+                0 <= start_offset(block_size as int);
+        assert(0 <= page_start as int);
+        assert((idx as int) * (block_size as int) <= (usize::MAX as int)) by(nonlinear_arith)
+            requires
+                0 <= page_start as int,
+                (page_start as int) + (idx as int) * (block_size as int) <= segment_start(page_id.segment_id) + SEGMENT_SIZE,
+                segment_start(page_id.segment_id) + SEGMENT_SIZE < usize::MAX;
+        assert((mul(block_size, idx) as int) == block_size as int * idx as int) by(nonlinear_arith)
+            requires (idx as int) * (block_size as int) <= (usize::MAX as int);
+        assert((page_start as int) + ((mul(block_size, idx) as int)) <= (usize::MAX as int)) by(nonlinear_arith)
+            requires
+                (mul(block_size, idx) as int) == block_size as int * idx as int,
+                (page_start as int) + (idx as int) * (block_size as int) <= segment_start(page_id.segment_id) + SEGMENT_SIZE,
+                segment_start(page_id.segment_id) + SEGMENT_SIZE < usize::MAX;
+    }
     let p = page_start + block_size * idx;
+    proof {
+        assert(p == add(page_start, mul(block_size, idx)));
+        assert(p as int == page_start as int + (mul(block_size, idx) as int)) by(bit_vector)
+            requires
+                p == add(page_start, mul(block_size, idx)),
+                page_start as int + (mul(block_size, idx) as int) <= usize::MAX;
+        assert(mul(block_size, idx) as int == block_size as int * idx as int) by(nonlinear_arith)
+            requires (idx as int) * (block_size as int) <= (usize::MAX as int);
+        assert(block_size as int * idx as int == idx as int * block_size as int) by(nonlinear_arith);
+        assert(p as int == page_start as int + block_size as int * idx as int) by(nonlinear_arith)
+            requires
+                p as int == page_start as int + (mul(block_size, idx) as int),
+                mul(block_size, idx) as int == block_size as int * idx as int;
+        assert(p as int == page_start as int + idx as int * block_size as int) by(nonlinear_arith)
+            requires
+                p as int == page_start as int + block_size as int * idx as int,
+                block_size as int * idx as int == idx as int * block_size as int;
+        assert(p == page_start + idx as int * block_size as int);
+        assert(block_start_at(page_id, block_size as int, idx as int) == block_start_at(page_id, block_size as int, 0) + idx as int * block_size as int) by(nonlinear_arith);
+    }
     return p;
 }
 
+#[verifier::rlimit(200)]
 pub proof fn mk_segment_id(p: *mut SegmentHeader) -> (id: SegmentId)
-{ arbitrary() }
+    ensures
+        id.provenance == p@.provenance,
+        (p.addr() as int) % (SEGMENT_SIZE as int) == 0
+            && (p.addr() as int) + (SEGMENT_SIZE as int) < usize::MAX as int
+            ==> is_segment_ptr(p, id),
+{
+    let q = p.addr() / SEGMENT_SIZE as usize;
+    let id = SegmentId { id: q as nat, provenance: p@.provenance, uniq: 0 };
+    if (p.addr() as int) % (SEGMENT_SIZE as int) == 0
+            && (p.addr() as int) + (SEGMENT_SIZE as int) < usize::MAX as int {
+            reveal(segment_start);
+            assert((SEGMENT_SIZE as usize) as int == SEGMENT_SIZE as int) by(compute_only);
+            assert(SEGMENT_SIZE as int > 0) by(compute_only);
+            lemma_fundamental_div_mod(p.addr() as int, SEGMENT_SIZE as int);
+            assert(p.addr() as int == ((p.addr() as int) / (SEGMENT_SIZE as int)) * SEGMENT_SIZE as int) by(nonlinear_arith)
+                requires
+                    p.addr() as int == ((p.addr() as int) / (SEGMENT_SIZE as int)) * SEGMENT_SIZE as int
+                        + (p.addr() as int) % (SEGMENT_SIZE as int),
+                    (p.addr() as int) % (SEGMENT_SIZE as int) == 0;
+            assert((q as int) == (p.addr() as int) / (SEGMENT_SIZE as int)) by(nonlinear_arith)
+                requires
+                    q == p.addr() / SEGMENT_SIZE as usize,
+                    (SEGMENT_SIZE as usize) as int == SEGMENT_SIZE as int,
+                    SEGMENT_SIZE as int > 0;
+            assert(segment_start(id) == p.addr() as int) by(nonlinear_arith)
+                requires
+                    segment_start(id) == id.id * SEGMENT_SIZE as int,
+                    id.id == q as nat,
+                    (q as int) == (p.addr() as int) / (SEGMENT_SIZE as int),
+                    p.addr() as int == ((p.addr() as int) / (SEGMENT_SIZE as int)) * SEGMENT_SIZE as int;
+            assert(p as int == p.addr() as int);
+            assert((p as int) + (SEGMENT_SIZE as int) < (usize::MAX as int));
+            assert(is_segment_ptr(p, id));
+        }
+    id
+}
 
-#[verifier::external_body]
+#[verus_verify]
 pub fn segment_page_start_from_slice(
     segment_ptr: SegmentPtr,
     slice: PagePtr,
     xblock_size: usize)
   -> (res: usize) // start_offset
+    requires
+        segment_ptr.wf(),
+        slice.wf(),
+        slice.page_id@.segment_id == segment_ptr.segment_id@,
+    ensures ({ let start_offset = res; {
+        &&& xblock_size == 0 ==>
+            start_offset == segment_start(segment_ptr.segment_id@)
+                + slice.page_id@.idx * SLICE_SIZE
+        &&& xblock_size > 0 ==>
+            start_offset == block_start_at(slice.page_id@, xblock_size as int, 0)
+    }})
 {
 
+    proof {
+        let segment_id = segment_ptr.segment_id@;
+        lemma_segment_start_basics(segment_id);
+        assert(segment_ptr.segment_ptr.addr() as int == segment_start(segment_id));
+        assert(slice.page_ptr.addr() as int == page_header_start(slice.page_id@));
+        assert(SIZEOF_SEGMENT_HEADER as int <= SEGMENT_SIZE as int) by(compute_only);
+        assert((segment_ptr.segment_ptr.addr() as int) + (SIZEOF_SEGMENT_HEADER as int) <= (usize::MAX as int)) by(nonlinear_arith)
+            requires
+                segment_ptr.segment_ptr.addr() as int == segment_start(segment_id),
+                segment_start(segment_id) + SEGMENT_SIZE < usize::MAX,
+                SIZEOF_SEGMENT_HEADER as int <= SEGMENT_SIZE as int;
+        assert((segment_ptr.segment_ptr.addr() as int) + (SIZEOF_SEGMENT_HEADER as int) <= (slice.page_ptr.addr() as int)) by(nonlinear_arith)
+            requires
+                segment_ptr.segment_ptr.addr() as int == segment_start(segment_id),
+                slice.page_ptr.addr() as int == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER as int + slice.page_id@.idx * SIZEOF_PAGE_HEADER as int,
+                0 <= slice.page_id@.idx,
+                0 <= SIZEOF_PAGE_HEADER as int;
+    }
     let idxx = slice.page_ptr.addr() - (segment_ptr.segment_ptr.addr() + SIZEOF_SEGMENT_HEADER);
+    proof {
+        let segment_id = segment_ptr.segment_id@;
+        let sa: usize = slice.page_ptr.addr();
+        let seg_addr: usize = segment_ptr.segment_ptr.addr();
+        let base: usize = add(seg_addr, SIZEOF_SEGMENT_HEADER);
+        assert(idxx == sub(sa, base));
+        assert(base as int == seg_addr as int + SIZEOF_SEGMENT_HEADER as int) by(nonlinear_arith)
+            requires
+                base == add(seg_addr, SIZEOF_SEGMENT_HEADER),
+                seg_addr as int + SIZEOF_SEGMENT_HEADER as int <= usize::MAX as int;
+        assert(idxx as int == sa as int - base as int) by(bit_vector)
+            requires
+                idxx == sub(sa, base),
+                base <= sa;
+        assert(seg_addr as int == segment_ptr.segment_ptr.addr() as int);
+        assert(sa as int == slice.page_ptr.addr() as int);
+        assert(idxx as int == slice.page_ptr.addr() as int - (segment_ptr.segment_ptr.addr() as int + SIZEOF_SEGMENT_HEADER as int)) by(nonlinear_arith)
+            requires
+                idxx as int == sa as int - base as int,
+                base as int == seg_addr as int + SIZEOF_SEGMENT_HEADER as int,
+                seg_addr as int == segment_ptr.segment_ptr.addr() as int,
+                sa as int == slice.page_ptr.addr() as int;
+        assert(idxx as int == slice.page_id@.idx * SIZEOF_PAGE_HEADER as int) by(nonlinear_arith)
+            requires
+                idxx as int == slice.page_ptr.addr() as int - (segment_ptr.segment_ptr.addr() as int + SIZEOF_SEGMENT_HEADER as int),
+                segment_ptr.segment_ptr.addr() as int == segment_start(segment_id),
+                slice.page_ptr.addr() as int == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER as int + slice.page_id@.idx * SIZEOF_PAGE_HEADER as int;
+        assert(SIZEOF_PAGE_HEADER as int > 0) by(compute_only);
+    }
     let idx = idxx / SIZEOF_PAGE_HEADER;
+
+    proof {
+        assert(SIZEOF_PAGE_HEADER as int > 0) by(compute_only);
+        lemma_div_by_multiple(slice.page_id@.idx as int, SIZEOF_PAGE_HEADER as int);
+        assert(idx == idxx / SIZEOF_PAGE_HEADER);
+        assert((idxx / SIZEOF_PAGE_HEADER) as int == (idxx as int) / (SIZEOF_PAGE_HEADER as int)) by(nonlinear_arith);
+        assert((idx as int) == (idxx as int) / (SIZEOF_PAGE_HEADER as int)) by(nonlinear_arith)
+            requires
+                idx == idxx / SIZEOF_PAGE_HEADER,
+                (idxx / SIZEOF_PAGE_HEADER) as int == (idxx as int) / (SIZEOF_PAGE_HEADER as int);
+        assert(idx as int == slice.page_id@.idx as int);
+        assert((idx as int) <= (SLICES_PER_SEGMENT as int));
+    }
 
     let start_offset = if xblock_size >= INTPTR_SIZE as usize && xblock_size <= 1024 {
         3 * MAX_ALIGN_GUARANTEE
@@ -266,44 +1066,278 @@ pub fn segment_page_start_from_slice(
         0
     };
 
+    proof {
+        let segment_id = segment_ptr.segment_id@;
+        reveal(crate::layout::start_offset);
+        assert(INTPTR_SIZE as usize == 8usize) by(compute_only);
+        assert(start_offset as int == crate::layout::start_offset(xblock_size as int));
+        lemma_start_offset_bounds(xblock_size as int);
+        assert((start_offset as int) <= 3 * (MAX_ALIGN_GUARANTEE as int));
+        assert((idx * SLICE_SIZE as usize) as int == idx as int * SLICE_SIZE as int) by(nonlinear_arith)
+            requires (idx as int) <= (SLICES_PER_SEGMENT as int);
+        assert(SLICES_PER_SEGMENT as int * SLICE_SIZE as int == SEGMENT_SIZE as int) by(compute_only);
+        assert((segment_ptr.segment_ptr.addr() as int) + ((idx * SLICE_SIZE as usize) as int) <= segment_start(segment_id) + SEGMENT_SIZE) by(nonlinear_arith)
+            requires
+                segment_ptr.segment_ptr.addr() as int == segment_start(segment_id),
+                (idx * SLICE_SIZE as usize) as int == idx as int * SLICE_SIZE as int,
+                (idx as int) <= (SLICES_PER_SEGMENT as int),
+                SLICES_PER_SEGMENT as int * SLICE_SIZE as int == SEGMENT_SIZE as int;
+        lemma_segment_end_plus_small_fits(segment_id, start_offset as int);
+        assert((segment_ptr.segment_ptr.addr() as int) + ((idx * SLICE_SIZE as usize) as int) + (start_offset as int) <= (usize::MAX as int)) by(nonlinear_arith)
+            requires
+                (segment_ptr.segment_ptr.addr() as int) + ((idx * SLICE_SIZE as usize) as int) <= segment_start(segment_id) + SEGMENT_SIZE,
+                segment_start(segment_id) + SEGMENT_SIZE + start_offset as int <= usize::MAX;
+        assert((segment_ptr.segment_ptr.addr() + (idx * SLICE_SIZE as usize) + start_offset) as int
+            == segment_start(segment_id) + slice.page_id@.idx * SLICE_SIZE + start_offset as int) by(nonlinear_arith)
+            requires
+                segment_ptr.segment_ptr.addr() as int == segment_start(segment_id),
+                idx as int == slice.page_id@.idx as int,
+                (idx * SLICE_SIZE as usize) as int == idx as int * SLICE_SIZE as int;
+        if xblock_size == 0 {
+            assert(start_offset == 0);
+        } else {
+            assert(xblock_size > 0);
+            assert(segment_start(segment_id) + slice.page_id@.idx * SLICE_SIZE + start_offset as int
+                == block_start_at(slice.page_id@, xblock_size as int, 0));
+        }
+    }
+
     segment_ptr.segment_ptr.addr() + (idx * SLICE_SIZE as usize) + start_offset
 }
 
 #[verifier::spinoff_prover]
 #[inline]
-#[verifier::external_body]
+#[verus_verify]
 pub fn align_down(x: usize, y: usize) -> (res: usize)
+    requires
+        y > 0,
+    ensures
+        res <= x,
+        (res as int) % (y as int) == 0,
+        (x as int) < (res as int) + (y as int),
 {
     let mask = y - 1;
 
+    proof {
+        assert(0 < y as int);
+        assert(mask == y - 1);
+        assert(mask as int == y as int - 1) by(nonlinear_arith)
+            requires
+                y != 0,
+                mask == y - 1;
+        lemma_align_down_div_mul(x as int, y as int);
+    }
+
     if ((y & mask) == 0) { // power of two?
+        proof {
+            assert((x & !mask) <= x) by(bit_vector)
+                requires
+                    y != 0,
+                    mask == y - 1,
+                    y & mask == 0;
+            assert((x & !mask) % y == 0usize) by(bit_vector)
+                requires
+                    y != 0,
+                    mask == y - 1,
+                    y & mask == 0;
+            assert(sub(x, x & !mask) < y) by(bit_vector)
+                requires
+                    y != 0,
+                    mask == y - 1,
+                    y & mask == 0;
+            assert(sub(x, x & !mask) as int == x as int - (x & !mask) as int) by(bit_vector)
+                requires (x & !mask) <= x;
+            assert(((x & !mask) % y) as int == ((x & !mask) as int) % (y as int)) by(nonlinear_arith);
+            assert((x & !mask) as int <= x as int);
+            assert(((x & !mask) as int) % (y as int) == 0);
+            assert((x as int) < (x & !mask) as int + (y as int)) by(nonlinear_arith)
+                requires
+                    sub(x, x & !mask) as int == x as int - (x & !mask) as int,
+                    sub(x, x & !mask) < y;
+        }
         x & !mask
     } else {
+        proof {
+            assert((x / y) as int == (x as int) / (y as int)) by(nonlinear_arith);
+            assert(((x / y) as int) * (y as int) <= usize::MAX as int) by(nonlinear_arith)
+                requires
+                    ((x as int) / (y as int)) * (y as int) <= x as int,
+                    (x / y) as int == (x as int) / (y as int),
+                    x as int <= usize::MAX as int;
+            assert(((x / y) * y) as int == ((x as int) / (y as int)) * (y as int)) by(nonlinear_arith)
+                requires (x / y) as int == (x as int) / (y as int);
+            assert(((x / y) * y) as int <= x as int);
+            assert((((x / y) * y) as int) % (y as int) == 0);
+            assert((x as int) < ((x / y) * y) as int + (y as int));
+        }
         (x / y) * y
     }
 }
 
 #[inline]
-#[verifier::external_body]
+#[verus_verify]
 pub fn align_up(x: usize, y: usize) -> (res: usize)
+    requires
+        y > 0,
+        (x as int) + (y as int) - 1 <= usize::MAX as int,
+    ensures
+        x <= res,
+        (res as int) <= (x as int) + (y as int) - 1,
+        (res as int) % (y as int) == 0,
+        y == COMMIT_SIZE as usize && (x as int) <= SEGMENT_SIZE as int ==> (res as int) <= SEGMENT_SIZE as int,
 {
     let mask = y - 1;
 
+    proof {
+        assert(0 < y as int);
+        assert(mask == y - 1);
+        assert(mask as int == y as int - 1) by(nonlinear_arith)
+            requires
+                y != 0,
+                mask == y - 1;
+        assert((x as int) + (mask as int) <= usize::MAX as int) by(nonlinear_arith)
+            requires
+                mask as int == y as int - 1,
+                x as int + y as int - 1 <= usize::MAX as int;
+        assert(add(x, mask) as int == (x as int) + (mask as int));
+        assert(add(x, mask) as int == (x as int) + (y as int) - 1) by(nonlinear_arith)
+            requires
+                add(x, mask) as int == (x as int) + (mask as int),
+                mask as int == y as int - 1;
+        lemma_align_down_div_mul(add(x, mask) as int, y as int);
+        lemma_align_up_div_mul(x as int, y as int);
+    }
+
     if ((y & mask) == 0) { // power of two?
+        proof {
+            assert((add(x, mask) & !mask) <= add(x, mask)) by(bit_vector)
+                requires
+                    y != 0,
+                    mask == y - 1,
+                    y & mask == 0;
+            assert((add(x, mask) & !mask) % y == 0usize) by(bit_vector)
+                requires
+                    y != 0,
+                    mask == y - 1,
+                    y & mask == 0;
+            assert(sub(add(x, mask), add(x, mask) & !mask) < y) by(bit_vector)
+                requires
+                    y != 0,
+                    mask == y - 1,
+                    y & mask == 0;
+            assert(sub(add(x, mask), add(x, mask) & !mask) as int == add(x, mask) as int - (add(x, mask) & !mask) as int) by(bit_vector)
+                requires (add(x, mask) & !mask) <= add(x, mask);
+            assert(((add(x, mask) & !mask) % y) as int == ((add(x, mask) & !mask) as int) % (y as int)) by(nonlinear_arith);
+            assert(add(x, mask) as int == x as int + y as int - 1);
+            assert((add(x, mask) & !mask) as int <= x as int + y as int - 1);
+            assert(x as int <= (add(x, mask) & !mask) as int) by(nonlinear_arith)
+                requires
+                    add(x, mask) as int == x as int + y as int - 1,
+                    sub(add(x, mask), add(x, mask) & !mask) as int == add(x, mask) as int - (add(x, mask) & !mask) as int,
+                    sub(add(x, mask), add(x, mask) & !mask) < y;
+            assert(((add(x, mask) & !mask) as int) % (y as int) == 0);
+            if y == COMMIT_SIZE as usize && (x as int) <= SEGMENT_SIZE as int {
+                assert(COMMIT_SIZE as int > 0) by(compute_only);
+                assert((SEGMENT_SIZE as int) % (COMMIT_SIZE as int) == 0) by(compute_only);
+                assert((SEGMENT_SIZE as int) % (y as int) == 0);
+                lemma_round_multiple_le_cap((add(x, mask) & !mask) as int, x as int, y as int, SEGMENT_SIZE as int);
+                assert((add(x, mask) & !mask) as int <= SEGMENT_SIZE as int);
+            }
+        }
         (x + mask) & !mask
     } else {
+        proof {
+            assert((add(x, mask) / y) as int == (add(x, mask) as int) / (y as int)) by(nonlinear_arith);
+            assert(((add(x, mask) / y) as int) * (y as int) <= usize::MAX as int) by(nonlinear_arith)
+                requires
+                    ((add(x, mask) as int) / (y as int)) * (y as int) <= add(x, mask) as int,
+                    (add(x, mask) / y) as int == (add(x, mask) as int) / (y as int),
+                    add(x, mask) as int <= usize::MAX as int;
+            assert(((add(x, mask) / y) * y) as int == ((add(x, mask) as int) / (y as int)) * (y as int)) by(nonlinear_arith)
+                requires (add(x, mask) / y) as int == (add(x, mask) as int) / (y as int);
+            assert(add(x, mask) as int == x as int + y as int - 1);
+            assert(((add(x, mask) / y) * y) as int == ((x as int + y as int - 1) / (y as int)) * (y as int));
+            assert(x as int <= ((add(x, mask) / y) * y) as int);
+            assert(((add(x, mask) / y) * y) as int <= x as int + y as int - 1);
+            assert((((add(x, mask) / y) * y) as int) % (y as int) == 0);
+            if y == COMMIT_SIZE as usize && (x as int) <= SEGMENT_SIZE as int {
+                assert(COMMIT_SIZE as int > 0) by(compute_only);
+                assert((SEGMENT_SIZE as int) % (COMMIT_SIZE as int) == 0) by(compute_only);
+                assert((SEGMENT_SIZE as int) % (y as int) == 0);
+                lemma_round_multiple_le_cap(((add(x, mask) / y) * y) as int, x as int, y as int, SEGMENT_SIZE as int);
+                assert(((add(x, mask) / y) * y) as int <= SEGMENT_SIZE as int);
+            }
+        }
         ((x + mask) / y) * y
     }
 }
 
+
 impl SegmentPtr {
     #[inline]
-#[verifier::external_body]
+    #[verus_verify]
     pub fn ptr_segment(page_ptr: PagePtr) -> (segment_ptr: SegmentPtr)
+        ensures
+            segment_ptr.segment_id@ == page_ptr.page_id@.segment_id,
+            page_ptr.wf() ==> segment_ptr.wf(),
     {
 
         let p = page_ptr.page_ptr.addr();
+        proof {
+            assert(SEGMENT_SIZE as int > 0) by(compute_only);
+            lemma_align_down_div_mul(p as int, SEGMENT_SIZE as int);
+            assert((p / SEGMENT_SIZE as usize) as int == (p as int) / (SEGMENT_SIZE as int)) by(nonlinear_arith);
+            assert(((p / SEGMENT_SIZE as usize) as int) * (SEGMENT_SIZE as int) <= usize::MAX as int) by(nonlinear_arith)
+                requires
+                    ((p as int) / (SEGMENT_SIZE as int)) * (SEGMENT_SIZE as int) <= p as int,
+                    (p / SEGMENT_SIZE as usize) as int == (p as int) / (SEGMENT_SIZE as int),
+                    p as int <= usize::MAX as int;
+        }
         let s = (p / SEGMENT_SIZE as usize) * SEGMENT_SIZE as usize;
+        proof {
+            assert((p / SEGMENT_SIZE as usize) as int == (p as int) / (SEGMENT_SIZE as int)) by(nonlinear_arith);
+            assert(((p / SEGMENT_SIZE as usize) as int) * (SEGMENT_SIZE as int) <= usize::MAX as int) by(nonlinear_arith)
+                requires
+                    ((p as int) / (SEGMENT_SIZE as int)) * (SEGMENT_SIZE as int) <= p as int,
+                    (p / SEGMENT_SIZE as usize) as int == (p as int) / (SEGMENT_SIZE as int),
+                    p as int <= usize::MAX as int;
+            assert(s == mul(p / SEGMENT_SIZE as usize, SEGMENT_SIZE as usize));
+            assert(s as int == ((p / SEGMENT_SIZE as usize) as int) * (SEGMENT_SIZE as int)) by(bit_vector)
+                requires
+                    s == mul(p / SEGMENT_SIZE as usize, SEGMENT_SIZE as usize);
+            assert(s as int == ((p as int) / (SEGMENT_SIZE as int)) * (SEGMENT_SIZE as int)) by(nonlinear_arith)
+                requires
+                    s as int == ((p / SEGMENT_SIZE as usize) as int) * (SEGMENT_SIZE as int),
+                    (p / SEGMENT_SIZE as usize) as int == (p as int) / (SEGMENT_SIZE as int);
+            if page_ptr.wf() {
+                let segment_id = page_ptr.page_id@.segment_id;
+                let rem: int = p as int - segment_start(segment_id);
+                lemma_segment_start_basics(segment_id);
+                assert(p as int == page_ptr.page_ptr as int);
+                assert(p as int == page_header_start(page_ptr.page_id@));
+                assert(SIZEOF_SEGMENT_HEADER as int + (SLICES_PER_SEGMENT as int) * (SIZEOF_PAGE_HEADER as int) < SEGMENT_SIZE as int) by(compute_only);
+                assert(0 <= rem < SEGMENT_SIZE as int) by(nonlinear_arith)
+                    requires
+                        p as int == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER as int + page_ptr.page_id@.idx * SIZEOF_PAGE_HEADER as int,
+                        0 <= page_ptr.page_id@.idx <= SLICES_PER_SEGMENT,
+                        SIZEOF_SEGMENT_HEADER as int + (SLICES_PER_SEGMENT as int) * (SIZEOF_PAGE_HEADER as int) < SEGMENT_SIZE as int,
+                        rem == p as int - segment_start(segment_id);
+                lemma_div_exact_with_remainder(segment_id.id as int, rem, SEGMENT_SIZE as int);
+                assert(p as int == (segment_id.id as int) * (SEGMENT_SIZE as int) + rem) by(nonlinear_arith)
+                    requires
+                        segment_start(segment_id) == (segment_id.id as int) * (SEGMENT_SIZE as int),
+                        rem == p as int - segment_start(segment_id);
+                assert((p as int) / (SEGMENT_SIZE as int) == segment_id.id as int);
+                assert(s as int == segment_start(segment_id)) by(nonlinear_arith)
+                    requires
+                        s as int == ((p as int) / (SEGMENT_SIZE as int)) * (SEGMENT_SIZE as int),
+                        (p as int) / (SEGMENT_SIZE as int) == segment_id.id as int,
+                        segment_start(segment_id) == (segment_id.id as int) * (SEGMENT_SIZE as int);
+                assert((page_ptr.page_ptr.with_addr(s) as *mut SegmentHeader) as int == segment_start(segment_id));
+                assert((page_ptr.page_ptr.with_addr(s) as *mut SegmentHeader)@.provenance == segment_id.provenance);
+                assert(segment_start(segment_id) + SEGMENT_SIZE < usize::MAX);
+            }
+        }
         SegmentPtr {
             segment_ptr: page_ptr.page_ptr.with_addr(s) as *mut SegmentHeader,
             segment_id: Ghost(page_ptr.page_id@.segment_id),
@@ -314,9 +1348,15 @@ impl SegmentPtr {
 pub proof fn is_block_ptr_mult4(ptr: *mut u8, block_id: BlockId)
 { }
 
-#[verifier::external_body]
+#[verus_verify]
 pub fn calculate_start_offset(block_size: usize) -> (res: u32)
+    ensures
+        res as int == start_offset(block_size as int),
 {
+    proof {
+        reveal(start_offset);
+        assert(INTPTR_SIZE as int == 8) by(compute_only);
+    }
     if block_size >= 8 && block_size <= 1024 {
         3 * MAX_ALIGN_GUARANTEE as u32
     } else {

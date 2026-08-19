@@ -1,0 +1,1858 @@
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:113:1
+    |
+113 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:284:9
+    |
+284 |         reveal(Global::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:295:9
+    |
+295 |         reveal(HeapSharedAccess::wf2);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:296:9
+    |
+296 |         reveal(HeapSharedAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:297:9
+    |
+297 |         reveal(Heap::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:298:9
+    |
+298 |         reveal(TldPtr::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:299:9
+    |
+299 |         reveal(is_heap_ptr);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:300:9
+    |
+300 |         reveal(is_tld_ptr);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:360:9
+    |
+360 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:361:9
+    |
+361 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:362:9
+    |
+362 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:363:9
+    |
+363 |         reveal(HeapPtr::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:364:9
+    |
+364 |         reveal(HeapPtr::is_in);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:365:9
+    |
+365 |         reveal(HeapSharedAccess::wf2);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:366:9
+    |
+366 |         reveal(HeapSharedAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:367:9
+    |
+367 |         reveal(Heap::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:372:9
+    |
+372 |         reveal(HeapLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:373:9
+    |
+373 |         reveal(HeapLocalAccess::wf_basic);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:374:9
+    |
+374 |         reveal(pages_free_direct_is_correct);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:375:9
+    |
+375 |         reveal(pages_free_direct_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:429:5
+    |
+429 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:473:1
+    |
+473 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:573:9
+    |
+573 |         reveal(size_of_bin);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:880:1
+    |
+880 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1019:1
+     |
+1019 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1061:1
+     |
+1061 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1212:1
+     |
+1212 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1291:9
+     |
+1291 |         reveal(EmptyPageStuff::wf);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1346:1
+     |
+1346 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1353:1
+     |
+1353 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1200:1
+     |
+1200 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1316:21
+     |
+1316 |                     reveal(pages_free_direct_match);
+     |                     ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1365:21
+     |
+1365 |                     reveal(size_of_bin);
+     |                     ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1394:13
+     |
+1394 |             reveal(pages_free_direct_match);
+     |             ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> queues.rs:27:1
+   |
+27 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> queues.rs:70:9
+   |
+70 |         reveal(PageOrg::State::valid_used_page);
+   |         ^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> queues.rs:71:9
+   |
+71 |         reveal(PageOrg::State::ll_basics);
+   |         ^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:154:17
+    |
+154 |                 reveal(PageOrg::State::valid_used_page);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:167:9
+    |
+167 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:199:9
+    |
+199 |         reveal(Local::wf_main_for_page_access);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:201:9
+    |
+201 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:202:9
+    |
+202 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:203:9
+    |
+203 |         reveal(HeapLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:204:9
+    |
+204 |         reveal(pages_free_direct_is_correct);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:205:9
+    |
+205 |         reveal(pages_free_direct_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:288:29
+    |
+288 | ...                   reveal(pages_free_direct_match);
+    |                       ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:371:17
+    |
+371 |                 reveal(Local::is_used_primary);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:414:1
+    |
+414 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:448:9
+    |
+448 |         reveal(PageOrg::State::ll_basics);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:449:9
+    |
+449 |         reveal(PageOrg::State::inv_used);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:503:9
+    |
+503 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:530:9
+    |
+530 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:531:9
+    |
+531 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:532:9
+    |
+532 |         reveal(HeapLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:533:9
+    |
+533 |         reveal(pages_free_direct_is_correct);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:534:9
+    |
+534 |         reveal(pages_free_direct_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:687:17
+    |
+687 |                 reveal(Local::is_used_primary);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> page.rs:1449:1
+     |
+1449 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> page.rs:1177:1
+     |
+1177 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:985:1
+    |
+985 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:913:1
+    |
+913 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> os_alloc.rs:71:1
+   |
+71 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:409:1
+    |
+409 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:468:1
+    |
+468 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:475:1
+    |
+475 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:485:1
+    |
+485 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_commit.rs:182:1
+    |
+182 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:564:1
+    |
+564 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:586:1
+    |
+586 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:969:1
+    |
+969 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_segment.rs:1821:1
+     |
+1821 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:225:1
+    |
+225 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:255:1
+    |
+255 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:327:17
+    |
+327 |                 reveal(PageOrg::State::valid_unused_page);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:336:17
+    |
+336 |                 reveal(PageOrg::State::valid_unused_page);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:468:1
+    |
+468 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:644:13
+    |
+644 |             reveal(Local::is_used_primary);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:659:1
+    |
+659 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:759:13
+    |
+759 |             reveal(PageOrg::State::ll_basics);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:760:13
+    |
+760 |             reveal(PageOrg::State::ll_inv_valid_unused);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:761:13
+    |
+761 |             reveal(PageOrg::State::valid_unused_page);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:958:13
+    |
+958 |             reveal(Local::is_used_primary);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:973:1
+    |
+973 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:1017:9
+     |
+1017 |         reveal(segment_span_allocate_page_org_pre);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:1570:13
+     |
+1570 |             reveal(page_organization_pages_match_data);
+     |             ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:2736:1
+     |
+2736 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:2814:1
+     |
+2814 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:3304:1
+     |
+3304 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:3355:1
+     |
+3355 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:3403:9
+     |
+3403 |         reveal(PageOrg::State::page_id_domain);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:3760:1
+     |
+3760 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:4060:1
+     |
+4060 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:944:1
+    |
+944 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:968:9
+    |
+968 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:969:9
+    |
+969 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:970:9
+    |
+970 |         reveal(MimDeallocInner::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:971:9
+    |
+971 |         reveal(valid_block_token);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:594:1
+    |
+594 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:662:13
+    |
+662 |             reveal(MimDeallocInner::wf);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:663:13
+    |
+663 |             reveal(valid_block_token);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:302:1
+    |
+302 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:272:1
+    |
+272 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:110:9
+    |
+110 | verus!{ #[verus_verify]
+    |         ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> alloc_generic.rs:595:1
+    |
+595 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> alloc_fast.rs:32:1
+   |
+32 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> alloc_fast.rs:57:1
+   |
+57 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:455:5
+    |
+455 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:467:5
+    |
+467 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:515:5
+    |
+515 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:532:5
+    |
+532 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:619:5
+    |
+619 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:664:5
+    |
+664 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:917:5
+    |
+917 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:935:5
+    |
+935 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:983:5
+    |
+983 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_mask.rs:1328:5
+     |
+1328 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_mask.rs:1345:5
+     |
+1345 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:3611:1
+     |
+3611 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:3629:1
+     |
+3629 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:3647:1
+     |
+3647 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:3665:1
+     |
+3665 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:3689:1
+     |
+3689 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:3710:1
+     |
+3710 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1456:5
+     |
+1456 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1658:5
+     |
+1658 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:397:5
+    |
+397 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> bin_sizes.rs:714:1
+    |
+714 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> bin_sizes.rs:934:1
+    |
+934 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:119:1
+    |
+119 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:123:1
+    |
+123 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:127:1
+    |
+127 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:131:1
+    |
+131 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:139:1
+    |
+139 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:143:1
+    |
+143 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:559:1
+    |
+559 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:569:9
+    |
+569 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:586:9
+    |
+586 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:668:1
+    |
+668 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:679:9
+    |
+679 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:695:9
+    |
+695 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:741:9
+    |
+741 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:784:1
+    |
+784 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:864:1
+    |
+864 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:881:1
+    |
+881 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:981:1
+    |
+981 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1071:9
+     |
+1071 |         reveal(crate::layout::start_offset);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1110:1
+     |
+1110 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1178:1
+     |
+1178 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1278:5
+     |
+1278 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1351:1
+     |
+1351 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1357:9
+     |
+1357 |         reveal(start_offset);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:36:5
+   |
+36 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:58:5
+   |
+58 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:88:5
+   |
+88 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1146:5
+     |
+1146 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1168:5
+     |
+1168 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1186:5
+     |
+1186 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1203:5
+     |
+1203 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1231:5
+     |
+1231 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1248:5
+     |
+1248 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1276:5
+     |
+1276 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1293:5
+     |
+1293 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1321:5
+     |
+1321 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1339:5
+     |
+1339 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1352:5
+     |
+1352 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1420:5
+     |
+1420 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1437:5
+     |
+1437 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1473:5
+     |
+1473 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1515:5
+     |
+1515 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1524:5
+     |
+1524 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1535:5
+     |
+1535 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1650:5
+     |
+1650 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1727:5
+     |
+1727 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1760:5
+     |
+1760 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1789:5
+     |
+1789 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1818:5
+     |
+1818 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1831:5
+     |
+1831 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1844:5
+     |
+1844 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1858:5
+     |
+1858 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1871:5
+     |
+1871 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1884:5
+     |
+1884 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1897:5
+     |
+1897 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1923:5
+     |
+1923 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1936:5
+     |
+1936 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2003:5
+     |
+2003 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2014:5
+     |
+2014 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2022:5
+     |
+2022 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2087:5
+     |
+2087 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2133:5
+     |
+2133 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2253:5
+     |
+2253 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2295:5
+     |
+2295 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2334:5
+     |
+2334 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2373:5
+     |
+2373 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2503:5
+     |
+2503 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2623:5
+     |
+2623 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2643:5
+     |
+2643 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2706:5
+     |
+2706 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2788:5
+     |
+2788 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2960:5
+     |
+2960 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2976:5
+     |
+2976 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: use of deprecated method `vstd::prelude::OptionAdditionalFns::is_None`: is_Variant is deprecated - use `->` or `matches` instead: https://verus-lang.github.io/verus/guide/datatypes_enum.html
+   --> linked_list.rs:527:51
+    |
+527 |                         assert(self.data@.heap_id.is_None() || self.perms@[i].2.value().heap_id == self.data@.heap_id);
+    |                                                   ^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `vstd::prelude::OptionAdditionalFns::is_None`: is_Variant is deprecated - use `->` or `matches` instead: https://verus-lang.github.io/verus/guide/datatypes_enum.html
+   --> linked_list.rs:820:46
+    |
+820 |                     assert(out.data@.heap_id.is_None() || out.perms@[i].2.value().heap_id == out.data@.heap_id);
+    |                                              ^^^^^^^
+
+warning: use of deprecated method `vstd::prelude::ResultAdditionalSpecFns::is_Ok`: is_Variant is deprecated - use `->` or `matches` instead: https://verus-lang.github.io/verus/guide/datatypes_enum.html
+   --> free.rs:751:39
+    |
+751 |             let ghost ok = cas_result.is_Ok();
+    |                                       ^^^^^
+
+warning: use of deprecated method `vstd::prelude::OptionAdditionalFns::is_None`: is_Variant is deprecated - use `->` or `matches` instead: https://verus-lang.github.io/verus/guide/datatypes_enum.html
+    --> segment.rs:1593:51
+     |
+1593 |                     if page_data.page_header_kind.is_None() {
+     |                                                   ^^^^^^^
+
+error: reveal/fuel statement is not allowed here because the function `lib::page_organization::PageOrg::State::good_range_used` is marked 'closed' and thus its body is not visible here. (Note: 'reveal' statements are intended for functions that are opaque, not functions that are closed)
+   --> os_mem_util.rs:618:9
+    |
+618 |         reveal(PageOrg::State::good_range_used);
+    |         ^^^^^^
+
+error: aborting due to 1 previous error; 204 warnings emitted
+
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:           13135 ms
+    rust-time:                8205 ms
+        init-and-types:           8205 ms
+        trait-conflicts:             0 ms
+        compile-time:                0 ms
+    verification-time:        1087 ms
+        vir-time:                 1087 ms
+            hir-time:                  884 ms
+            import-time:               202 ms
+            rust-to-vir:                 0 ms
+        verify-crate-time:           0 ms
+    unaccounted-time:         3842 ms
+
+verify-crate-time-breakdown
+    total verify-time:              0 ms   (1 threads)
+        total air-time:                 0 ms   (1 threads)

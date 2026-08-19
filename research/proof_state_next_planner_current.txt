@@ -1,0 +1,4 @@
+proof_state: 192 reachable functions, 519 edges; 10 WIP nodes/10 trust leaves, 0 unentered, 0 unknown; 0 unmapped trust; 17 unreachable trust; topology cache hit.
+  top frontier: 2; bottom frontier: 0
+wip_trust    verus-mimalloc/alloc_fast.rs:265 heap_malloc_small_zero  [verus-mimalloc/alloc_fast.rs::heap_malloc_small_zero@L265]
+wip_trust    verus-mimalloc/alloc_generic.rs:542 malloc_generic  [verus-mimalloc/alloc_generic.rs::malloc_generic@L542]

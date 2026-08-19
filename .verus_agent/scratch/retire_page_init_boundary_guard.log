@@ -1,0 +1,4 @@
+boundary_guard: FAIL — a frozen boundary was breached.
+VACUOUS trust retirement (an admit was removed without any postcondition taking its place):
+  [vacuous retire] verus-mimalloc/page.rs: `page_init` dropped its trust marker but declares no `ensures`
+      the admit count fell without any obligation replacing it; restore the postcondition and prove it.

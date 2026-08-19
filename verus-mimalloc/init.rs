@@ -32,7 +32,10 @@ pub tracked struct Global {
 
 impl Global {
     #[verifier::type_invariant]
-    pub(crate) uninterp spec fn wf(&self) -> bool;
+    pub(crate) closed spec fn wf(&self) -> bool {
+        self.my_inst.instance_id() == self.instance.id()
+        && self.my_inst.value() == self.instance.id()
+    }
 
     pub open(crate) spec fn wf_right_to_use_thread(&self, right: RightToUseThread, tid: ThreadId) -> bool {
         right.instance_id() == self.instance.id() && right.element() == tid
@@ -55,7 +58,6 @@ impl RightToUseThread {
 
 //impl Copy for Global { }
 
-#[verifier::external_body]
 pub proof fn global_init() -> (tracked res: (Global, Map<ThreadId, Mim::right_to_use_thread>))    // $line_count$Trusted$
     ensures // $line_count$Trusted$
         forall |tid: ThreadId| #[trigger] res.1.dom().contains(tid) // $line_count$Trusted$
@@ -65,10 +67,50 @@ pub proof fn global_init() -> (tracked res: (Global, Map<ThreadId, Mim::right_to
         Map::tracked_empty(), Map::tracked_empty(), Map::tracked_empty(),
         );
     let tracked my_inst = instance.set_inst(instance.id(), right_to_set_inst.tracked_unwrap());
-    (Global { instance, my_inst }, rights.into_map())
+    let tracked rights_map = rights.into_map();
+    let tracked global = Global { instance, my_inst };
+    assert forall |tid: ThreadId| #[trigger] rights_map.dom().contains(tid)
+        && global.wf_right_to_use_thread(rights_map[tid], tid) by {
+        assert(tid == ThreadId { thread_id: tid.thread_id });
+    }
+    (global, rights_map)
 }
 
-#[verifier::external_body]
+#[verifier::rlimit(200)]
+proof fn lemma_pages_free_direct_correct(
+    pfd: Seq<*mut Page>,
+    pages: Seq<PageQueue>,
+    emp: *mut Page,
+)
+    requires
+        pfd.len() == PAGES_DIRECT,
+        pages.len() == BIN_FULL + 1,
+        forall |i: int| 0 <= i < pfd.len() ==> #[trigger] pfd[i] == emp,
+        forall |i: int| 0 <= i < pages.len() ==> (#[trigger] pages[i]).first.addr() == 0,
+    ensures
+        pages_free_direct_is_correct(pfd, pages, emp),
+{
+    reveal(pages_free_direct_is_correct);
+    reveal(pages_free_direct_match);
+    assert forall |wsize: int| 0 <= wsize < pfd.len() implies
+        pages_free_direct_match(
+            #[trigger] pfd[wsize],
+            pages[smallest_bin_fitting_size(wsize * INTPTR_SIZE)].first,
+            emp)
+    by {
+        direct_wsize_bin_bounds(wsize);
+        let idx = smallest_bin_fitting_size(wsize * INTPTR_SIZE);
+        assert(0 <= idx < pages.len());
+        assert(pfd[wsize] == emp);
+        assert(pages[idx].first.addr() == 0);
+        assert(pages[idx].first as int == pages[idx].first.addr() as int);
+        assert(pages[idx].first as int == 0);
+        assert(pfd[wsize] as int == emp as int);
+        assert(pages_free_direct_match(pfd[wsize], pages[idx].first, emp));
+    };
+}
+
+#[verus_verify]
 pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
       Tracked(right): Tracked<Mim::right_to_use_thread>, // $line_count$Trusted$
       Tracked(cur_thread): Tracked<IsThread> // $line_count$Trusted$
@@ -94,8 +136,56 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
     vstd::layout::layout_for_type_is_valid::<Heap>(); // $line_count$Proof$
     vstd::layout::layout_for_type_is_valid::<Tld>(); // $line_count$Proof$
 
+    let ghost thread_data_start = addr.addr() as int;
+    let ghost thread_data_points_to_dom = mem.points_to.dom();
+    proof {
+        assert(addr.addr() != MAP_FAILED);
+        assert(0 <= SIZEOF_HEAP as int) by(compute_only);
+        assert(0 <= SIZEOF_TLD as int) by(compute_only);
+        assert(SIZEOF_HEAP as int <= 4096) by(compute_only);
+        assert(SIZEOF_HEAP as int + SIZEOF_TLD as int <= 4096) by(compute_only);
+        assert(thread_data_start == addr as int);
+        lemma_int_range_prefix(thread_data_start, SIZEOF_HEAP as int, 4096);
+        assert(set_int_range(thread_data_start, thread_data_start + 4096) <= mem.range_os_rw());
+        assert(mem.range_os_rw() <= mem.range_points_to());
+        assert(set_int_range(thread_data_start, thread_data_start + 4096) <= mem.range_points_to());
+        assert(set_int_range(thread_data_start, thread_data_start + SIZEOF_HEAP as int) <= mem.range_points_to());
+        assert(set_int_range(thread_data_start, thread_data_start + 4096) <= thread_data_points_to_dom);
+        assert(mem.pointsto_has_range(thread_data_start, SIZEOF_HEAP as int));
+        assert(mem.pointsto_has_range(addr as int, SIZEOF_HEAP as int));
+    }
     let tracked points_to_heap_raw = mem.take_points_to_range(addr as int, SIZEOF_HEAP as int);
+    proof {
+        lemma_int_range_suffix_after_prefix_removed(thread_data_start, SIZEOF_HEAP as int, SIZEOF_TLD as int, 4096);
+        assert(mem.points_to.dom() == thread_data_points_to_dom.difference(
+            set_int_range(thread_data_start, thread_data_start + SIZEOF_HEAP as int)));
+        assert(set_int_range(thread_data_start + SIZEOF_HEAP as int, thread_data_start + SIZEOF_HEAP as int + SIZEOF_TLD as int)
+            <= mem.range_points_to());
+        assert(mem.pointsto_has_range(thread_data_start + SIZEOF_HEAP as int, SIZEOF_TLD as int));
+        assert(addr as usize + SIZEOF_HEAP == thread_data_start + SIZEOF_HEAP as int);
+        assert(mem.pointsto_has_range(addr as usize + SIZEOF_HEAP, SIZEOF_TLD as int));
+    }
     let tracked points_to_tld_raw = mem.take_points_to_range(addr as usize + SIZEOF_HEAP, SIZEOF_TLD as int);
+    let ghost tld_start_usize: usize = add(addr.addr(), SIZEOF_HEAP);
+    proof {
+        lemma_thread_data_alignment(thread_data_start);
+        heap_tld_layout_facts();
+        assert(align_of::<Heap>() == 8);
+        assert(align_of::<Tld>() == 8);
+        assert(addr.addr() as int % align_of::<Heap>() as int == 0);
+        assert(0 <= thread_data_start + SIZEOF_HEAP as int);
+        assert(thread_data_start + 4096 < usize::MAX as int);
+        assert(thread_data_start + SIZEOF_HEAP as int <= usize::MAX as int) by(nonlinear_arith)
+            requires
+                thread_data_start + 4096 < usize::MAX as int,
+                SIZEOF_HEAP as int <= 4096;
+        assert(tld_start_usize as int == addr.addr() as int + SIZEOF_HEAP as int);
+        assert(tld_start_usize as int == thread_data_start + SIZEOF_HEAP as int) by(nonlinear_arith)
+            requires
+                tld_start_usize as int == addr.addr() as int + SIZEOF_HEAP as int,
+                thread_data_start == addr.addr() as int;
+        assert(tld_start_usize as int % align_of::<Tld>() as int == 0);
+    }
     let tracked mut points_to_heap = points_to_heap_raw.into_typed(addr as usize);
     let tracked mut points_to_tld = points_to_tld_raw.into_typed((addr as int + SIZEOF_HEAP) as usize);
     let heap_ptr = addr as *mut Heap;
@@ -184,6 +274,44 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
 
     let tracked heap_shared_access = HeapSharedAccess { points_to: points_to_heap };
 
+    proof {
+        cur_thread.agrees(is_thread);
+        assert(is_thread@ == thread_id);
+        assert(cur_thread@ == thread_id);
+        assert(global.wf_right_to_use_thread(right, thread_id));
+        assert(right.instance_id() == global.instance.id());
+        assert(right.element() == thread_id);
+        reveal(Global::wf);
+        use_type_invariant(&global);
+        assert(global.wf());
+        assert(global.my_inst.instance_id() == global.instance.id());
+        assert(global.my_inst.value() == global.instance.id());
+        assert(uniq_reservation_tok.element() == HeapId {
+            id: 0,
+            uniq: heap.heap_id@.uniq,
+            provenance: Provenance::null(),
+        });
+
+        reveal(HeapSharedAccess::wf2);
+        reveal(HeapSharedAccess::wf);
+        reveal(Heap::wf);
+        reveal(TldPtr::wf);
+        reveal(is_heap_ptr);
+        reveal(is_tld_ptr);
+        assert(heap.heap_id@.id == heap_ptr.addr());
+        assert(heap.heap_id@.provenance == heap_ptr@.provenance);
+        assert(tld.tld_id@.id == tld_ptr.addr());
+        assert(tld.tld_id@.provenance == tld_ptr@.provenance);
+        assert(tld.wf());
+        assert(heap_shared_access.points_to.ptr() == heap_ptr);
+        assert(heap_shared_access.points_to.is_init());
+        assert(heap_shared_access.points_to.value().tld_ptr == tld);
+        assert(heap_shared_access.points_to.value().thread_delayed_free.wf());
+        assert(heap_shared_access.points_to.value().thread_delayed_free.instance@.id() == global.instance.id());
+        assert(heap_shared_access.points_to.value().thread_delayed_free.heap_id == heap.heap_id@);
+        assert(heap_shared_access.wf2(heap.heap_id@, global.instance.id()));
+    }
+
     
 
     let tracked (Tracked(thread_token), Tracked(checked_token)) = global.instance.create_thread_mk_tokens(
@@ -228,6 +356,69 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
         page_empty_global: page_empty_ptr_access,
     };
 
+    proof {
+        reveal(Local::wf);
+        reveal(Local::wf_main);
+        reveal(Local::page_organization_valid);
+        reveal(HeapPtr::wf);
+        reveal(HeapPtr::is_in);
+        reveal(HeapSharedAccess::wf2);
+        reveal(HeapSharedAccess::wf);
+        reveal(Heap::wf);
+        assert(local.inst() == global.inst());
+        assert(heap.wf());
+        assert(heap.is_in(local));
+
+        reveal(HeapLocalAccess::wf);
+        reveal(HeapLocalAccess::wf_basic);
+        reveal(pages_free_direct_is_correct);
+        reveal(pages_free_direct_match);
+        assert(is_tld_ptr(local.tld.ptr(), local.tld_id));
+        assert(local.thread_token.instance_id() == local.instance.id());
+        assert(local.thread_token.key() == local.thread_id);
+        assert(local.thread_id == local.is_thread@);
+        assert(local.checked_token.instance_id() == local.instance.id());
+        assert(local.checked_token.key() == local.thread_id);
+        assert(local.my_inst.instance_id() == local.instance.id());
+        assert(local.my_inst.value() == local.instance.id());
+        assert(local.thread_token.value().segments.dom() == local.segments.dom());
+        assert(local.thread_token.value().heap_id == local.heap_id);
+        assert(local.heap.wf_basic(local.heap_id, local.thread_token.value().heap, local.tld_id, local.instance.id()));
+        assert(local.page_empty_global@.s.points_to.ptr() == page_empty_ptr);
+        assert(local.thread_token.value().heap.shared_access.points_to.value().page_empty_ptr == local.page_empty_global@.s.points_to.ptr());
+        lemma_pages_free_direct_correct(
+            local.heap.pages_free_direct.value()@,
+            local.heap.pages.value()@,
+            local.page_empty_global@.s.points_to.ptr());
+        assert(pages_free_direct_is_correct(
+            local.heap.pages_free_direct.value()@,
+            local.heap.pages.value()@,
+            local.page_empty_global@.s.points_to.ptr()));
+        assert(local.heap.wf(local.heap_id, local.thread_token.value().heap, local.tld_id, local.instance.id(), local.page_empty_global@.s.points_to.ptr()));
+        assert(local.thread_token.value().pages.dom().subset_of(local.pages.dom()));
+        assert(local.pages.dom() =~= Set::empty());
+        assert(local.unused_pages.dom() =~= Set::empty());
+        assert(local.segments.dom() =~= Set::empty());
+        assert(local.thread_token.value().pages.dom() =~= Set::empty());
+        assert forall |page_id|
+            #[trigger] local.pages.dom().contains(page_id)
+        implies
+            (local.unused_pages.dom().contains(page_id) <==>
+                !local.thread_token.value().pages.dom().contains(page_id))
+        by { assert(!local.pages.dom().contains(page_id)); };
+        assert forall |segment_id|
+            #[trigger] local.segments.dom().contains(segment_id)
+        implies
+            local.mem_chunk_good(segment_id)
+        by { assert(!local.segments.dom().contains(segment_id)); };
+        assert(local.tld.is_init());
+        assert(local.page_organization_valid());
+        assert(local.page_empty_global@.wf_empty_page_global());
+        assert(local.wf_main());
+        assert(local.page_organization.popped == Popped::No);
+        assert(local.wf());
+    }
+
 
     (heap, Tracked(Some(local)))
 }
@@ -235,8 +426,14 @@ pub fn heap_init(Tracked(global): Tracked<Global>, // $line_count$Trusted$
 
 impl PageQueue {
     #[inline]
-#[verifier::external_body]
+    #[verus_verify]
     fn empty(wsize: usize) -> (pq: PageQueue)
+        requires
+            (wsize as int) * (INTPTR_SIZE as int) <= usize::MAX as int,
+        ensures
+            pq.first.addr() == 0,
+            pq.last.addr() == 0,
+            pq.block_size as int == (wsize as int) * (INTPTR_SIZE as int),
     {
 
         PageQueue {
@@ -247,9 +444,40 @@ impl PageQueue {
     }
 }
 
+spec fn pages_tmp_blocks_ok(pages: Seq<PageQueue>, i: int) -> bool
+    decreases 75 - i,
+{
+    if 0 <= i < 75 {
+        (!valid_bin_idx(i) || pages[i].block_size == size_of_bin(i))
+            && pages_tmp_blocks_ok(pages, i + 1)
+    } else {
+        true
+    }
+}
+
+proof fn pages_tmp_blocks_ok_implies(pages: Seq<PageQueue>, start: int, i: int)
+    requires
+        pages_tmp_blocks_ok(pages, start),
+        0 <= start <= i < 75,
+        valid_bin_idx(i),
+    ensures
+        pages[i].block_size == size_of_bin(i),
+    decreases i - start,
+{
+    if start < i {
+        pages_tmp_blocks_ok_implies(pages, start + 1, i);
+    }
+}
+
 #[inline]
-#[verifier::external_body]
+#[verus_verify]
 fn pages_tmp() -> (pages: [PageQueue; 75])
+    ensures
+        pages@.len() == BIN_FULL as int + 1,
+        pages[0].block_size == 8,
+        pages[BIN_FULL as int].block_size == 8 * (524288 + 2),
+        forall |i: int| #[trigger] valid_bin_idx(i) ==> pages[i].block_size == size_of_bin(i),
+        forall |i: int| 0 <= i < pages@.len() ==> (#[trigger] pages[i]).first.addr() == 0 && pages[i].last.addr() == 0,
 {
     let pages = [
         PageQueue::empty(1),
@@ -341,12 +569,319 @@ fn pages_tmp() -> (pages: [PageQueue; 75])
         PageQueue::empty(524288 + 2),
     ];
 
+    proof {
+        reveal(size_of_bin);
+        assert(size_of_bin(1) == 8) by(compute_only);
+        assert(pages[1].block_size == 8);
+        assert(pages[1].block_size == size_of_bin(1));
+        assert(size_of_bin(2) == 16) by(compute_only);
+        assert(pages[2].block_size == 16);
+        assert(pages[2].block_size == size_of_bin(2));
+        assert(size_of_bin(3) == 24) by(compute_only);
+        assert(pages[3].block_size == 24);
+        assert(pages[3].block_size == size_of_bin(3));
+        assert(size_of_bin(4) == 32) by(compute_only);
+        assert(pages[4].block_size == 32);
+        assert(pages[4].block_size == size_of_bin(4));
+        assert(size_of_bin(5) == 40) by(compute_only);
+        assert(pages[5].block_size == 40);
+        assert(pages[5].block_size == size_of_bin(5));
+        assert(size_of_bin(6) == 48) by(compute_only);
+        assert(pages[6].block_size == 48);
+        assert(pages[6].block_size == size_of_bin(6));
+        assert(size_of_bin(7) == 56) by(compute_only);
+        assert(pages[7].block_size == 56);
+        assert(pages[7].block_size == size_of_bin(7));
+        assert(size_of_bin(8) == 64) by(compute_only);
+        assert(pages[8].block_size == 64);
+        assert(pages[8].block_size == size_of_bin(8));
+        assert(size_of_bin(9) == 80) by(compute_only);
+        assert(pages[9].block_size == 80);
+        assert(pages[9].block_size == size_of_bin(9));
+        assert(size_of_bin(10) == 96) by(compute_only);
+        assert(pages[10].block_size == 96);
+        assert(pages[10].block_size == size_of_bin(10));
+        assert(size_of_bin(11) == 112) by(compute_only);
+        assert(pages[11].block_size == 112);
+        assert(pages[11].block_size == size_of_bin(11));
+        assert(size_of_bin(12) == 128) by(compute_only);
+        assert(pages[12].block_size == 128);
+        assert(pages[12].block_size == size_of_bin(12));
+        assert(size_of_bin(13) == 160) by(compute_only);
+        assert(pages[13].block_size == 160);
+        assert(pages[13].block_size == size_of_bin(13));
+        assert(size_of_bin(14) == 192) by(compute_only);
+        assert(pages[14].block_size == 192);
+        assert(pages[14].block_size == size_of_bin(14));
+        assert(size_of_bin(15) == 224) by(compute_only);
+        assert(pages[15].block_size == 224);
+        assert(pages[15].block_size == size_of_bin(15));
+        assert(size_of_bin(16) == 256) by(compute_only);
+        assert(pages[16].block_size == 256);
+        assert(pages[16].block_size == size_of_bin(16));
+        assert(size_of_bin(17) == 320) by(compute_only);
+        assert(pages[17].block_size == 320);
+        assert(pages[17].block_size == size_of_bin(17));
+        assert(size_of_bin(18) == 384) by(compute_only);
+        assert(pages[18].block_size == 384);
+        assert(pages[18].block_size == size_of_bin(18));
+        assert(size_of_bin(19) == 448) by(compute_only);
+        assert(pages[19].block_size == 448);
+        assert(pages[19].block_size == size_of_bin(19));
+        assert(size_of_bin(20) == 512) by(compute_only);
+        assert(pages[20].block_size == 512);
+        assert(pages[20].block_size == size_of_bin(20));
+        assert(size_of_bin(21) == 640) by(compute_only);
+        assert(pages[21].block_size == 640);
+        assert(pages[21].block_size == size_of_bin(21));
+        assert(size_of_bin(22) == 768) by(compute_only);
+        assert(pages[22].block_size == 768);
+        assert(pages[22].block_size == size_of_bin(22));
+        assert(size_of_bin(23) == 896) by(compute_only);
+        assert(pages[23].block_size == 896);
+        assert(pages[23].block_size == size_of_bin(23));
+        assert(size_of_bin(24) == 1024) by(compute_only);
+        assert(pages[24].block_size == 1024);
+        assert(pages[24].block_size == size_of_bin(24));
+        assert(size_of_bin(25) == 1280) by(compute_only);
+        assert(pages[25].block_size == 1280);
+        assert(pages[25].block_size == size_of_bin(25));
+        assert(size_of_bin(26) == 1536) by(compute_only);
+        assert(pages[26].block_size == 1536);
+        assert(pages[26].block_size == size_of_bin(26));
+        assert(size_of_bin(27) == 1792) by(compute_only);
+        assert(pages[27].block_size == 1792);
+        assert(pages[27].block_size == size_of_bin(27));
+        assert(size_of_bin(28) == 2048) by(compute_only);
+        assert(pages[28].block_size == 2048);
+        assert(pages[28].block_size == size_of_bin(28));
+        assert(size_of_bin(29) == 2560) by(compute_only);
+        assert(pages[29].block_size == 2560);
+        assert(pages[29].block_size == size_of_bin(29));
+        assert(size_of_bin(30) == 3072) by(compute_only);
+        assert(pages[30].block_size == 3072);
+        assert(pages[30].block_size == size_of_bin(30));
+        assert(size_of_bin(31) == 3584) by(compute_only);
+        assert(pages[31].block_size == 3584);
+        assert(pages[31].block_size == size_of_bin(31));
+        assert(size_of_bin(32) == 4096) by(compute_only);
+        assert(pages[32].block_size == 4096);
+        assert(pages[32].block_size == size_of_bin(32));
+        assert(size_of_bin(33) == 5120) by(compute_only);
+        assert(pages[33].block_size == 5120);
+        assert(pages[33].block_size == size_of_bin(33));
+        assert(size_of_bin(34) == 6144) by(compute_only);
+        assert(pages[34].block_size == 6144);
+        assert(pages[34].block_size == size_of_bin(34));
+        assert(size_of_bin(35) == 7168) by(compute_only);
+        assert(pages[35].block_size == 7168);
+        assert(pages[35].block_size == size_of_bin(35));
+        assert(size_of_bin(36) == 8192) by(compute_only);
+        assert(pages[36].block_size == 8192);
+        assert(pages[36].block_size == size_of_bin(36));
+        assert(size_of_bin(37) == 10240) by(compute_only);
+        assert(pages[37].block_size == 10240);
+        assert(pages[37].block_size == size_of_bin(37));
+        assert(size_of_bin(38) == 12288) by(compute_only);
+        assert(pages[38].block_size == 12288);
+        assert(pages[38].block_size == size_of_bin(38));
+        assert(size_of_bin(39) == 14336) by(compute_only);
+        assert(pages[39].block_size == 14336);
+        assert(pages[39].block_size == size_of_bin(39));
+        assert(size_of_bin(40) == 16384) by(compute_only);
+        assert(pages[40].block_size == 16384);
+        assert(pages[40].block_size == size_of_bin(40));
+        assert(size_of_bin(41) == 20480) by(compute_only);
+        assert(pages[41].block_size == 20480);
+        assert(pages[41].block_size == size_of_bin(41));
+        assert(size_of_bin(42) == 24576) by(compute_only);
+        assert(pages[42].block_size == 24576);
+        assert(pages[42].block_size == size_of_bin(42));
+        assert(size_of_bin(43) == 28672) by(compute_only);
+        assert(pages[43].block_size == 28672);
+        assert(pages[43].block_size == size_of_bin(43));
+        assert(size_of_bin(44) == 32768) by(compute_only);
+        assert(pages[44].block_size == 32768);
+        assert(pages[44].block_size == size_of_bin(44));
+        assert(size_of_bin(45) == 40960) by(compute_only);
+        assert(pages[45].block_size == 40960);
+        assert(pages[45].block_size == size_of_bin(45));
+        assert(size_of_bin(46) == 49152) by(compute_only);
+        assert(pages[46].block_size == 49152);
+        assert(pages[46].block_size == size_of_bin(46));
+        assert(size_of_bin(47) == 57344) by(compute_only);
+        assert(pages[47].block_size == 57344);
+        assert(pages[47].block_size == size_of_bin(47));
+        assert(size_of_bin(48) == 65536) by(compute_only);
+        assert(pages[48].block_size == 65536);
+        assert(pages[48].block_size == size_of_bin(48));
+        assert(size_of_bin(49) == 81920) by(compute_only);
+        assert(pages[49].block_size == 81920);
+        assert(pages[49].block_size == size_of_bin(49));
+        assert(size_of_bin(50) == 98304) by(compute_only);
+        assert(pages[50].block_size == 98304);
+        assert(pages[50].block_size == size_of_bin(50));
+        assert(size_of_bin(51) == 114688) by(compute_only);
+        assert(pages[51].block_size == 114688);
+        assert(pages[51].block_size == size_of_bin(51));
+        assert(size_of_bin(52) == 131072) by(compute_only);
+        assert(pages[52].block_size == 131072);
+        assert(pages[52].block_size == size_of_bin(52));
+        assert(size_of_bin(53) == 163840) by(compute_only);
+        assert(pages[53].block_size == 163840);
+        assert(pages[53].block_size == size_of_bin(53));
+        assert(size_of_bin(54) == 196608) by(compute_only);
+        assert(pages[54].block_size == 196608);
+        assert(pages[54].block_size == size_of_bin(54));
+        assert(size_of_bin(55) == 229376) by(compute_only);
+        assert(pages[55].block_size == 229376);
+        assert(pages[55].block_size == size_of_bin(55));
+        assert(size_of_bin(56) == 262144) by(compute_only);
+        assert(pages[56].block_size == 262144);
+        assert(pages[56].block_size == size_of_bin(56));
+        assert(size_of_bin(57) == 327680) by(compute_only);
+        assert(pages[57].block_size == 327680);
+        assert(pages[57].block_size == size_of_bin(57));
+        assert(size_of_bin(58) == 393216) by(compute_only);
+        assert(pages[58].block_size == 393216);
+        assert(pages[58].block_size == size_of_bin(58));
+        assert(size_of_bin(59) == 458752) by(compute_only);
+        assert(pages[59].block_size == 458752);
+        assert(pages[59].block_size == size_of_bin(59));
+        assert(size_of_bin(60) == 524288) by(compute_only);
+        assert(pages[60].block_size == 524288);
+        assert(pages[60].block_size == size_of_bin(60));
+        assert(size_of_bin(61) == 655360) by(compute_only);
+        assert(pages[61].block_size == 655360);
+        assert(pages[61].block_size == size_of_bin(61));
+        assert(size_of_bin(62) == 786432) by(compute_only);
+        assert(pages[62].block_size == 786432);
+        assert(pages[62].block_size == size_of_bin(62));
+        assert(size_of_bin(63) == 917504) by(compute_only);
+        assert(pages[63].block_size == 917504);
+        assert(pages[63].block_size == size_of_bin(63));
+        assert(size_of_bin(64) == 1048576) by(compute_only);
+        assert(pages[64].block_size == 1048576);
+        assert(pages[64].block_size == size_of_bin(64));
+        assert(size_of_bin(65) == 1310720) by(compute_only);
+        assert(pages[65].block_size == 1310720);
+        assert(pages[65].block_size == size_of_bin(65));
+        assert(size_of_bin(66) == 1572864) by(compute_only);
+        assert(pages[66].block_size == 1572864);
+        assert(pages[66].block_size == size_of_bin(66));
+        assert(size_of_bin(67) == 1835008) by(compute_only);
+        assert(pages[67].block_size == 1835008);
+        assert(pages[67].block_size == size_of_bin(67));
+        assert(size_of_bin(68) == 2097152) by(compute_only);
+        assert(pages[68].block_size == 2097152);
+        assert(pages[68].block_size == size_of_bin(68));
+        assert(size_of_bin(69) == 2621440) by(compute_only);
+        assert(pages[69].block_size == 2621440);
+        assert(pages[69].block_size == size_of_bin(69));
+        assert(size_of_bin(70) == 3145728) by(compute_only);
+        assert(pages[70].block_size == 3145728);
+        assert(pages[70].block_size == size_of_bin(70));
+        assert(size_of_bin(71) == 3670016) by(compute_only);
+        assert(pages[71].block_size == 3670016);
+        assert(pages[71].block_size == size_of_bin(71));
+        assert(size_of_bin(72) == 4194304) by(compute_only);
+        assert(pages[72].block_size == 4194304);
+        assert(pages[72].block_size == size_of_bin(72));
+        assert(size_of_bin(73) == 4194312) by(compute_only);
+        assert(pages[73].block_size == 4194312);
+        assert(pages[73].block_size == size_of_bin(73));
+        assert(pages_tmp_blocks_ok(pages@, 75));
+        assert(!valid_bin_idx(74));
+        assert(pages_tmp_blocks_ok(pages@, 74));
+        assert(pages_tmp_blocks_ok(pages@, 73));
+        assert(pages_tmp_blocks_ok(pages@, 72));
+        assert(pages_tmp_blocks_ok(pages@, 71));
+        assert(pages_tmp_blocks_ok(pages@, 70));
+        assert(pages_tmp_blocks_ok(pages@, 69));
+        assert(pages_tmp_blocks_ok(pages@, 68));
+        assert(pages_tmp_blocks_ok(pages@, 67));
+        assert(pages_tmp_blocks_ok(pages@, 66));
+        assert(pages_tmp_blocks_ok(pages@, 65));
+        assert(pages_tmp_blocks_ok(pages@, 64));
+        assert(pages_tmp_blocks_ok(pages@, 63));
+        assert(pages_tmp_blocks_ok(pages@, 62));
+        assert(pages_tmp_blocks_ok(pages@, 61));
+        assert(pages_tmp_blocks_ok(pages@, 60));
+        assert(pages_tmp_blocks_ok(pages@, 59));
+        assert(pages_tmp_blocks_ok(pages@, 58));
+        assert(pages_tmp_blocks_ok(pages@, 57));
+        assert(pages_tmp_blocks_ok(pages@, 56));
+        assert(pages_tmp_blocks_ok(pages@, 55));
+        assert(pages_tmp_blocks_ok(pages@, 54));
+        assert(pages_tmp_blocks_ok(pages@, 53));
+        assert(pages_tmp_blocks_ok(pages@, 52));
+        assert(pages_tmp_blocks_ok(pages@, 51));
+        assert(pages_tmp_blocks_ok(pages@, 50));
+        assert(pages_tmp_blocks_ok(pages@, 49));
+        assert(pages_tmp_blocks_ok(pages@, 48));
+        assert(pages_tmp_blocks_ok(pages@, 47));
+        assert(pages_tmp_blocks_ok(pages@, 46));
+        assert(pages_tmp_blocks_ok(pages@, 45));
+        assert(pages_tmp_blocks_ok(pages@, 44));
+        assert(pages_tmp_blocks_ok(pages@, 43));
+        assert(pages_tmp_blocks_ok(pages@, 42));
+        assert(pages_tmp_blocks_ok(pages@, 41));
+        assert(pages_tmp_blocks_ok(pages@, 40));
+        assert(pages_tmp_blocks_ok(pages@, 39));
+        assert(pages_tmp_blocks_ok(pages@, 38));
+        assert(pages_tmp_blocks_ok(pages@, 37));
+        assert(pages_tmp_blocks_ok(pages@, 36));
+        assert(pages_tmp_blocks_ok(pages@, 35));
+        assert(pages_tmp_blocks_ok(pages@, 34));
+        assert(pages_tmp_blocks_ok(pages@, 33));
+        assert(pages_tmp_blocks_ok(pages@, 32));
+        assert(pages_tmp_blocks_ok(pages@, 31));
+        assert(pages_tmp_blocks_ok(pages@, 30));
+        assert(pages_tmp_blocks_ok(pages@, 29));
+        assert(pages_tmp_blocks_ok(pages@, 28));
+        assert(pages_tmp_blocks_ok(pages@, 27));
+        assert(pages_tmp_blocks_ok(pages@, 26));
+        assert(pages_tmp_blocks_ok(pages@, 25));
+        assert(pages_tmp_blocks_ok(pages@, 24));
+        assert(pages_tmp_blocks_ok(pages@, 23));
+        assert(pages_tmp_blocks_ok(pages@, 22));
+        assert(pages_tmp_blocks_ok(pages@, 21));
+        assert(pages_tmp_blocks_ok(pages@, 20));
+        assert(pages_tmp_blocks_ok(pages@, 19));
+        assert(pages_tmp_blocks_ok(pages@, 18));
+        assert(pages_tmp_blocks_ok(pages@, 17));
+        assert(pages_tmp_blocks_ok(pages@, 16));
+        assert(pages_tmp_blocks_ok(pages@, 15));
+        assert(pages_tmp_blocks_ok(pages@, 14));
+        assert(pages_tmp_blocks_ok(pages@, 13));
+        assert(pages_tmp_blocks_ok(pages@, 12));
+        assert(pages_tmp_blocks_ok(pages@, 11));
+        assert(pages_tmp_blocks_ok(pages@, 10));
+        assert(pages_tmp_blocks_ok(pages@, 9));
+        assert(pages_tmp_blocks_ok(pages@, 8));
+        assert(pages_tmp_blocks_ok(pages@, 7));
+        assert(pages_tmp_blocks_ok(pages@, 6));
+        assert(pages_tmp_blocks_ok(pages@, 5));
+        assert(pages_tmp_blocks_ok(pages@, 4));
+        assert(pages_tmp_blocks_ok(pages@, 3));
+        assert(pages_tmp_blocks_ok(pages@, 2));
+        assert(pages_tmp_blocks_ok(pages@, 1));
+        assert(!valid_bin_idx(0));
+        assert(pages_tmp_blocks_ok(pages@, 0));
+        assert forall |i: int| #[trigger] valid_bin_idx(i) implies pages[i].block_size == size_of_bin(i) by {
+            assert(BIN_HUGE == 73);
+            pages_tmp_blocks_ok_implies(pages@, 0, i);
+        }
+    }
 
     pages
 }
 
-#[verifier::external_body]
-fn pages_free_direct_tmp() -> [*mut Page; 129]
+#[verus_verify]
+fn pages_free_direct_tmp() -> (pages_free_direct: [*mut Page; 129])
+    ensures
+        pages_free_direct@.len() == PAGES_DIRECT,
+        forall |i: int| 0 <= i < PAGES_DIRECT ==> (#[trigger] pages_free_direct[i]).addr() == 0,
 {
     [
         core::ptr::null_mut(),
@@ -481,8 +1016,11 @@ fn pages_free_direct_tmp() -> [*mut Page; 129]
     ]
 }
 
-#[verifier::external_body]
-fn span_queue_headers_tmp() -> [SpanQueueHeader; 32]
+#[verus_verify]
+fn span_queue_headers_tmp() -> (span_queue_headers: [SpanQueueHeader; 32])
+    ensures
+        span_queue_headers@.len() == SEGMENT_BIN_MAX + 1,
+        forall |i: int| 0 <= i < SEGMENT_BIN_MAX + 1 ==> (#[trigger] span_queue_headers[i]).first.addr() == 0 && span_queue_headers[i].last.addr() == 0,
 {
     [
         SpanQueueHeader { first: core::ptr::null_mut(), last: core::ptr::null_mut() },
@@ -520,9 +1058,18 @@ fn span_queue_headers_tmp() -> [SpanQueueHeader; 32]
     ]
 }
 
-#[verifier::external_body]
+#[verus_verify]
 fn thread_data_alloc()
     -> (res: (*mut u8, Tracked<MemChunk>))
+    ensures
+        res.0.addr() != MAP_FAILED,
+        res.0.addr() != MAP_FAILED ==> res.1@.wf(),
+        res.0.addr() != MAP_FAILED ==> res.1@.os_exact_range(res.0 as int, 4096),
+        res.0.addr() != MAP_FAILED ==> res.1@.os_has_range_read_write(res.0 as int, 4096),
+        res.0.addr() != MAP_FAILED ==> res.1@.has_pointsto_for_all_read_write(),
+        res.0.addr() != MAP_FAILED ==> res.0.addr() + 4096 < usize::MAX,
+        res.0.addr() != MAP_FAILED ==> res.0 as int % page_size() == 0,
+        res.0.addr() != MAP_FAILED ==> res.0@.provenance == res.1@.points_to.provenance(),
 {
     let (addr, Tracked(mc)) = crate::os_mem::mmap_prot_read_write(core::ptr::null_mut(), 4096);
 
@@ -539,8 +1086,8 @@ fn thread_data_alloc()
 pub fn get_page_empty()
     -> (res: (PPtr<Page>, Tracked<Shared<PageFullAccess>>))
     ensures ({ let (page_ptr, pfa) = res; {
-        pfa@@.wf_empty_page_global()
-        && pfa@@.s.points_to@.pptr == page_ptr.id()
+        pfa@.wf_empty_page_global()
+        && pfa@.s.points_to@.pptr == page_ptr.id()
         && page_ptr.id() != 0
     }})
 {
@@ -555,7 +1102,105 @@ struct EmptyPageStuff {
 }
 
 impl EmptyPageStuff {
-    pub uninterp spec fn wf(&self) -> bool;
+    pub closed spec fn wf(&self) -> bool {
+        self.pfa@@.wf_empty_page_global()
+        && self.pfa@@.s.points_to.ptr() == self.ptr
+        && self.ptr.addr() != 0
+    }
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_int_range_prefix(start: int, len: int, whole: int)
+    requires
+        0 <= len <= whole,
+    ensures
+        set_int_range(start, start + len) <= set_int_range(start, start + whole),
+{
+    vstd::set_lib::lemma_int_range(start, start + len);
+    vstd::set_lib::lemma_int_range(start, start + whole);
+    assert forall |addr: int| #[trigger] set_int_range(start, start + len).contains(addr) implies
+        set_int_range(start, start + whole).contains(addr) by {
+        assert(start <= addr < start + len);
+        assert(addr < start + whole) by(nonlinear_arith)
+            requires
+                addr < start + len,
+                len <= whole;
+    }
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_int_range_suffix_after_prefix_removed(start: int, prefix: int, len: int, whole: int)
+    requires
+        0 <= prefix,
+        0 <= len,
+        prefix + len <= whole,
+    ensures
+        set_int_range(start + prefix, start + prefix + len)
+            <= set_int_range(start, start + whole).difference(set_int_range(start, start + prefix)),
+{
+    vstd::set_lib::lemma_int_range(start + prefix, start + prefix + len);
+    vstd::set_lib::lemma_int_range(start, start + prefix);
+    vstd::set_lib::lemma_int_range(start, start + whole);
+    assert forall |addr: int|
+        #[trigger] set_int_range(start + prefix, start + prefix + len).contains(addr)
+    implies
+        set_int_range(start, start + whole).difference(set_int_range(start, start + prefix)).contains(addr)
+    by {
+        assert(start + prefix <= addr < start + prefix + len);
+        assert(start <= addr) by(nonlinear_arith)
+            requires
+                start + prefix <= addr,
+                0 <= prefix;
+        assert(addr < start + whole) by(nonlinear_arith)
+            requires
+                addr < start + prefix + len,
+                prefix + len <= whole;
+        assert(set_int_range(start, start + whole).contains(addr));
+        assert(!set_int_range(start, start + prefix).contains(addr));
+    };
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_thread_data_alignment(addr: int)
+    requires
+        addr % page_size() == 0,
+    ensures
+        addr % 8 == 0,
+        (addr + SIZEOF_HEAP as int) % 8 == 0,
+{
+    assert(page_size() == 4096);
+    vstd::arithmetic::div_mod::lemma_fundamental_div_mod(addr, 4096);
+    vstd::arithmetic::div_mod::lemma_mod_multiples_basic((addr / 4096) * 512, 8);
+    assert(addr == ((addr / 4096) * 512) * 8) by(nonlinear_arith)
+        requires
+            addr == 4096 * (addr / 4096) + (addr % 4096),
+            addr % 4096 == 0;
+    assert(addr % 8 == 0);
+    assert(SIZEOF_HEAP as int == 363 * 8) by(compute_only);
+    vstd::arithmetic::div_mod::lemma_mod_multiples_basic((addr / 4096) * 512 + 363, 8);
+    assert(addr + SIZEOF_HEAP as int == ((addr / 4096) * 512 + 363) * 8) by(nonlinear_arith)
+        requires
+            addr == ((addr / 4096) * 512) * 8,
+            SIZEOF_HEAP as int == 363 * 8;
+    assert((addr + SIZEOF_HEAP as int) % 8 == 0);
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_page_size_aligns_page(addr: int)
+    requires
+        addr % page_size() == 0,
+    ensures
+        addr % align_of::<Page>() as int == 0,
+{
+    page_layout_facts();
+    assert(page_size() == 4096);
+    assert(align_of::<Page>() == 8);
+    vstd::arithmetic::div_mod::lemma_fundamental_div_mod(addr, 4096);
+    vstd::arithmetic::div_mod::lemma_mod_multiples_basic((addr / 4096) * 512, 8);
+    assert(addr == ((addr / 4096) * 512) * 8) by(nonlinear_arith)
+        requires
+            addr == 4096 * (addr / 4096) + (addr % 4096),
+            addr % 4096 == 0;
 }
 
 /*
@@ -564,8 +1209,9 @@ static EMPTY_PAGE_PTR: std::sync::LazyLock<EmptyPageStuff> =
     std::sync::LazyLock::new(init_empty_page_ptr);
 */
 
-#[verifier::external_body]
+#[verus_verify]
 fn init_empty_page_ptr() -> (e: EmptyPageStuff)
+    ensures e.wf(),
 {
     let (pt, Tracked(mut mc)) = crate::os_mem::mmap_prot_read_write(core::ptr::null_mut(), 4096);
 
@@ -578,6 +1224,15 @@ fn init_empty_page_ptr() -> (e: EmptyPageStuff)
     
 
     
+    proof {
+        page_layout_facts();
+        lemma_page_size_aligns_page(pt as int);
+        assert(SIZEOF_PAGE_HEADER as int <= 4096) by(compute_only);
+        lemma_int_range_prefix(pt as int, SIZEOF_PAGE_HEADER as int, 4096);
+        assert(set_int_range(pt as int, pt as int + SIZEOF_PAGE_HEADER as int) <= mc.range_os_rw());
+        assert(set_int_range(pt as int, pt as int + SIZEOF_PAGE_HEADER as int) <= mc.range_points_to());
+        assert(mc.pointsto_has_range(pt as int, SIZEOF_PAGE_HEADER as int));
+    }
     let tracked points_to_raw = mc.take_points_to_range(pt as int, SIZEOF_PAGE_HEADER as int);
     vstd::layout::layout_for_type_is_valid::<Page>(); // $line_count$Proof$
     let tracked mut points_to = points_to_raw.into_typed::<Page>(pt as usize);
@@ -600,6 +1255,9 @@ fn init_empty_page_ptr() -> (e: EmptyPageStuff)
     let tracked fake_inst = global_init().0.instance;
 
     let page_ptr = pt as *mut Page;
+    proof {
+        assert(points_to.ptr() == page_ptr);
+    }
     ptr_mut_write(page_ptr, Tracked(&mut points_to), Page {
         count: count_pcell,
         offset: 0,
@@ -612,6 +1270,14 @@ fn init_empty_page_ptr() -> (e: EmptyPageStuff)
     });
     let Tracked(exposed) = expose_provenance(page_ptr);
 
+    proof {
+        points_to.is_nonnull();
+        assert(page_ptr.addr() != 0);
+        assert(points_to.is_init());
+        assert(points_to.value().inner.id() == inner_perm.id());
+        assert(exposed.provenance() == page_ptr@.provenance);
+        assert(inner_perm.value().zeroed());
+    }
     let tracked pfa = Shared::new(PageFullAccess {
         s: PageSharedAccess { points_to, exposed },
         l: PageLocalAccess {
@@ -621,6 +1287,12 @@ fn init_empty_page_ptr() -> (e: EmptyPageStuff)
             next: next_perm,
         },
     });
+    proof {
+        reveal(EmptyPageStuff::wf);
+        assert((pfa@).wf_empty_page_global());
+        assert((pfa@).s.points_to.ptr() == page_ptr);
+        assert(page_ptr.addr() != 0);
+    }
     EmptyPageStuff { ptr: page_ptr, pfa: Tracked(pfa) }
 }
 
@@ -671,14 +1343,14 @@ exec static THREAD_COUNT: core::sync::atomic::AtomicUsize = core::sync::atomic::
 //  { core::sync::atomic::AtomicUsize::new(0) }
 
 #[inline]
-#[verifier::external_body]
+#[verus_verify]
 fn increment_thread_count()
 {
     THREAD_COUNT.fetch_add(1, core::sync::atomic::Ordering::Relaxed);
 }
 
 #[inline]
-#[verifier::external_body]
+#[verus_verify]
 pub fn current_thread_count() -> usize
 {
     THREAD_COUNT.load(core::sync::atomic::Ordering::Relaxed)

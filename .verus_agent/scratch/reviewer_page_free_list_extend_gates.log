@@ -1,0 +1,39 @@
+### proof_state_next
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (16s).
+proof_state: 192 reachable functions, 519 edges; 19 WIP nodes/19 trust leaves, 0 unentered, 0 unknown; 0 unmapped trust; 23 unreachable trust; topology cache rebuilt.
+  top frontier: 1; bottom frontier: 3
+wip_trust    verus-mimalloc/alloc_generic.rs:339 page_extend_free  [verus-mimalloc/alloc_generic.rs::page_extend_free@L339]
+wip_trust    verus-mimalloc/alloc_generic.rs:77 page_thread_free_collect  [verus-mimalloc/alloc_generic.rs::page_thread_free_collect@L77]
+wip_trust    verus-mimalloc/segment.rs:1284 segment_alloc  [verus-mimalloc/segment.rs::segment_alloc@L1284]
+proof_state_next_STATUS=0
+### boundary_guard
+boundary_guard: FAIL — a frozen boundary was breached.
+VACUOUS trust retirement (an admit was removed without any postcondition taking its place):
+  [vacuous retire] verus-mimalloc/alloc_generic.rs: `page_free_list_extend` dropped its trust marker but declares no `ensures`
+      the admit count fell without any obligation replacing it; restore the postcondition and prove it.
+boundary_guard_STATUS=1
+### spec_drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.8s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+spec_drift_STATUS=0
+### ast_consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/alloc_generic.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - page_free_list_extend: MISMATCH
+  checked 28 exec file(s); 1 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+ast_consistency_STATUS=1
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+operator_decisions_STATUS=0
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (16s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  19 reachable proof-node obligation(s) remain:
+    wip_trust: page_extend_free (verus-mimalloc/alloc_generic.rs:339)
+    wip_trust: page_thread_free_collect (verus-mimalloc/alloc_generic.rs:77)
+    wip_trust: segment_alloc (verus-mimalloc/segment.rs:1284)
+completion_gate_STATUS=1

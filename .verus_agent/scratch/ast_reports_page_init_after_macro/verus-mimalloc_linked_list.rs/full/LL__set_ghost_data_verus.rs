@@ -1,0 +1,46 @@
+    pub fn set_ghost_data(
+        &mut self,
+        Ghost(page_id): Ghost<PageId>,
+        Ghost(fixed_page): Ghost<bool>,
+        Ghost(instance): Ghost<Mim::Instance>,
+        Ghost(block_size): Ghost<nat>,
+        Ghost(heap_id): Ghost<Option<HeapId>>,
+    )
+        requires
+            old(self).wf(),
+            old(self).len() == 0,
+        ensures
+            final(self).wf(),
+            final(self).len() == 0,
+            final(self).first_addr() == 0,
+            final(self).ptr().addr() == 0,
+            final(self).page_id() == page_id,
+            final(self).fixed_page() == fixed_page,
+            final(self).instance() == instance,
+            final(self).block_size() == block_size,
+            final(self).heap_id() == heap_id,
+    {
+        proof! {
+            reveal(LL::wf);
+            reveal(LL::len);
+            reveal(LL::next_ptr);
+            reveal(LL::valid_node);
+            reveal(LL::first_addr);
+            reveal(LL::ptr);
+            reveal(LL::page_id);
+            reveal(LL::fixed_page);
+            reveal(LL::instance);
+            reveal(LL::block_size);
+            reveal(LL::heap_id);
+        }
+        self.data = Ghost(LLData {
+            fixed_page,
+            block_size,
+            page_id,
+            heap_id,
+            instance,
+            len: 0,
+            block_ids: Set::empty(),
+            idx_bound: 0,
+        });
+    }

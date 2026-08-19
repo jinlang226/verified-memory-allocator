@@ -1,0 +1,5 @@
+boundary_guard: PASS — boundaries intact.
+middle_guard spec-drift: PASS — no open goal-vocabulary or trusted-contract drift vs frozen baseline.
+middle_guard ast-consistency: PASS — exec bodies unchanged vs frozen baseline.
+operator_decisions: gate PASS (no unresolved decisions)
+completion_gate: NOT DONE — 71 reachable proof-node obligations remain; bottom frontier starts with builtin/vstd unknown leaves and os_mem::get_page_size. free_generic remains a top frontier in .verus_agent/proof_state.json.

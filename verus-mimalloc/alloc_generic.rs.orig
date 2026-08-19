@@ -1,0 +1,1200 @@
+#![allow(unused_imports)]
+
+use core::intrinsics::{unlikely, likely};
+
+use vstd::prelude::*;
+use vstd::raw_ptr::*;
+use vstd::*;
+use vstd::modes::*;
+use vstd::set_lib::*;
+
+use crate::tokens::{Mim, BlockId, DelayState, PageId, range_block_ids};
+use crate::types::*;
+use crate::config::*;
+use crate::layout::*;
+use crate::linked_list::*;
+use crate::dealloc_token::*;
+use crate::os_mem_util::*;
+
+macro_rules! page_get_mut_inner {
+    ($ptr:expr, $local:ident, $page_inner:ident => {
+        let count = $recv1:ident . local_free . append(&mut $ll:ident);
+        $recv2:ident . used = $recv3:ident . used - count;
+    }) => {
+        ::vstd::prelude::verus_exec_expr!{ {
+            let page_ptr = $ptr;
+            let ghost page_id = page_ptr.page_id@;
+            let ghost local_before_inner = *$local;
+            let ghost page_state_before = $local.thread_token.value().pages[page_id];
+
+            let tracked perm = &$local.instance.thread_local_state_guards_page(
+                    $local.thread_id, page_ptr.page_id@, &$local.thread_token).points_to;
+            let page = vstd::raw_ptr::ptr_ref(page_ptr.page_ptr, Tracked(perm));
+
+            let tracked PageLocalAccess { inner: mut inner_0, prev: prev_0, next: next_0, count: count_0 } =
+                $local.pages.tracked_remove(page_ptr.page_id@);
+            let mut $page_inner = page.inner.borrow_mut(Tracked(&mut inner_0));
+
+            let ghost used_before = $page_inner.used;
+            let ghost free_len_before = $page_inner.free.len();
+            let ghost local_free_len_before = $page_inner.local_free.len();
+            let ghost thread_free_len_before = $ll.len();
+            proof {
+                reveal(Local::wf);
+                reveal(Local::wf_main);
+                reveal(PageLocalAccess::wf);
+                reveal(PageInner::wf);
+                assert(local_before_inner.wf());
+                assert(page_state_before == local_before_inner.thread_token.value().pages[page_id]);
+                assert(local_before_inner.pages[page_id].wf(page_id, page_state_before, local_before_inner.instance));
+                assert(page_state_before.offset == 0);
+                assert($page_inner.wf(page_id, page_state_before, $local.instance));
+                assert($page_inner.free.wf());
+                assert($page_inner.local_free.wf());
+                assert($ll.wf());
+                $page_inner.free.block_ids_idx_lt_num_blocks(
+                    &$local.instance, &$local.thread_token, $local.thread_id, page_state_before.num_blocks);
+                $page_inner.local_free.block_ids_idx_lt_num_blocks(
+                    &$local.instance, &$local.thread_token, $local.thread_id, page_state_before.num_blocks);
+                $ll.block_ids_idx_lt_num_blocks(
+                    &$local.instance, &$local.thread_token, $local.thread_id, page_state_before.num_blocks);
+                $page_inner.free.block_ids_idx_disjoint_from(&mut $page_inner.local_free, &$local.instance);
+                $page_inner.free.block_ids_idx_disjoint_from(&mut $ll, &$local.instance);
+                $page_inner.local_free.block_ids_idx_disjoint_from(&mut $ll, &$local.instance);
+                LL::three_lists_len_bound(
+                    &$page_inner.free,
+                    &$page_inner.local_free,
+                    &$ll,
+                    page_id,
+                    page_state_before.num_blocks);
+                assert($page_inner.used + $page_inner.free.len() + $page_inner.local_free.len()
+                    == page_state_before.num_blocks);
+                assert($page_inner.free.len() + $page_inner.local_free.len() + $ll.len()
+                    <= page_state_before.num_blocks);
+                assert(used_before >= thread_free_len_before) by(nonlinear_arith)
+                    requires
+                        used_before + free_len_before + local_free_len_before == page_state_before.num_blocks,
+                        free_len_before + local_free_len_before + thread_free_len_before <= page_state_before.num_blocks;
+                assert(page_state_before.num_blocks == $page_inner.capacity as nat);
+                assert(thread_free_len_before <= page_state_before.num_blocks);
+                assert(thread_free_len_before < u32::MAX) by(nonlinear_arith)
+                    requires
+                        thread_free_len_before <= $page_inner.capacity as nat;
+                assert(local_free_len_before + thread_free_len_before <= page_state_before.num_blocks);
+                assert(local_free_len_before + thread_free_len_before <= u32::MAX) by(nonlinear_arith)
+                    requires
+                        local_free_len_before + thread_free_len_before <= $page_inner.capacity as nat;
+            }
+            let count = $page_inner.local_free.append(&mut $ll);
+
+            proof {
+                assert(count as nat == thread_free_len_before);
+                assert($page_inner.used == used_before);
+                assert($page_inner.free.len() == free_len_before);
+                assert($page_inner.local_free.len() == local_free_len_before + thread_free_len_before);
+                assert(count as int == thread_free_len_before);
+                assert(used_before as int >= thread_free_len_before);
+                assert($page_inner.used as int == used_before as int);
+                assert($page_inner.used as int >= count as int) by(nonlinear_arith)
+                    requires
+                        used_before as int >= thread_free_len_before,
+                        count as int == thread_free_len_before,
+                        $page_inner.used as int == used_before as int;
+                assert($page_inner.used >= count);
+            }
+
+            $page_inner.used = $page_inner.used - count;
+            proof {
+                reveal(PageInner::wf);
+                assert($page_inner.used == used_before - count);
+                assert($page_inner.free.len() == free_len_before);
+                assert($page_inner.local_free.len() == local_free_len_before + thread_free_len_before);
+                assert($page_inner.used + $page_inner.free.len() + $page_inner.local_free.len()
+                    == page_state_before.num_blocks) by(nonlinear_arith)
+                    requires
+                        $page_inner.used == used_before - count,
+                        count as nat == thread_free_len_before,
+                        $page_inner.free.len() == free_len_before,
+                        $page_inner.local_free.len() == local_free_len_before + thread_free_len_before,
+                        used_before + free_len_before + local_free_len_before == page_state_before.num_blocks;
+                assert($page_inner.wf(page_id, page_state_before, $local.instance));
+            }
+
+            let tracked page_local =
+                PageLocalAccess { inner: inner_0, prev: prev_0, next: next_0, count: count_0 };
+            proof {
+                $local.pages.tracked_insert(page_ptr.page_id@, page_local);
+            }
+
+            proof {
+                reveal(Local::wf);
+                reveal(Local::wf_main);
+                reveal(Local::page_organization_valid);
+                reveal(HeapLocalAccess::wf);
+                reveal(HeapLocalAccess::wf_basic);
+                reveal(PageLocalAccess::wf);
+                reveal(PageInner::wf);
+                reveal(page_organization_pages_match);
+                reveal(page_organization_pages_match_data);
+                assert($local.page_organization == local_before_inner.page_organization);
+                assert($local.psa == local_before_inner.psa);
+                assert($local.pages.dom() == local_before_inner.pages.dom());
+                assert(page_organization_pages_match(
+                    local_before_inner.page_organization.pages,
+                    local_before_inner.pages,
+                    local_before_inner.psa,
+                    local_before_inner.page_organization.popped));
+                assert forall |pid: PageId| #[trigger] $local.page_organization.pages.dom().contains(pid) implies
+                    page_organization_pages_match_data(
+                        $local.page_organization.pages[pid],
+                        $local.pages[pid],
+                        $local.psa[pid],
+                        pid,
+                        $local.page_organization.popped)
+                by {
+                    if pid == page_id {
+                        assert(page_organization_pages_match_data(
+                            local_before_inner.page_organization.pages[pid],
+                            local_before_inner.pages[pid],
+                            local_before_inner.psa[pid],
+                            pid,
+                            local_before_inner.page_organization.popped));
+                        assert($local.pages[pid].count == local_before_inner.pages[pid].count);
+                        assert($local.pages[pid].prev == local_before_inner.pages[pid].prev);
+                        assert($local.pages[pid].next == local_before_inner.pages[pid].next);
+                        assert($local.pages[pid].inner.id() == local_before_inner.pages[pid].inner.id());
+                        assert($local.pages[pid].inner.value().flags0 == local_before_inner.pages[pid].inner.value().flags0);
+                        assert($local.pages[pid].inner.value().flags1 == local_before_inner.pages[pid].inner.value().flags1);
+                        assert($local.pages[pid].inner.value().flags2 == local_before_inner.pages[pid].inner.value().flags2);
+                        assert($local.pages[pid].inner.value().capacity == local_before_inner.pages[pid].inner.value().capacity);
+                        assert($local.pages[pid].inner.value().reserved == local_before_inner.pages[pid].inner.value().reserved);
+                        assert($local.pages[pid].inner.value().xblock_size == local_before_inner.pages[pid].inner.value().xblock_size);
+                        assert($local.pages[pid].inner.value().in_full() == local_before_inner.pages[pid].inner.value().in_full());
+                    } else {
+                        assert($local.pages[pid] == local_before_inner.pages[pid]);
+                        assert(page_organization_pages_match_data(
+                            local_before_inner.page_organization.pages[pid],
+                            local_before_inner.pages[pid],
+                            local_before_inner.psa[pid],
+                            pid,
+                            local_before_inner.page_organization.popped));
+                    }
+                };
+                assert(page_organization_pages_match(
+                    $local.page_organization.pages,
+                    $local.pages,
+                    $local.psa,
+                    $local.page_organization.popped));
+                assert(page_organization_queues_match(
+                    $local.page_organization.unused_dlist_headers,
+                    $local.tld.value().segments.span_queue_headers@));
+                assert(page_organization_used_queues_match(
+                    $local.page_organization.used_dlist_headers,
+                    $local.heap.pages.value()@));
+                assert(page_organization_segments_match($local.page_organization.segments, $local.segments));
+                assert forall |pid: PageId| #[trigger] $local.page_organization.pages.dom().contains(pid) implies
+                    (!$local.page_organization.pages[pid].is_used <==> $local.unused_pages.dom().contains(pid))
+                by {
+                    if pid == page_id {
+                        assert($local.thread_token.value().pages.dom().contains(page_id));
+                        assert(!$local.unused_pages.dom().contains(page_id));
+                    } else {
+                        assert($local.pages[pid] == local_before_inner.pages[pid]);
+                    }
+                };
+                assert forall |pid: PageId| (#[trigger] $local.unused_pages.dom().contains(pid)) implies
+                    $local.page_organization.pages.dom().contains(pid) by { };
+                assert forall |pid: PageId| #[trigger] $local.unused_pages.dom().contains(pid) implies
+                    $local.unused_pages[pid] == $local.psa[pid] by { };
+                assert forall |pid: PageId| #[trigger] $local.thread_token.value().pages.dom().contains(pid) implies
+                    $local.thread_token.value().pages[pid].shared_access == $local.psa[pid] by { };
+                assert($local.page_organization_valid());
+                assert($local.thread_token.value().pages.dom().subset_of($local.pages.dom()));
+                assert forall |pid: PageId| (#[trigger] $local.pages.dom().contains(pid))
+                    && $local.thread_token.value().pages.dom().contains(pid) implies
+                        $local.pages.index(pid).wf(
+                            pid,
+                            $local.thread_token.value().pages.index(pid),
+                            $local.instance,
+                        )
+                by {
+                    if pid == page_id {
+                        assert($local.pages[pid].wf(pid, $local.thread_token.value().pages[pid], $local.instance));
+                    } else {
+                        assert($local.pages[pid] == local_before_inner.pages[pid]);
+                    }
+                };
+                assert forall |pid: PageId| (#[trigger] $local.pages.dom().contains(pid))
+                    && $local.unused_pages.dom().contains(pid) implies
+                        $local.pages.index(pid).wf_unused(pid, $local.unused_pages[pid], $local.page_organization.popped, $local.instance)
+                by {
+                    if pid == page_id {
+                        assert($local.thread_token.value().pages.dom().contains(page_id));
+                        assert(!$local.unused_pages.dom().contains(page_id));
+                    } else {
+                        assert($local.pages[pid] == local_before_inner.pages[pid]);
+                    }
+                };
+                assert forall |sid| #[trigger] $local.segments.dom().contains(sid) implies
+                    $local.segments[sid].wf(
+                        sid,
+                        $local.thread_token.value().segments.index(sid),
+                        $local.instance,
+                    )
+                by {
+                    assert($local.segments[sid] == local_before_inner.segments[sid]);
+                };
+                assert forall |sid| #[trigger] $local.segments.dom().contains(sid) implies
+                    $local.mem_chunk_good(sid)
+                by {
+                    assert(local_before_inner.segments.dom().contains(sid));
+                    assert(local_before_inner.mem_chunk_good(sid));
+                    assert($local.segments == local_before_inner.segments);
+                    assert($local.page_organization == local_before_inner.page_organization);
+                    assert($local.pages.dom() == local_before_inner.pages.dom());
+                    assert forall |pid: PageId| $local.page_organization.pages.dom().contains(pid) && pid != page_id implies
+                        $local.pages[pid] == local_before_inner.pages[pid] by {
+                        assert($local.pages[pid] == local_before_inner.pages[pid]);
+                    };
+                    assert($local.page_count(page_id) == local_before_inner.page_count(page_id));
+                    assert($local.page_capacity(page_id) == local_before_inner.page_capacity(page_id));
+                    assert($local.block_size(page_id) == local_before_inner.block_size(page_id));
+                    $local.page_inner_update_preserves_mem_chunk_good(local_before_inner, sid, page_id);
+                };
+                assert($local.thread_id == $local.is_thread@);
+                assert($local.checked_token.instance_id() == $local.instance.id());
+                assert($local.checked_token.key() == $local.thread_id);
+                assert($local.my_inst.instance_id() == $local.instance.id());
+                assert($local.my_inst.value() == $local.instance.id());
+                assert($local.tld.is_init());
+                assert($local.page_empty_global@.wf_empty_page_global());
+                assert($local.wf_main());
+                assert($local.wf());
+                assert($local.inst() == (*old($local)).inst());
+                assert(page_ptr.is_used_and_primary(*$local));
+                assert forall |heap: HeapPtr| heap.is_in(*old($local)) implies heap.is_in(*$local) by {
+                    assert((*old($local)).heap_id == (*$local).heap_id);
+                };
+            }
+        } }
+    };
+    ($ptr:expr, $local:ident, $page_inner:ident => {
+        if !$recv0:ident . local_free . is_empty() {
+            if likely($recv1:ident . free . is_empty()) {
+                let mut $ll:ident = LL::new(Ghost($recv2:ident . local_free . page_id()), Ghost($recv3:ident . local_free . fixed_page()), Ghost($recv4:ident . local_free . instance()), Ghost($recv5:ident . local_free . block_size()), Ghost(None));
+                core::mem::swap(&mut $ll_swap:ident, &mut $recv6:ident . local_free);
+                $recv7:ident . free = $ll_assign:ident;
+            } else if $force:ident {
+                $recv8:ident . free . append(&mut $recv9:ident . local_free);
+            }
+        }
+    }) => {
+        ::vstd::prelude::verus_exec_expr!{ {
+            let page_ptr = $ptr;
+            let ghost page_id = page_ptr.page_id@;
+            let ghost old_local = *$local;
+            let ghost page_state_before = $local.thread_token.value().pages[page_id];
+
+            let tracked perm = &$local.instance.thread_local_state_guards_page(
+                    $local.thread_id, page_ptr.page_id@, &$local.thread_token).points_to;
+            let page = vstd::raw_ptr::ptr_ref(page_ptr.page_ptr, Tracked(perm));
+
+            let tracked PageLocalAccess { inner: mut inner_0, prev: prev_0, next: next_0, count: count_0 } =
+                $local.pages.tracked_remove(page_ptr.page_id@);
+            let mut $page_inner = page.inner.borrow_mut(Tracked(&mut inner_0));
+
+            proof {
+                reveal(Local::wf);
+                reveal(Local::wf_main);
+                reveal(PageLocalAccess::wf);
+                reveal(PageInner::wf);
+                assert(old_local.wf());
+                assert(page_state_before == old_local.thread_token.value().pages[page_id]);
+                assert(old_local.pages[page_id].wf(page_id, page_state_before, old_local.instance));
+                assert(page_state_before.offset == 0);
+                assert($page_inner.wf(page_id, page_state_before, $local.instance));
+                assert($page_inner.free.wf());
+                assert($page_inner.local_free.wf());
+                assert($page_inner.free.fixed_page() == $page_inner.local_free.fixed_page());
+                assert($page_inner.free.page_id() == $page_inner.local_free.page_id());
+                assert($page_inner.free.block_size() == $page_inner.local_free.block_size());
+                assert($page_inner.free.instance() == $page_inner.local_free.instance());
+                assert($page_inner.free.heap_id() == $page_inner.local_free.heap_id());
+            }
+            if !$page_inner.local_free.is_empty() {
+                if likely($page_inner.free.is_empty()) {
+                    proof {
+                        $page_inner.free.wf_first_addr_zero_implies_empty();
+                        assert($page_inner.free.len() == 0);
+                    }
+                    let mut $ll = LL::new(Ghost($page_inner.local_free.page_id()), Ghost($page_inner.local_free.fixed_page()), Ghost($page_inner.local_free.instance()), Ghost($page_inner.local_free.block_size()), Ghost(None));
+                    core::mem::swap(&mut $ll, &mut $page_inner.local_free);
+                    $page_inner.free = $ll;
+                } else if $force {
+                    proof {
+                        $page_inner.free.block_ids_idx_lt_num_blocks(
+                            &$local.instance, &$local.thread_token, $local.thread_id, page_state_before.num_blocks);
+                        $page_inner.local_free.block_ids_idx_lt_num_blocks(
+                            &$local.instance, &$local.thread_token, $local.thread_id, page_state_before.num_blocks);
+                        $page_inner.free.block_ids_idx_disjoint_from(&mut $page_inner.local_free, &$local.instance);
+                        assert($page_inner.used + $page_inner.free.len() + $page_inner.local_free.len()
+                            == page_state_before.num_blocks);
+                        assert(page_state_before.num_blocks == $page_inner.capacity as nat);
+                        assert($page_inner.local_free.len() < u32::MAX) by(nonlinear_arith)
+                            requires
+                                $page_inner.local_free.len() <= $page_inner.capacity as nat;
+                        assert($page_inner.free.len() + $page_inner.local_free.len() <= u32::MAX) by(nonlinear_arith)
+                            requires
+                                $page_inner.free.len() + $page_inner.local_free.len() <= $page_inner.capacity as nat;
+                    }
+                    $page_inner.free.append(&mut $page_inner.local_free);
+                }
+            }
+            proof {
+                reveal(PageInner::wf);
+                assert($page_inner.free.wf());
+                assert($page_inner.local_free.wf());
+                assert($page_inner.free.fixed_page());
+                assert($page_inner.local_free.fixed_page());
+                assert($page_inner.free.page_id() == page_id);
+                assert($page_inner.local_free.page_id() == page_id);
+                assert($page_inner.free.block_size() == page_state_before.block_size);
+                assert($page_inner.local_free.block_size() == page_state_before.block_size);
+                assert($page_inner.free.instance() == $local.instance);
+                assert($page_inner.local_free.instance() == $local.instance);
+                assert($page_inner.free.heap_id().is_none());
+                assert($page_inner.local_free.heap_id().is_none());
+                assert($page_inner.used + $page_inner.free.len() + $page_inner.local_free.len()
+                    == page_state_before.num_blocks);
+                assert($page_inner.wf(page_id, page_state_before, $local.instance));
+            }
+
+            let tracked page_local =
+                PageLocalAccess { inner: inner_0, prev: prev_0, next: next_0, count: count_0 };
+            proof {
+                $local.pages.tracked_insert(page_ptr.page_id@, page_local);
+            }
+
+            proof {
+                reveal(Local::wf);
+                reveal(Local::wf_main);
+                reveal(Local::page_organization_valid);
+                reveal(HeapLocalAccess::wf);
+                reveal(HeapLocalAccess::wf_basic);
+                reveal(PageLocalAccess::wf);
+                reveal(PageInner::wf);
+                reveal(page_organization_pages_match);
+                reveal(page_organization_pages_match_data);
+                assert($local.page_organization == old_local.page_organization);
+                assert($local.psa == old_local.psa);
+                assert($local.pages.dom() == old_local.pages.dom());
+                assert(page_organization_pages_match(
+                    old_local.page_organization.pages,
+                    old_local.pages,
+                    old_local.psa,
+                    old_local.page_organization.popped));
+                assert forall |pid: PageId| #[trigger] $local.page_organization.pages.dom().contains(pid) implies
+                    page_organization_pages_match_data(
+                        $local.page_organization.pages[pid],
+                        $local.pages[pid],
+                        $local.psa[pid],
+                        pid,
+                        $local.page_organization.popped)
+                by {
+                    if pid == page_id {
+                        assert(page_organization_pages_match_data(
+                            old_local.page_organization.pages[pid],
+                            old_local.pages[pid],
+                            old_local.psa[pid],
+                            pid,
+                            old_local.page_organization.popped));
+                        assert($local.pages[pid].count == old_local.pages[pid].count);
+                        assert($local.pages[pid].prev == old_local.pages[pid].prev);
+                        assert($local.pages[pid].next == old_local.pages[pid].next);
+                        assert($local.pages[pid].inner.id() == old_local.pages[pid].inner.id());
+                        assert($local.pages[pid].inner.value().flags0 == old_local.pages[pid].inner.value().flags0);
+                        assert($local.pages[pid].inner.value().flags1 == old_local.pages[pid].inner.value().flags1);
+                        assert($local.pages[pid].inner.value().flags2 == old_local.pages[pid].inner.value().flags2);
+                        assert($local.pages[pid].inner.value().capacity == old_local.pages[pid].inner.value().capacity);
+                        assert($local.pages[pid].inner.value().reserved == old_local.pages[pid].inner.value().reserved);
+                        assert($local.pages[pid].inner.value().xblock_size == old_local.pages[pid].inner.value().xblock_size);
+                        assert($local.pages[pid].inner.value().in_full() == old_local.pages[pid].inner.value().in_full());
+                    } else {
+                        assert($local.pages[pid] == old_local.pages[pid]);
+                        assert(page_organization_pages_match_data(
+                            old_local.page_organization.pages[pid],
+                            old_local.pages[pid],
+                            old_local.psa[pid],
+                            pid,
+                            old_local.page_organization.popped));
+                    }
+                };
+                assert(page_organization_pages_match(
+                    $local.page_organization.pages,
+                    $local.pages,
+                    $local.psa,
+                    $local.page_organization.popped));
+                assert(page_organization_queues_match(
+                    $local.page_organization.unused_dlist_headers,
+                    $local.tld.value().segments.span_queue_headers@));
+                assert(page_organization_used_queues_match(
+                    $local.page_organization.used_dlist_headers,
+                    $local.heap.pages.value()@));
+                assert(page_organization_segments_match($local.page_organization.segments, $local.segments));
+                assert forall |pid: PageId| #[trigger] $local.page_organization.pages.dom().contains(pid) implies
+                    (!$local.page_organization.pages[pid].is_used <==> $local.unused_pages.dom().contains(pid))
+                by {
+                    if pid == page_id {
+                        assert($local.thread_token.value().pages.dom().contains(page_id));
+                        assert(!$local.unused_pages.dom().contains(page_id));
+                    } else {
+                        assert($local.pages[pid] == old_local.pages[pid]);
+                    }
+                };
+                assert forall |pid: PageId| (#[trigger] $local.unused_pages.dom().contains(pid)) implies
+                    $local.page_organization.pages.dom().contains(pid) by { };
+                assert forall |pid: PageId| #[trigger] $local.unused_pages.dom().contains(pid) implies
+                    $local.unused_pages[pid] == $local.psa[pid] by { };
+                assert forall |pid: PageId| #[trigger] $local.thread_token.value().pages.dom().contains(pid) implies
+                    $local.thread_token.value().pages[pid].shared_access == $local.psa[pid] by { };
+                assert($local.page_organization_valid());
+                assert($local.thread_token.value().pages.dom().subset_of($local.pages.dom()));
+                assert forall |pid: PageId| (#[trigger] $local.pages.dom().contains(pid))
+                    && $local.thread_token.value().pages.dom().contains(pid) implies
+                        $local.pages.index(pid).wf(
+                            pid,
+                            $local.thread_token.value().pages.index(pid),
+                            $local.instance,
+                        )
+                by {
+                    if pid == page_id {
+                        assert($local.pages[pid].wf(pid, $local.thread_token.value().pages[pid], $local.instance));
+                    } else {
+                        assert($local.pages[pid] == old_local.pages[pid]);
+                    }
+                };
+                assert forall |pid: PageId| (#[trigger] $local.pages.dom().contains(pid))
+                    && $local.unused_pages.dom().contains(pid) implies
+                        $local.pages.index(pid).wf_unused(pid, $local.unused_pages[pid], $local.page_organization.popped, $local.instance)
+                by {
+                    if pid == page_id {
+                        assert($local.thread_token.value().pages.dom().contains(page_id));
+                        assert(!$local.unused_pages.dom().contains(page_id));
+                    } else {
+                        assert($local.pages[pid] == old_local.pages[pid]);
+                    }
+                };
+                assert forall |sid| #[trigger] $local.segments.dom().contains(sid) implies
+                    $local.segments[sid].wf(
+                        sid,
+                        $local.thread_token.value().segments.index(sid),
+                        $local.instance,
+                    )
+                by {
+                    assert($local.segments[sid] == old_local.segments[sid]);
+                };
+                assert forall |sid| #[trigger] $local.segments.dom().contains(sid) implies
+                    $local.mem_chunk_good(sid)
+                by {
+                    assert(old_local.segments.dom().contains(sid));
+                    assert(old_local.mem_chunk_good(sid));
+                    assert($local.segments == old_local.segments);
+                    assert($local.page_organization == old_local.page_organization);
+                    assert($local.pages.dom() == old_local.pages.dom());
+                    assert forall |pid: PageId| $local.page_organization.pages.dom().contains(pid) && pid != page_id implies
+                        $local.pages[pid] == old_local.pages[pid] by {
+                        assert($local.pages[pid] == old_local.pages[pid]);
+                    };
+                    assert($local.page_count(page_id) == old_local.page_count(page_id));
+                    assert($local.page_capacity(page_id) == old_local.page_capacity(page_id));
+                    assert($local.block_size(page_id) == old_local.block_size(page_id));
+                    $local.page_inner_update_preserves_mem_chunk_good(old_local, sid, page_id);
+                };
+                assert($local.thread_id == $local.is_thread@);
+                assert($local.checked_token.instance_id() == $local.instance.id());
+                assert($local.checked_token.key() == $local.thread_id);
+                assert($local.my_inst.instance_id() == $local.instance.id());
+                assert($local.my_inst.value() == $local.instance.id());
+                assert($local.tld.is_init());
+                assert($local.page_empty_global@.wf_empty_page_global());
+                assert($local.page_organization_valid());
+                assert($local.wf_main());
+                assert($local.wf());
+                assert($local.inst() == old_local.inst());
+                assert(old_local.inst() == (*old($local)).inst());
+                assert(page_ptr.is_used_and_primary(*$local));
+                assert forall |heap: HeapPtr| heap.is_in(*old($local)) implies heap.is_in(*$local) by {
+                    assert(heap.is_in(old_local));
+                    assert(old_local.heap_id == (*$local).heap_id);
+                };
+            }
+        } }
+    };
+
+    ($($tokens:tt)*) => {
+        $crate::types::page_get_mut_inner!($($tokens)*)
+    };
+}
+
+verus!{
+
+#[verifier::rlimit(200)]
+pub fn malloc_generic(
+    heap: HeapPtr,
+    size: usize,
+    zero: bool,
+    huge_alignment: usize,
+    Tracked(local): Tracked<&mut Local>,
+) -> (t: (*mut u8, Tracked<PointsToRaw>, Tracked<MimDealloc>))
+    requires
+        old(local).wf(),
+        heap.wf(),
+        heap.is_in(*old(local)),
+    ensures
+        final(local).wf(),
+        final(local).inst() == old(local).inst(),
+        forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*final(local)),
+        ({
+            let (ptr, points_to_raw, dealloc) = t;
+
+            points_to_raw@.is_range(ptr as int, size as int)
+              && points_to_raw@.provenance() == ptr@.provenance
+              && ptr == dealloc@.ptr()
+              && dealloc@.inst() == final(local).inst()
+              && dealloc@.size() == size
+        })
+{
+    // TODO heap initialization
+
+    // TODO deferred free?
+
+    heap_delayed_free_partial(heap, Tracked(&mut *local));
+    proof { assert(heap.is_in(*local)); }
+
+    let page = crate::page::find_page(heap, size, huge_alignment, Tracked(&mut *local));
+    if unlikely(page.is_null()) {
+        todo();
+    }
+    proof {
+        assert(page.page_ptr.addr() != 0);
+        assert(page.wf());
+        assert(page.is_in(*local));
+        assert(page.is_used_and_primary(*local));
+        assert(size as int <= local.block_size(page.page_id@));
+    }
+
+    if unlikely(zero && page.get_block_size(Tracked(&*local)) == 0) {
+        todo(); loop{}
+    } else {
+        crate::alloc_fast::page_malloc(heap, page, size, zero, Tracked(&mut *local))
+    }
+}
+
+#[verifier::spinoff_prover]
+#[verifier::rlimit(200)]
+#[verus_verify]
+pub fn page_free_collect(
+    page_ptr: PagePtr,
+    force: bool,
+    Tracked(local): Tracked<&mut Local>
+)
+    requires
+        old(local).wf(),
+        page_ptr.wf(),
+        page_ptr.is_used_and_primary(*old(local)),
+    ensures
+        final(local).wf(),
+        final(local).inst() == old(local).inst(),
+        final(local).thread_token.value() == old(local).thread_token.value(),
+        final(local).page_organization == old(local).page_organization,
+        common_preserves(*old(local), *final(local)),
+        page_ptr.is_used_and_primary(*final(local)),
+        forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*final(local)),
+{
+    let ghost old_local_fn = *local;
+    if force || page_ptr.get_ref(Tracked(&*local)).xthread_free.atomic.load().addr() != 0 {
+        page_thread_free_collect(page_ptr, Tracked(&mut *local));
+    }
+
+    let ghost old_local = *local;
+
+    page_get_mut_inner!(page_ptr, local, page_inner => {
+        if !page_inner.local_free.is_empty() {
+            if likely(page_inner.free.is_empty()) {
+                // Move local_free to free
+                let mut ll = LL::new(Ghost(page_inner.local_free.page_id()), Ghost(page_inner.local_free.fixed_page()), Ghost(page_inner.local_free.instance()), Ghost(page_inner.local_free.block_size()), Ghost(None));
+                core::mem::swap(&mut ll, &mut page_inner.local_free);
+                page_inner.free = ll;
+            } else if force {
+                page_inner.free.append(&mut page_inner.local_free);
+            }
+        }
+    });
+
+    proof {
+        assert(local.thread_token.value() == old_local_fn.thread_token.value());
+        assert(local.page_organization == old_local_fn.page_organization);
+    }
+}
+
+#[verifier::spinoff_prover]
+#[verifier::rlimit(200)]
+fn page_thread_free_collect(
+    page_ptr: PagePtr,
+    Tracked(local): Tracked<&mut Local>,
+)
+    requires
+        old(local).wf(),
+        page_ptr.wf(),
+        page_ptr.is_used_and_primary(*old(local)),
+    ensures
+        final(local).wf(),
+        final(local).inst() == old(local).inst(),
+        final(local).thread_token.value() == old(local).thread_token.value(),
+        final(local).page_organization == old(local).page_organization,
+        common_preserves(*old(local), *final(local)),
+        page_ptr.is_used_and_primary(*final(local)),
+        forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*final(local)),
+{
+    let ghost old_local_fn = *local;
+    let mut ll = page_ptr.get_ref(Tracked(&*local)).xthread_free.take();
+
+    if ll.is_empty() {
+        proof {
+            assert((*local).wf());
+            assert((*local).inst() == old_local_fn.inst());
+            assert((*local).thread_token.value() == old_local_fn.thread_token.value());
+            assert(page_ptr.is_used_and_primary(*local));
+            assert forall |heap: HeapPtr| heap.is_in(old_local_fn) implies heap.is_in(*local) by {
+                assert(old_local_fn.heap_id == (*local).heap_id);
+            };
+        }
+        return;
+    }
+
+    page_get_mut_inner!(page_ptr, local, page_inner => {
+        let count = page_inner.local_free.append(&mut ll);
+
+        // this relies on counting the block tokens
+        //assert(page_inner.used >= count);
+
+        page_inner.used = page_inner.used - count;
+    });
+    proof {
+        assert(local.thread_token.value() == old_local_fn.thread_token.value());
+        assert(local.page_organization == old_local_fn.page_organization);
+    }
+}
+
+#[verifier::spinoff_prover]
+#[verifier::rlimit(200)]
+fn page_free_list_extend(
+    page_ptr: PagePtr,
+    bsize: usize,
+    extend: usize,
+    Tracked(local): Tracked<&mut Local>
+)
+    requires
+        old(local).wf_main_for_page_access(),
+        page_ptr.wf(),
+        page_ptr.is_used_and_primary(*old(local)),
+        bsize > 0,
+        bsize as int == old(local).block_size(page_ptr.page_id@),
+        0 < extend,
+        old(local).page_capacity(page_ptr.page_id@) + extend as int
+            <= old(local).page_reserved(page_ptr.page_id@),
+        old(local).segments[page_ptr.page_id@.segment_id].mem.pointsto_has_range(
+            block_start_at(page_ptr.page_id@, bsize as int,
+                old(local).page_capacity(page_ptr.page_id@)),
+            extend as int * bsize as int),
+        block_start_at(page_ptr.page_id@, bsize as int,
+            old(local).page_capacity(page_ptr.page_id@) + extend as int)
+            <= segment_start(page_ptr.page_id@.segment_id) + SEGMENT_SIZE,
+        forall |idx: nat|
+            (old(local).page_capacity(page_ptr.page_id@) <= (idx as int)
+                && (idx as int) < old(local).page_capacity(page_ptr.page_id@) + extend as int)
+            ==> Mim::State::okay_to_add_block(
+                old(local).thread_token.value(), page_ptr.page_id@, idx, bsize as nat),
+    ensures
+        common_preserves(*old(local), *final(local)),
+        final(local).page_capacity(page_ptr.page_id@)
+            == old(local).page_capacity(page_ptr.page_id@) + extend as int,
+        final(local).thread_token.value().pages[page_ptr.page_id@].num_blocks
+            == old(local).thread_token.value().pages[page_ptr.page_id@].num_blocks + extend as nat,
+{
+    let ghost page_id = page_ptr.page_id@;
+
+    let capacity = page_ptr.get_inner_ref(Tracked(&*local)).capacity;
+
+    proof {
+        reveal(Local::wf_main_for_page_access);
+        reveal(PageLocalAccess::wf);
+        reveal(PageInner::wf);
+        assert(local.pages.dom().contains(page_id));
+        assert(local.thread_token.value().pages.dom().contains(page_id));
+        assert(local.thread_token.value().pages[page_id].offset == 0);
+        assert(local.pages[page_id].wf(
+            page_id,
+            local.thread_token.value().pages[page_id],
+            local.instance));
+        assert(local.page_inner(page_id).wf(
+            page_id,
+            local.thread_token.value().pages[page_id],
+            local.instance));
+        assert(capacity as int == local.page_capacity(page_id));
+        assert(capacity as nat == local.thread_token.value().pages[page_id].num_blocks);
+        assert(local.thread_token.value().pages[page_id].block_size == bsize as nat);
+        assert(local.segments.dom().contains(page_id.segment_id));
+        assert(local.page_reserved(page_id) <= u16::MAX as int);
+    }
+
+    let pag_start = calculate_page_start(page_ptr, bsize);
+
+    proof {
+        assert(pag_start as int == block_start_at(page_id, bsize as int, 0));
+        assert(capacity as int <= capacity as int + extend as int) by(nonlinear_arith);
+        assert((pag_start as int) + (capacity as int) * (bsize as int)
+            <= segment_start(page_id.segment_id) + SEGMENT_SIZE) by(nonlinear_arith)
+            requires
+                pag_start as int == block_start_at(page_id, bsize as int, 0),
+                block_start_at(page_id, bsize as int, capacity as int + extend as int)
+                    <= segment_start(page_id.segment_id) + SEGMENT_SIZE,
+                capacity as int <= capacity as int + extend as int,
+                bsize as int > 0;
+        assert(segment_start(page_id.segment_id) + SEGMENT_SIZE < usize::MAX);
+    }
+    let start = calculate_page_block_at(pag_start, bsize, capacity as usize,
+        Ghost(page_ptr.page_id@));
+    let start = page_ptr.page_ptr.with_addr(start) as *mut u8;
+
+    proof {
+        assert(capacity as int + extend as int <= u16::MAX as int) by(nonlinear_arith)
+            requires
+                capacity as int + extend as int <= local.page_reserved(page_id),
+                local.page_reserved(page_id) <= u16::MAX as int;
+        assert((capacity as usize) as int == capacity as int);
+        assert(capacity as usize + extend <= u16::MAX as usize) by(nonlinear_arith)
+            requires
+                capacity as int + extend as int <= u16::MAX as int;
+    }
+    let x = capacity as usize + extend - 1;
+
+    proof {
+        assert(x as int == capacity as int + extend as int - 1) by(nonlinear_arith)
+            requires
+                x == capacity as usize + extend - 1,
+                capacity as usize + extend <= u16::MAX as usize,
+                0 < extend;
+        assert(x as int <= capacity as int + extend as int) by(nonlinear_arith)
+            requires x as int == capacity as int + extend as int - 1;
+        assert((pag_start as int) + (x as int) * (bsize as int)
+            <= segment_start(page_id.segment_id) + SEGMENT_SIZE) by(nonlinear_arith)
+            requires
+                pag_start as int == block_start_at(page_id, bsize as int, 0),
+                block_start_at(page_id, bsize as int, capacity as int + extend as int)
+                    <= segment_start(page_id.segment_id) + SEGMENT_SIZE,
+                x as int <= capacity as int + extend as int,
+                bsize as int > 0;
+        assert(segment_start(page_id.segment_id) + SEGMENT_SIZE < usize::MAX);
+    }
+    let last = calculate_page_block_at(pag_start, bsize, x,
+        Ghost(page_ptr.page_id@));
+    let last = page_ptr.page_ptr.with_addr(last) as *mut u8;
+
+    let ghost rng_start = block_start_at(page_id, bsize as int, capacity as int);
+    let ghost rng_size = extend as int * bsize as int;
+    let ghost segment_id = page_id.segment_id;
+    proof {
+        assert(0 <= extend as int);
+        assert(0 <= bsize as int);
+        assert(0 <= rng_size) by(nonlinear_arith)
+            requires
+                rng_size == extend as int * bsize as int,
+                0 <= extend as int,
+                0 <= bsize as int;
+        assert(local.segments[segment_id].mem.pointsto_has_range(rng_start, rng_size));
+    }
+    let tracked mut seg = local.segments.tracked_remove(segment_id);
+    let tracked mut pt = seg.mem.take_points_to_range(rng_start, rng_size);
+    proof {
+        local.segments.tracked_insert(segment_id, seg);
+    }
+
+    let tracked mut thread_token = local.take_thread_token();
+    let tracked mut checked_token = local.take_checked_token();
+
+    let ghost mut cap_nat;
+    let ghost mut extend_nat;
+
+    proof {
+        cap_nat = capacity as nat;
+        extend_nat = extend as nat;
+    }
+
+    proof {
+        assert(thread_token == local.thread_token);
+        assert(checked_token == local.checked_token);
+        assert forall |idx: nat| cap_nat <= idx && idx < cap_nat + extend_nat implies
+            Mim::State::okay_to_add_block(thread_token.value(), page_id, idx, bsize as nat)
+        by {
+            assert(cap_nat as int == local.page_capacity(page_id));
+            assert(thread_token == local.thread_token);
+        };
+    }
+
+    let tracked (Tracked(_thread_token), Tracked(block_tokens), Ghost(_s), Tracked(_checked_token)) = local.instance.page_mk_block_tokens(
+        // params
+        local.thread_id,
+        page_ptr.page_id@,
+        cap_nat as nat,
+        cap_nat as nat + extend_nat as nat,
+        bsize as nat,
+        // input ghost state
+        thread_token,
+        checked_token,
+    );
+    proof {
+        local.thread_token = _thread_token;
+        local.checked_token = _checked_token;
+    }
+    let tracked block_tokens = block_tokens.into_map();
+    proof {
+        assert(block_tokens.dom() == range_block_ids(cap_nat, cap_nat + extend_nat, page_id, bsize as nat));
+        assert forall |i: int|
+            #[trigger] Set::range(cap_nat as int, cap_nat as int + extend_nat).contains(i)
+        implies
+            block_tokens.dom().contains(BlockId {
+                page_id,
+                idx: i as nat,
+                slice_idx: BlockId::get_slice_idx(page_id, i as nat, bsize as nat),
+                block_size: bsize as nat,
+            })
+        by {
+            assert((cap_nat as int) <= i && i < (cap_nat as int) + extend_nat);
+            assert(cap_nat <= (i as nat) && (i as nat) < cap_nat + extend_nat);
+            assert(range_block_ids(cap_nat, cap_nat + extend_nat, page_id, bsize as nat).contains(
+                BlockId {
+                    page_id,
+                    idx: i as nat,
+                    slice_idx: BlockId::get_slice_idx(page_id, i as nat, bsize as nat),
+                    block_size: bsize as nat,
+                }));
+        };
+        assert forall |i: int, j: int|
+            i != j
+                && #[trigger] Set::range(cap_nat as int, cap_nat as int + extend_nat).contains(i)
+                && #[trigger] Set::range(cap_nat as int, cap_nat as int + extend_nat).contains(j)
+        implies
+            BlockId {
+                page_id,
+                idx: i as nat,
+                slice_idx: BlockId::get_slice_idx(page_id, i as nat, bsize as nat),
+                block_size: bsize as nat,
+            } != BlockId {
+                page_id,
+                idx: j as nat,
+                slice_idx: BlockId::get_slice_idx(page_id, j as nat, bsize as nat),
+                block_size: bsize as nat,
+            }
+        by {
+            assert((cap_nat as int) <= i && i < (cap_nat as int) + extend_nat);
+            assert((cap_nat as int) <= j && j < (cap_nat as int) + extend_nat);
+            assert(i as nat != j as nat);
+        };
+    }
+    let tracked mut block_tokens = Map::tracked_map_keys(block_tokens,
+        Map::<int, BlockId>::new(
+          Set::range(cap_nat as int, cap_nat as int + extend_nat),
+          |i: int| BlockId {
+              page_id: page_ptr.page_id@,
+              idx: i as nat,
+              slice_idx: BlockId::get_slice_idx(page_ptr.page_id@, i as nat, bsize as nat),
+              block_size: bsize as nat
+          }
+        ));
+
+    page_get_mut_inner!(page_ptr, local, page_inner => {
+        page_inner.free.prepend_contiguous_blocks(
+            start, last, bsize,
+            // ghost args:
+            Ghost(cap_nat), Ghost(extend_nat),
+            // tracked args:
+            Tracked(&mut pt),
+            Tracked(&mut block_tokens));
+
+        // note: mimalloc has this line in the parent function, mi_page_extend_free,
+        // but it's easier to just do it here to preserve local.wf()
+        page_inner.capacity = page_inner.capacity + extend as u16;
+    });
+
+    proof {
+        assert(common_preserves(*old(local), *local));
+        assert(local.page_capacity(page_id)
+            == old(local).page_capacity(page_id) + extend as int);
+        assert(local.thread_token.value().pages[page_id].num_blocks
+            == old(local).thread_token.value().pages[page_id].num_blocks + extend as nat);
+    }
+
+
+}
+
+const MIN_EXTEND: usize = 4;
+const MAX_EXTEND_SIZE: u32 = 4096;
+
+#[verifier::spinoff_prover]
+#[verifier::rlimit(200)]
+pub fn page_extend_free(
+    page_ptr: PagePtr,
+    Tracked(local): Tracked<&mut Local>,
+)
+    requires
+        old(local).wf_main_for_page_access(),
+        page_ptr.wf(),
+        page_ptr.is_used_and_primary(*old(local)),
+        old(local).mem_chunk_good(page_ptr.page_id@.segment_id),
+    ensures
+        common_preserves(*old(local), *final(local)),
+        old(local).wf() ==> final(local).wf(),
+        final(local).inst() == old(local).inst(),
+        final(local).page_organization == old(local).page_organization,
+        page_ptr.is_used_and_primary(*final(local)),
+        final(local).block_size(page_ptr.page_id@) == old(local).block_size(page_ptr.page_id@),
+        forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*final(local)),
+        old(local).page_capacity(page_ptr.page_id@) >= old(local).page_reserved(page_ptr.page_id@) ==>
+            final(local).page_capacity(page_ptr.page_id@) == old(local).page_capacity(page_ptr.page_id@),
+        old(local).page_capacity(page_ptr.page_id@) < old(local).page_reserved(page_ptr.page_id@) ==>
+            final(local).page_capacity(page_ptr.page_id@) > old(local).page_capacity(page_ptr.page_id@)
+            && final(local).page_capacity(page_ptr.page_id@) <= old(local).page_reserved(page_ptr.page_id@),
+{
+    let page_inner = page_ptr.get_inner_ref(Tracked(&*local));
+
+    /*proof {
+        assert(page_inner.wf(page_ptr.page_id@,
+            local.thread_token.value().pages.index(page_ptr.page_id@),
+            local.instance));
+    }*/
+
+    let reserved = page_inner.reserved;
+    let capacity = page_inner.capacity;
+
+    if capacity >= reserved { return; }
+
+    // Calculate the block size
+    // TODO should have special handling for huge blocks
+    let bsize: usize = page_ptr.get_inner_ref(Tracked(&*local)).xblock_size as usize;
+
+    /*proof {
+        let ghost page_id = page_ptr.page_id@;
+        assert(local.page_organization.pages.dom().contains(page_id));
+        assert(page_organization_matches_token_page(
+            local.page_organization.pages[page_id],
+            local.thread_token.value().pages[page_id]));
+        assert(local.is_used_primary(page_id));
+        assert(bsize != 0);
+    }*/
+
+    // Calculate extend amount
+
+    let mut max_extend: usize = if bsize >= MAX_EXTEND_SIZE as usize {
+        MIN_EXTEND
+    } else {
+        (MAX_EXTEND_SIZE / bsize as u32) as usize
+    };
+    if max_extend < MIN_EXTEND {
+        max_extend = MIN_EXTEND;
+    }
+
+    let ghost available = (reserved - capacity) as usize;
+    let mut extend: usize = (reserved - capacity) as usize;
+    if extend > max_extend {
+        extend = max_extend;
+    }
+
+    proof {
+        let ghost page_id = page_ptr.page_id@;
+        reveal(Local::wf_main_for_page_access);
+        reveal(PageLocalAccess::wf);
+        reveal(PageInner::wf);
+        assert(local.pages.dom().contains(page_id));
+        assert(local.thread_token.value().pages.dom().contains(page_id));
+        assert(local.thread_token.value().pages[page_id].offset == 0);
+        assert(local.pages[page_id].wf(
+            page_id,
+            local.thread_token.value().pages[page_id],
+            local.instance));
+        assert(local.page_inner(page_id).wf(
+            page_id,
+            local.thread_token.value().pages[page_id],
+            local.instance));
+        assert(local.block_size(page_id) == bsize as int);
+        assert(local.page_capacity(page_id) == capacity as int);
+        assert(local.page_reserved(page_id) == reserved as int);
+        assert(bsize > 0);
+        assert(bsize as int > 0);
+        assert(extend <= available);
+        assert(available as int == reserved as int - capacity as int) by(nonlinear_arith)
+            requires
+                capacity < reserved,
+                available == (reserved - capacity) as usize;
+        assert(extend as int <= reserved as int - capacity as int) by(nonlinear_arith)
+            requires
+                extend <= available,
+                available as int == reserved as int - capacity as int;
+        assert(capacity as int + extend as int <= reserved as int) by(nonlinear_arith)
+            requires
+                extend as int <= reserved as int - capacity as int;
+        let ghost full_len = (reserved as int - capacity as int) * bsize as int;
+        let ghost take_len = extend as int * bsize as int;
+        assert(take_len <= full_len) by(nonlinear_arith)
+            requires
+                take_len == extend as int * bsize as int,
+                full_len == (reserved as int - capacity as int) * bsize as int,
+                extend as int <= reserved as int - capacity as int,
+                bsize as int > 0;
+        assert(block_start_at(page_id, bsize as int, capacity as int + extend as int)
+            <= block_start_at(page_id, bsize as int, reserved as int)) by(nonlinear_arith)
+            requires
+                capacity as int + extend as int <= reserved as int,
+                bsize as int > 0;
+        local.used_primary_page_reserved_available(page_id);
+        local.used_primary_page_reserved_blocks_enabled(page_id);
+        assert(block_start_at(page_id, bsize as int, reserved as int)
+            == block_start_at(page_id, local.block_size(page_id), local.page_reserved(page_id)));
+        assert(block_start_at(page_id, bsize as int, capacity as int + extend as int)
+            <= segment_start(page_id.segment_id) + SEGMENT_SIZE);
+        assert(block_start_at(page_id, bsize as int, local.page_capacity(page_id))
+            == block_start_at(page_id, local.block_size(page_id), local.page_capacity(page_id)));
+        assert(local.segments[page_id.segment_id].mem.pointsto_has_range(
+            block_start_at(page_id, bsize as int, local.page_capacity(page_id)),
+            full_len));
+        assert forall |addr: int|
+            #[trigger] set_int_range(
+                block_start_at(page_id, bsize as int, local.page_capacity(page_id)),
+                block_start_at(page_id, bsize as int, local.page_capacity(page_id)) + take_len).contains(addr)
+        implies
+            set_int_range(
+                block_start_at(page_id, bsize as int, local.page_capacity(page_id)),
+                block_start_at(page_id, bsize as int, local.page_capacity(page_id)) + full_len).contains(addr)
+        by {
+            assert(block_start_at(page_id, bsize as int, local.page_capacity(page_id)) <= addr);
+            assert(addr < block_start_at(page_id, bsize as int, local.page_capacity(page_id)) + take_len);
+            assert(addr < block_start_at(page_id, bsize as int, local.page_capacity(page_id)) + full_len);
+        };
+        assert(local.segments[page_id.segment_id].mem.pointsto_has_range(
+            block_start_at(page_id, bsize as int, local.page_capacity(page_id)),
+            take_len));
+        assert forall |idx: nat|
+            (local.page_capacity(page_id) <= (idx as int)
+                && (idx as int) < local.page_capacity(page_id) + extend as int)
+        implies
+            Mim::State::okay_to_add_block(
+                local.thread_token.value(), page_id, idx, bsize as nat)
+        by {
+            assert((idx as int) < local.page_reserved(page_id)) by(nonlinear_arith)
+                requires
+                    (idx as int) < local.page_capacity(page_id) + extend as int,
+                    local.page_capacity(page_id) == capacity as int,
+                    local.page_reserved(page_id) == reserved as int,
+                    capacity as int + extend as int <= reserved as int;
+            assert(local.block_size(page_id) as nat == bsize as nat);
+        };
+    }
+
+    page_free_list_extend(page_ptr, bsize, extend, Tracked(local));
+
+    proof {
+        assert(local.page_capacity(page_ptr.page_id@) > old(local).page_capacity(page_ptr.page_id@));
+        assert(local.page_capacity(page_ptr.page_id@) <= old(local).page_reserved(page_ptr.page_id@));
+    }
+
+    // page capacity is modified in page_free_list_extend, no need to do it here
+}
+
+#[verifier::spinoff_prover]
+#[verifier::rlimit(200)]
+fn heap_delayed_free_partial(heap: HeapPtr, Tracked(local): Tracked<&mut Local>) -> (b: bool)
+    requires
+        old(local).wf(),
+        heap.wf(),
+        heap.is_in(*old(local)),
+    ensures
+        final(local).wf(),
+        final(local).inst() == old(local).inst(),
+        forall |heap0: HeapPtr| heap0.is_in(*old(local)) ==> heap0.is_in(*final(local)),
+{
+    proof {
+        reveal(Local::wf);
+        reveal(Local::wf_main);
+        assert(local.wf_basic());
+        assert(local.thread_token.value().heap.shared_access.points_to.value().thread_delayed_free.wf());
+        assert(local.thread_token.value().heap.shared_access.points_to.value().thread_delayed_free.instance@.id() == local.instance.id());
+        assert(local.thread_token.value().heap.shared_access.points_to.value().thread_delayed_free.heap_id == local.heap_id);
+    }
+    let mut ll = heap.get_ref(Tracked(&*local)).thread_delayed_free.take();
+    let mut all_freed = true;
+    while !ll.is_empty()
+        invariant
+            local.wf(),
+            heap.wf(), heap.is_in(*local),
+            ll.wf(), common_preserves(*old(local), *local),
+            ll.instance().id() == local.instance.id(),
+            ll.heap_id() == Some(local.thread_token.value().heap_id)
+    {
+        let (ptr, Tracked(perm), Tracked(block)) = ll.pop_block();
+        let tracked dealloc_inner = MimDeallocInner {
+            mim_instance: local.instance.clone(),
+            mim_block: block,
+            ptr: ptr,
+        };
+        proof {
+            reveal(MimDeallocInner::wf);
+            reveal(valid_block_token);
+            assert(dealloc_inner.mim_instance == local.instance);
+            assert(dealloc_inner.mim_block.instance_id() == local.instance.id());
+            assert(dealloc_inner.mim_block.value().heap_id == Some(local.heap_id));
+            assert(dealloc_inner.ptr == ptr);
+            assert(is_block_ptr(ptr, dealloc_inner.block_id()));
+            local.instance.block_in_heap_has_valid_page(
+                local.thread_id,
+                dealloc_inner.block_id(),
+                &local.thread_token,
+                &dealloc_inner.mim_block,
+            );
+            local.instance.get_block_properties(
+                local.thread_id,
+                dealloc_inner.block_id(),
+                &local.thread_token,
+                &dealloc_inner.mim_block,
+            );
+            assert(local.thread_token.value().pages.dom().contains(dealloc_inner.block_id().page_id));
+            assert(local.pages.dom().contains(dealloc_inner.block_id().page_id));
+            assert(local.thread_token.value().segments.dom().contains(dealloc_inner.block_id().page_id.segment_id));
+            assert(local.segments.dom().contains(dealloc_inner.block_id().page_id.segment_id));
+            assert(local.pages[dealloc_inner.block_id().page_id].wf(
+                dealloc_inner.block_id().page_id,
+                local.thread_token.value().pages[dealloc_inner.block_id().page_id],
+                local.instance));
+            assert(local.segments[dealloc_inner.block_id().page_id.segment_id].wf(
+                dealloc_inner.block_id().page_id.segment_id,
+                local.thread_token.value().segments[dealloc_inner.block_id().page_id.segment_id],
+                local.instance));
+            assert(valid_block_token(dealloc_inner.mim_block, dealloc_inner.mim_instance));
+            assert(dealloc_inner.wf());
+        }
+        let (success, Tracked(p_opt), Tracked(d_opt)) =
+                crate::free::free_delayed_block(ptr, Tracked(perm),
+                    Tracked(dealloc_inner), Tracked(&mut *local));
+        if !success {
+            all_freed = false;
+            let tracked perm = p_opt.tracked_unwrap();
+            let tracked dealloc = d_opt.tracked_unwrap();
+            let tracked block = dealloc.mim_block;
+
+            heap.get_ref(Tracked(&*local)).thread_delayed_free
+                .atomic_insert_block(ptr as *mut Node, Tracked(perm), Tracked(block));
+        }
+    }
+    return all_freed;
+}
+
+}

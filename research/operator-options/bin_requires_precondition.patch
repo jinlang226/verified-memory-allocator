@@ -1,0 +1,17 @@
+diff --git a/verus-mimalloc/bin_sizes.rs b/verus-mimalloc/bin_sizes.rs
+--- a/verus-mimalloc/bin_sizes.rs
++++ b/verus-mimalloc/bin_sizes.rs
+@@ -368,8 +368,12 @@ spec fn id(i:int) -> bool { true }
+ // non-linearly with recursion depth
+ 
+ // Used to compute a bin for a given size
+-#[verifier::external_body]
+ pub fn bin(size: usize) -> (bin_idx: u8)
++    requires
++        size <= MEDIUM_OBJ_SIZE_MAX as usize,
++    ensures
++        bin_idx as int == smallest_bin_fitting_size(size as int),
++        valid_bin_idx(bin_idx as int),
+ {
+     let bytes_per_word = usize::BITS as usize / 8;
+ 

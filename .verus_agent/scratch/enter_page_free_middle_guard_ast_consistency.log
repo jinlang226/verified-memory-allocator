@@ -1,0 +1,4 @@
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  checked 28 exec file(s); 0 with body edits
+middle_guard: exec bodies unchanged vs frozen baseline. ✅
+=== middle_guard_ast_consistency exit 0 ===

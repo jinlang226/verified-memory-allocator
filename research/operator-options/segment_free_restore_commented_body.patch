@@ -1,0 +1,20 @@
+diff --git a/verus-mimalloc/segment.rs b/verus-mimalloc/segment.rs
+--- a/verus-mimalloc/segment.rs
++++ b/verus-mimalloc/segment.rs
+@@ -3091,9 +3091,7 @@ fn segment_free(segment: SegmentPtr, force: bool, tld: TldPtr, Tracked(local): T
+     ensures
+         *final(local) == *old(local),
+ {
+-    todo();
+-    /*
+     proof {
+         let next_state = PageOrg::take_step::segment_freeing_start(local.page_organization, segment.segment_id@);
+         local.page_organization = next_state;
+@@ -3134,7 +3132,6 @@ fn segment_free(segment: SegmentPtr, force: bool, tld: TldPtr, Tracked(local): T
+     todo();
+ 
+     // mi_segment_os_free(segment, tld);
+-    */
+ }
+ 
+ #[verifier::external_body]

@@ -1,0 +1,16 @@
+[package]
+name = "verus_mimalloc"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[lib]
+name = "verus_mimalloc"
+path = "lib.rs"
+
+[dependencies]
+libc = "0.2"
+vstd = { path = "../.verus_deps/vstd" }
+verus_builtin = { path = "../.verus_deps/builtin" }
+verus_builtin_macros = { path = "../.verus_deps/builtin_macros" }
+verus_state_machines_macros = { path = "../.verus_deps/state_machines_macros" }

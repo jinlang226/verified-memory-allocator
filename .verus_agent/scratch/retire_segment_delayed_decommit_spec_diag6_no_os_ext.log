@@ -1,0 +1,10 @@
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/commit_mask.rs: 6 protected contract change(s)
+       - CommitMask::bytes
+       - CommitMask::lemma_bytes_contains
+       - CommitMask::lemma_bytes_disjoint
+       - CommitMask::lemma_bytes_range
+       - CommitMask::lemma_bytes_subset
+       - CommitMask::lemma_view_subset_from_bytes_subset
+  checked 29 module(s) in one global snapshot; 1 with contract drift; 1.7s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.

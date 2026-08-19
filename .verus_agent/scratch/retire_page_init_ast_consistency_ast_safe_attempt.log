@@ -1,0 +1,5 @@
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/page.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - page_init: MISMATCH
+  checked 28 exec file(s); 1 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.

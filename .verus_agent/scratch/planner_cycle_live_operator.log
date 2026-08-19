@@ -1,0 +1,4 @@
+usage: operator_decisions [-h] [--project-root PROJECT_ROOT]
+                          {record-attempt,add,list,show,audit,gate,needs-evidence,migrate-legacy,certify,supersede,resolve}
+                          ...
+operator_decisions: error: argument cmd: invalid choice: '.' (choose from 'record-attempt', 'add', 'list', 'show', 'audit', 'gate', 'needs-evidence', 'migrate-legacy', 'certify', 'supersede', 'resolve')

@@ -1,0 +1,21 @@
+usage: boundary_guard [-h] [--crate-root CRATE_ROOT]
+                      [--baseline-dir BASELINE_DIR]
+                      {init,check,pin} ...
+
+Freeze and enforce the trusted boundaries of a Verus proof mission (TCB leaf-
+set + top-level spec).
+
+positional arguments:
+  {init,check,pin}
+    init                freeze the current boundaries
+    check               verify boundaries are intact
+    pin                 sanction a SPECIFIC leaf by its exact content
+                        (content-pinned; mainly for one operator-vetted
+                        assume)
+
+options:
+  -h, --help            show this help message and exit
+  --crate-root CRATE_ROOT
+                        crate root scanned for *.rs source (default: .)
+  --baseline-dir BASELINE_DIR
+                        dir holding frozen snapshots (default: .verus_agent)

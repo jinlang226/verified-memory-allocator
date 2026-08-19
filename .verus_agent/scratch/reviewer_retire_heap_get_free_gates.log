@@ -1,0 +1,53 @@
+### boundary_guard
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+boundary_guard_STATUS=0
+### spec_drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.6s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+spec_drift_STATUS=0
+### ast_consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  checked 28 exec file(s); 0 with body edits
+middle_guard: exec bodies unchanged vs frozen baseline. ✅
+ast_consistency_STATUS=0
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+operator_decisions_STATUS=0
+### page_organization assume(false)
+0
+### page_organization { true }
+0
+### proof_state_next
+proof_state: 192 reachable functions, 519 edges; 35 WIP nodes/35 trust leaves, 0 unentered, 2 unknown; 0 unmapped trust; 29 unreachable trust; topology cache hit.
+  top frontier: 3; bottom frontier: 9
+wip_trust    verus-mimalloc/alloc_generic.rs:99 page_free_list_extend  [verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99]
+wip_trust    verus-mimalloc/alloc_generic.rs:77 page_thread_free_collect  [verus-mimalloc/alloc_generic.rs::page_thread_free_collect@L77]
+wip_trust    verus-mimalloc/commit_segment.rs:456 segment_delayed_decommit  [verus-mimalloc/commit_segment.rs::segment_delayed_decommit@L456]
+unknown      verus-mimalloc/linked_list.rs:1123 new  [verus-mimalloc/linked_list.rs::new@L1123]
+wip_trust    verus-mimalloc/os_alloc.rs:287 unix_mmapx  [verus-mimalloc/os_alloc.rs::unix_mmapx@L287]
+wip_trust    verus-mimalloc/os_commit.rs:152 os_commitx  [verus-mimalloc/os_commit.rs::os_commitx@L152]
+wip_trust    verus-mimalloc/page.rs:833 page_try_use_delayed_free  [verus-mimalloc/page.rs::page_try_use_delayed_free@L833]
+wip_trust    verus-mimalloc/queues.rs:400 page_queue_push  [verus-mimalloc/queues.rs::page_queue_push@L400]
+wip_trust    verus-mimalloc/segment.rs:751 segment_span_allocate  [verus-mimalloc/segment.rs::segment_span_allocate@L751]
+proof_state_next_STATUS=0
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  37 reachable proof-node obligation(s) remain:
+    wip_trust: page_free_list_extend (verus-mimalloc/alloc_generic.rs:99)
+    wip_trust: page_thread_free_collect (verus-mimalloc/alloc_generic.rs:77)
+    wip_trust: segment_delayed_decommit (verus-mimalloc/commit_segment.rs:456)
+    unknown: new (verus-mimalloc/linked_list.rs:1123)
+    wip_trust: unix_mmapx (verus-mimalloc/os_alloc.rs:287)
+    wip_trust: os_commitx (verus-mimalloc/os_commit.rs:152)
+    wip_trust: page_try_use_delayed_free (verus-mimalloc/page.rs:833)
+    wip_trust: page_queue_push (verus-mimalloc/queues.rs:400)
+    wip_trust: segment_span_allocate (verus-mimalloc/segment.rs:751)
+completion_gate_STATUS=1

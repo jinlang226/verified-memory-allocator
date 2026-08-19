@@ -1,0 +1,2610 @@
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:113:1
+    |
+113 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:284:9
+    |
+284 |         reveal(Global::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:295:9
+    |
+295 |         reveal(HeapSharedAccess::wf2);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:296:9
+    |
+296 |         reveal(HeapSharedAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:297:9
+    |
+297 |         reveal(Heap::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:298:9
+    |
+298 |         reveal(TldPtr::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:299:9
+    |
+299 |         reveal(is_heap_ptr);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:300:9
+    |
+300 |         reveal(is_tld_ptr);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:360:9
+    |
+360 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:361:9
+    |
+361 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:362:9
+    |
+362 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:363:9
+    |
+363 |         reveal(HeapPtr::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:364:9
+    |
+364 |         reveal(HeapPtr::is_in);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:365:9
+    |
+365 |         reveal(HeapSharedAccess::wf2);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:366:9
+    |
+366 |         reveal(HeapSharedAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:367:9
+    |
+367 |         reveal(Heap::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:372:9
+    |
+372 |         reveal(HeapLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:373:9
+    |
+373 |         reveal(HeapLocalAccess::wf_basic);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:374:9
+    |
+374 |         reveal(pages_free_direct_is_correct);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:375:9
+    |
+375 |         reveal(pages_free_direct_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:429:5
+    |
+429 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:473:1
+    |
+473 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:573:9
+    |
+573 |         reveal(size_of_bin);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:880:1
+    |
+880 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1019:1
+     |
+1019 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1061:1
+     |
+1061 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1212:1
+     |
+1212 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1291:9
+     |
+1291 |         reveal(EmptyPageStuff::wf);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1346:1
+     |
+1346 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1353:1
+     |
+1353 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1173:1
+     |
+1173 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1289:21
+     |
+1289 |                     reveal(pages_free_direct_match);
+     |                     ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1338:21
+     |
+1338 |                     reveal(size_of_bin);
+     |                     ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> queues.rs:1367:13
+     |
+1367 |             reveal(pages_free_direct_match);
+     |             ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> queues.rs:27:1
+   |
+27 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> queues.rs:65:9
+   |
+65 |         reveal(PageOrg::State::valid_used_page);
+   |         ^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> queues.rs:66:9
+   |
+66 |         reveal(PageOrg::State::ll_basics);
+   |         ^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:140:17
+    |
+140 |                 reveal(PageOrg::State::valid_used_page);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:153:9
+    |
+153 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:185:9
+    |
+185 |         reveal(Local::wf_main_for_page_access);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:187:9
+    |
+187 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:188:9
+    |
+188 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:189:9
+    |
+189 |         reveal(HeapLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:190:9
+    |
+190 |         reveal(pages_free_direct_is_correct);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:191:9
+    |
+191 |         reveal(pages_free_direct_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:274:29
+    |
+274 | ...                   reveal(pages_free_direct_match);
+    |                       ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:357:17
+    |
+357 |                 reveal(Local::is_used_primary);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:400:1
+    |
+400 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:434:9
+    |
+434 |         reveal(PageOrg::State::ll_basics);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:435:9
+    |
+435 |         reveal(PageOrg::State::inv_used);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:489:9
+    |
+489 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:516:9
+    |
+516 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:517:9
+    |
+517 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:518:9
+    |
+518 |         reveal(HeapLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:519:9
+    |
+519 |         reveal(pages_free_direct_is_correct);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:520:9
+    |
+520 |         reveal(pages_free_direct_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> queues.rs:673:17
+    |
+673 |                 reveal(Local::is_used_primary);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:796:1
+    |
+796 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:722:1
+    |
+722 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:741:9
+    |
+741 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:766:9
+    |
+766 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:500:1
+    |
+500 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:514:9
+    |
+514 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:515:9
+    |
+515 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:516:9
+    |
+516 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:525:9
+    |
+525 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:526:9
+    |
+526 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:527:9
+    |
+527 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:528:9
+    |
+528 |         reveal(HeapLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:529:9
+    |
+529 |         reveal(HeapLocalAccess::wf_basic);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:530:9
+    |
+530 |         reveal(PageLocalAccess::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:531:9
+    |
+531 |         reveal(PageInner::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:532:9
+    |
+532 |         reveal(page_organization_pages_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:533:9
+    |
+533 |         reveal(page_organization_pages_match_data);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:312:1
+    |
+312 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:347:17
+    |
+347 |                 reveal(Local::wf);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:348:17
+    |
+348 |                 reveal(Local::wf_main);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:349:17
+    |
+349 |                 reveal(Local::page_organization_valid);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:350:17
+    |
+350 |                 reveal(HeapLocalAccess::wf);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:351:17
+    |
+351 |                 reveal(HeapLocalAccess::wf_basic);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:352:17
+    |
+352 |                 reveal(PageLocalAccess::wf);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:353:17
+    |
+353 |                 reveal(PageInner::wf);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:354:17
+    |
+354 |                 reveal(page_organization_pages_match);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:355:17
+    |
+355 |                 reveal(page_organization_pages_match_data);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:240:1
+    |
+240 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:257:9
+    |
+257 |         reveal(Local::wf);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:258:9
+    |
+258 |         reveal(Local::wf_main);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:259:9
+    |
+259 |         reveal(Local::page_organization_valid);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:260:9
+    |
+260 |         reveal(page_organization_pages_match);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> page.rs:261:9
+    |
+261 |         reveal(page_organization_pages_match_data);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> os_alloc.rs:66:1
+   |
+66 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:380:1
+    |
+380 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:439:1
+    |
+439 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:446:1
+    |
+446 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:456:1
+    |
+456 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_commit.rs:171:1
+    |
+171 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:463:1
+    |
+463 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:485:1
+    |
+485 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:801:1
+    |
+801 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_segment.rs:1563:1
+     |
+1563 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:153:1
+    |
+153 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:182:1
+    |
+182 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:254:17
+    |
+254 |                 reveal(PageOrg::State::valid_unused_page);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:263:17
+    |
+263 |                 reveal(PageOrg::State::valid_unused_page);
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:376:1
+    |
+376 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:552:13
+    |
+552 |             reveal(Local::is_used_primary);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:567:1
+    |
+567 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:667:13
+    |
+667 |             reveal(PageOrg::State::ll_basics);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:668:13
+    |
+668 |             reveal(PageOrg::State::ll_inv_valid_unused);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:669:13
+    |
+669 |             reveal(PageOrg::State::valid_unused_page);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:866:13
+    |
+866 |             reveal(Local::is_used_primary);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:881:1
+    |
+881 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:909:9
+    |
+909 |         reveal(segment_span_allocate_page_org_pre);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:1567:1
+     |
+1567 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:1756:1
+     |
+1756 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:1834:1
+     |
+1834 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:2324:1
+     |
+2324 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:2375:1
+     |
+2375 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:2423:9
+     |
+2423 |         reveal(PageOrg::State::page_id_domain);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:2780:1
+     |
+2780 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:3080:1
+     |
+3080 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:592:1
+    |
+592 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:659:13
+    |
+659 |             reveal(MimDeallocInner::wf);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:660:13
+    |
+660 |             reveal(valid_block_token);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:302:1
+    |
+302 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:272:1
+    |
+272 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> free.rs:110:9
+    |
+110 | verus!{ #[verus_verify]
+    |         ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> alloc_fast.rs:31:1
+   |
+31 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> alloc_fast.rs:56:1
+   |
+56 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:455:5
+    |
+455 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:465:5
+    |
+465 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:482:5
+    |
+482 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:499:5
+    |
+499 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:586:5
+    |
+586 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:631:5
+    |
+631 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:884:5
+    |
+884 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:898:5
+    |
+898 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:946:5
+    |
+946 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_mask.rs:1291:5
+     |
+1291 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_mask.rs:1308:5
+     |
+1308 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:2252:1
+     |
+2252 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:2270:1
+     |
+2270 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:2288:1
+     |
+2288 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:2306:1
+     |
+2306 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:2330:1
+     |
+2330 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:2351:1
+     |
+2351 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:904:5
+    |
+904 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:910:17
+    |
+910 |         proof { reveal(LL::first_addr); }
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:936:5
+    |
+936 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:226:5
+    |
+226 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:259:13
+    |
+259 |             reveal(LL::wf);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:260:13
+    |
+260 |             reveal(LL::next_ptr);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:261:13
+    |
+261 |             reveal(LL::valid_node);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:262:13
+    |
+262 |             reveal(LL::len);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:263:13
+    |
+263 |             reveal(LL::block_ids);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:264:13
+    |
+264 |             reveal(LL::fixed_page);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:265:13
+    |
+265 |             reveal(LL::page_id);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:266:13
+    |
+266 |             reveal(LL::block_size);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:267:13
+    |
+267 |             reveal(LL::instance);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:268:13
+    |
+268 |             reveal(LL::heap_id);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:269:13
+    |
+269 |             reveal(is_block_ptr1);
+    |             ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> bin_sizes.rs:713:1
+    |
+713 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> bin_sizes.rs:933:1
+    |
+933 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:112:1
+    |
+112 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:116:1
+    |
+116 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:120:1
+    |
+120 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:124:1
+    |
+124 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:132:1
+    |
+132 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:136:1
+    |
+136 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:471:1
+    |
+471 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:481:9
+    |
+481 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:498:9
+    |
+498 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:580:1
+    |
+580 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:591:9
+    |
+591 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:607:9
+    |
+607 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:653:9
+    |
+653 |         reveal(is_block_ptr1);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:696:1
+    |
+696 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:776:1
+    |
+776 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:793:1
+    |
+793 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:857:1
+    |
+857 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:947:9
+    |
+947 |         reveal(crate::layout::start_offset);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> layout.rs:986:1
+    |
+986 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1054:1
+     |
+1054 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1154:5
+     |
+1154 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1227:1
+     |
+1227 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> layout.rs:1233:9
+     |
+1233 |         reveal(start_offset);
+     |         ^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:36:5
+   |
+36 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:58:5
+   |
+58 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:88:5
+   |
+88 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1145:5
+     |
+1145 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1167:5
+     |
+1167 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1185:5
+     |
+1185 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1202:5
+     |
+1202 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1230:5
+     |
+1230 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1247:5
+     |
+1247 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1275:5
+     |
+1275 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1292:5
+     |
+1292 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1320:5
+     |
+1320 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1338:5
+     |
+1338 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1351:5
+     |
+1351 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1419:5
+     |
+1419 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1436:5
+     |
+1436 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1472:5
+     |
+1472 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1514:5
+     |
+1514 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1523:5
+     |
+1523 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1534:5
+     |
+1534 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1649:5
+     |
+1649 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1726:5
+     |
+1726 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1759:5
+     |
+1759 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1788:5
+     |
+1788 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1817:5
+     |
+1817 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1830:5
+     |
+1830 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1843:5
+     |
+1843 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1857:5
+     |
+1857 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1870:5
+     |
+1870 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1883:5
+     |
+1883 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1896:5
+     |
+1896 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1922:5
+     |
+1922 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1935:5
+     |
+1935 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2002:5
+     |
+2002 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2013:5
+     |
+2013 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2021:5
+     |
+2021 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2086:5
+     |
+2086 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2132:5
+     |
+2132 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2249:5
+     |
+2249 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2291:5
+     |
+2291 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2330:5
+     |
+2330 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2369:5
+     |
+2369 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2499:5
+     |
+2499 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2619:5
+     |
+2619 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2639:5
+     |
+2639 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2702:5
+     |
+2702 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2784:5
+     |
+2784 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2956:5
+     |
+2956 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2972:5
+     |
+2972 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: use of deprecated method `vstd::prelude::OptionAdditionalFns::is_None`: is_Variant is deprecated - use `->` or `matches` instead: https://verus-lang.github.io/verus/guide/datatypes_enum.html
+   --> linked_list.rs:356:51
+    |
+356 |                         assert(self.data@.heap_id.is_None() || self.perms@[i].2.value().heap_id == self.data@.heap_id);
+    |                                                   ^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `vstd::prelude::OptionAdditionalFns::is_None`: is_Variant is deprecated - use `->` or `matches` instead: https://verus-lang.github.io/verus/guide/datatypes_enum.html
+   --> linked_list.rs:649:46
+    |
+649 |                     assert(out.data@.heap_id.is_None() || out.perms@[i].2.value().heap_id == out.data@.heap_id);
+    |                                              ^^^^^^^
+
+warning: use of deprecated method `vstd::prelude::ResultAdditionalSpecFns::is_Ok`: is_Variant is deprecated - use `->` or `matches` instead: https://verus-lang.github.io/verus/guide/datatypes_enum.html
+   --> free.rs:748:39
+    |
+748 |             let ghost ok = cas_result.is_Ok();
+    |                                       ^^^^^
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:527:9
+    |
+527 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:531:9
+    |
+531 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:554:9
+    |
+554 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:556:9
+    |
+556 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:558:9
+    |
+558 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:841:9
+    |
+841 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:845:9
+    |
+845 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:868:9
+    |
+868 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:870:9
+    |
+870 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> segment.rs:872:9
+    |
+872 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2104:13
+     |
+2104 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2114:13
+     |
+2114 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2118:13
+     |
+2118 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2144:13
+     |
+2144 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2154:13
+     |
+2154 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2158:13
+     |
+2158 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2243:9
+     |
+2243 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2247:9
+     |
+2247 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2282:9
+     |
+2282 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2293:9
+     |
+2293 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2301:9
+     |
+2301 |         assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> types.rs:4272:17
+     |
+4272 |                   assert forall |pid: PageId|
+     |                   ^^^^^^
+     |
+    ::: segment.rs:2508:5
+     |
+2508 | /     unused_page_get_mut!(page, local, page => {
+2509 | |         let Tracked(_delay_token) = page.xthread_free.disable();
+2510 | |         let Tracked(_heap_of_page_token) = page.xheap.disable();
+2511 | |
+2512 | |     });
+     | |______- in this macro invocation
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+     = note: this warning originates in the macro `$crate::types::unused_page_get_mut_internal` which comes from the expansion of the macro `unused_page_get_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2556:9
+     |
+2556 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2565:9
+     |
+2565 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2728:9
+     |
+2728 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2732:9
+     |
+2732 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |         ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2952:13
+     |
+2952 |             assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2956:13
+     |
+2956 |             assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:2993:13
+     |
+2993 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:3007:13
+     |
+3007 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:3021:13
+     |
+3021 |             assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:3454:17
+     |
+3454 |                 assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |                 ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:3458:17
+     |
+3458 |                 assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+     |                 ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:3496:17
+     |
+3496 |                 assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |                 ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:3512:17
+     |
+3512 |                 assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |                 ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> segment.rs:3520:17
+     |
+3520 |                 assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) implies
+     |                 ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1324:13
+     |
+1324 |             assert forall |page_id: PageId| #[trigger] local.pages.dom().contains(page_id) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1332:13
+     |
+1332 |             assert forall |page_id: PageId| #[trigger] local.pages.dom().contains(page_id) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1363:13
+     |
+1363 |             assert forall |page_id: PageId| #[trigger] local.page_organization.pages.dom().contains(page_id) implies
+     |             ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1391:21
+     |
+1391 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1395:21
+     |
+1395 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1399:21
+     |
+1399 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1403:21
+     |
+1403 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1473:21
+     |
+1473 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1475:21
+     |
+1475 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1477:21
+     |
+1477 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+    --> commit_segment.rs:1479:21
+     |
+1479 |                     assert forall |pid: PageId| #[trigger] local.page_organization.pages.dom().contains(pid) ==>
+     |                     ^^^^^^
+     |
+     = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:381:9
+    |
+381 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:385:9
+    |
+385 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:652:9
+    |
+652 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:656:9
+    |
+656 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:955:9
+    |
+955 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> queues.rs:959:9
+    |
+959 |         assert forall |pid: PageId| #[trigger] local.pages.dom().contains(pid) implies
+    |         ^^^^^^
+    |
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+note: verifying module os_commit (selected functions)
+
+error: postcondition not satisfied
+   --> os_commit.rs:275:9
+    |
+275 |         size != 0 && commit && addr.addr() != 0 ==> final(mem).pointsto_has_range(addr as int, size as int),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+347 |     return (true, is_zero);
+    |     ---------------------- at this exit
+
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+error: aborting due to 1 previous error; 291 warnings emitted
+
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:           15712 ms
+    rust-time:                7763 ms
+        init-and-types:           7683 ms
+        trait-conflicts:            80 ms
+        compile-time:                0 ms
+    verification-time:        6699 ms
+        vir-time:                 5831 ms
+            hir-time:                  742 ms
+            import-time:               201 ms
+            rust-to-vir:              1356 ms
+        verify-crate-time:         868 ms
+    unaccounted-time:         1249 ms
+
+verify-crate-time-breakdown
+    total verify-time:            257 ms   (1 threads)
+        total air-time:               126 ms   (1 threads)
+        total smt-time:                57 ms   (1 threads)
+            total smt-init:                 0 ms,     1163 rlimit (1 threads)
+            total smt-run:                 57 ms,   118240 rlimit (1 threads)

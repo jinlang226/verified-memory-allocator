@@ -1,0 +1,59 @@
+{
+ "sanctioned": [
+  {
+   "kind": "path",
+   "value": ".verus_deps",
+   "marker": null
+  },
+  {
+   "kind": "path",
+   "value": "verus-mimalloc/os_mem.rs",
+   "marker": null
+  },
+  {
+   "kind": "path",
+   "value": "verus-mimalloc/thread.rs",
+   "marker": null
+  },
+  {
+   "kind": "path",
+   "value": "verus-mimalloc/lib.rs",
+   "marker": null
+  },
+  {
+   "kind": "symbol",
+   "value": "print_hex",
+   "marker": null
+  },
+  {
+   "kind": "symbol",
+   "value": "todo",
+   "marker": null
+  },
+  {
+   "kind": "symbol",
+   "value": "get_empty_page_stuff",
+   "marker": null
+  },
+  {
+   "kind": "symbol",
+   "value": "increment_thread_count",
+   "marker": null
+  },
+  {
+   "kind": "symbol",
+   "value": "current_thread_count",
+   "marker": null
+  },
+  {
+   "kind": "symbol",
+   "value": "aligned_base_add",
+   "marker": null
+  },
+  {
+   "kind": "symbol",
+   "value": "aligned_base_cas",
+   "marker": null
+  }
+ ]
+}

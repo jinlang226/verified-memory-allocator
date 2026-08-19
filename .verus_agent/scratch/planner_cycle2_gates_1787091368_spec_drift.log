@@ -1,0 +1,163 @@
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/alloc_fast.rs: 4 protected contract change(s)
+       - heap_malloc_zero_ex
+       - heap_get_free_small_page
+       - heap_malloc
+       - heap_malloc_zero
+  ❌ verus-mimalloc/alloc_generic.rs: 5 protected contract change(s)
+       - heap_delayed_free_partial
+       - page_extend_free
+       - page_free_collect
+       - page_free_list_extend
+       - page_thread_free_collect
+  ❌ verus-mimalloc/arena.rs: 1 protected contract change(s)
+       - arena_alloc_aligned
+  ❌ verus-mimalloc/commit_segment.rs: 6 protected contract change(s)
+       - lemma_segment_commit_mask_aligned_bytes
+       - lemma_segment_ptr_commit_aligned
+       - segment_commitx
+       - segment_delayed_decommit
+       - segment_ensure_committed
+       - segment_perhaps_decommit
+  ❌ verus-mimalloc/dealloc_token.rs: 1 protected contract change(s)
+       - MimDealloc::into_internal
+  ❌ verus-mimalloc/free.rs: 6 protected contract change(s)
+       - live_block_implies_page_used
+       - free
+       - free_block
+       - free_block_mt
+       - free_delayed_block
+       - free_generic
+  ❌ verus-mimalloc/init.rs: 3 protected contract change(s)
+       - heap_init
+       - init_empty_page_ptr
+       - thread_data_alloc
+  ❌ verus-mimalloc/layout.rs: 3 protected contract change(s)
+       - SegmentPtr::ptr_segment
+       - calculate_page_start
+       - segment_page_start_from_slice
+  ❌ verus-mimalloc/linked_list.rs: 24 protected contract change(s)
+       - LL::block_ids_contains_witness
+       - LL::block_ids_idx_disjoint_from
+       - LL::block_ids_idx_lt_num_blocks
+       - LL::block_token_fresh_for_ll
+       - LL::empty_fields_wf
+       - LL::entry_ptr_nonzero
+       - LL::entry_token_matches_metadata
+       - LL::make_empty
+       - LL::three_lists_len_bound
+       - LL::two_lists_with_live_cardinality_gap
+       - LL::wf_first_addr_zero_implies_empty
+       - LL::wf_first_zero_implies_empty
+       - LL::wf_from_same_repr_addr
+       - ThreadLLWithDelayBits::disable
+       - ThreadLLWithDelayBits::wf_emp_instance_ids
+       - LL::append
+       - LL::ghost_insert_block
+       - LL::pop_block
+       - LL::set_ghost_data
+       - ThreadLLSimple::take
+       - ThreadLLWithDelayBits::empty
+       - ThreadLLWithDelayBits::enable
+       - ThreadLLWithDelayBits::take
+       - ThreadLLWithDelayBits::try_use_delayed_free
+  ❌ verus-mimalloc/linked_list_insert_block.proof.rs: 1 protected contract change(s)
+       - LL::insert_block
+  ❌ verus-mimalloc/os_alloc.rs: 6 protected contract change(s)
+       - os_alloc_aligned
+       - os_alloc_aligned_offset
+       - os_mem_alloc
+       - os_mem_alloc_aligned
+       - unix_mmap
+       - unix_mmapx
+  ❌ verus-mimalloc/os_commit.rs: 3 protected contract change(s)
+       - os_commit
+       - os_commitx
+       - os_decommit
+  ❌ verus-mimalloc/os_mem.rs: 4 protected contract change(s)
+       - mmap_prot_none
+       - mmap_prot_read_write
+       - mprotect_prot_none
+       - mprotect_prot_read_write
+  ❌ verus-mimalloc/os_mem_util.rs: 4 protected contract change(s)
+       - Local::mem_chunk_good_preserved_by_commit_update
+       - Local::set_range_to_not_used_preserves_mem_chunk_good
+       - MemChunk::join
+       - MemChunk::split
+  ❌ verus-mimalloc/page.rs: 8 protected contract change(s)
+       - page_free
+       - page_init
+       - page_queue_enqueue_from
+       - page_queue_of
+       - page_retire
+       - page_to_full
+       - page_try_use_delayed_free
+       - page_unfull
+  ❌ verus-mimalloc/queues.rs: 4 protected contract change(s)
+       - heap_queue_first_update
+       - page_queue_push
+       - page_queue_push_back
+       - page_queue_remove
+  ❌ verus-mimalloc/segment.rs: 13 protected contract change(s)
+       - lemma_mem_chunk_good1_after_metadata_taken
+       - segment_alloc
+       - segment_os_alloc
+       - segment_page_clear
+       - segment_page_free
+       - segment_reclaim_or_alloc
+       - segment_slice_split
+       - segment_span_allocate
+       - segment_span_free
+       - segment_span_free_coalesce
+       - segment_span_free_coalesce_before
+       - segments_page_find_and_allocate
+       - span_queue_delete
+  ❌ verus-mimalloc/types.rs: 46 protected contract change(s)
+       - AtomicHeapPtr::disable
+       - SegmentSharedAccess::wf
+       - free_fast_live_block_implies_page_used
+       - HeapPtr::get_arena_id
+       - HeapPtr::get_page_count
+       - HeapPtr::get_page_empty
+       - HeapPtr::get_page_retired_max
+       - HeapPtr::get_page_retired_min
+       - HeapPtr::get_pages
+       - HeapPtr::get_pages_free_direct
+       - HeapPtr::get_ref
+       - HeapPtr::set_page_count
+       - HeapPtr::set_page_retired_max
+       - HeapPtr::set_page_retired_min
+       - PagePtr::add_offset
+       - PagePtr::add_offset_and_check
+       - PagePtr::get_block_size
+       - PagePtr::get_count
+       - PagePtr::get_heap
+       - PagePtr::get_index
+       - PagePtr::get_inner_ref
+       - PagePtr::get_inner_ref_maybe_empty
+       - PagePtr::get_next
+       - PagePtr::get_prev
+       - PagePtr::get_ref
+       - PagePtr::is_gt_0th_slice
+       - PagePtr::slice_start
+       - PagePtr::sub_offset
+       - SegmentPtr::get_abandoned
+       - SegmentPtr::get_allow_decommit
+       - SegmentPtr::get_commit_mask
+       - SegmentPtr::get_decommit_expire
+       - SegmentPtr::get_decommit_mask
+       - SegmentPtr::get_main2_ref
+       - SegmentPtr::get_main_ref
+       - SegmentPtr::get_mem_is_pinned
+       - SegmentPtr::get_page_after_end
+       - SegmentPtr::get_page_header_ptr
+       - SegmentPtr::get_ref
+       - SegmentPtr::get_segment_kind
+       - SegmentPtr::get_used
+       - SegmentPtr::is_abandoned
+       - SegmentPtr::is_kind_huge
+       - TldPtr::get_mut
+       - TldPtr::get_ref
+       - TldPtr::get_segments_count
+  checked 29 module(s) in one global snapshot; 18 with contract drift; 1.9s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.

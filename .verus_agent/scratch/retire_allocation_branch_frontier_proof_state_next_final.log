@@ -1,0 +1,3 @@
+proof_state: 193 reachable functions, 514 edges; 5 WIP nodes/5 trust leaves, 0 unentered, 0 unknown; 0 unmapped trust; 17 unreachable trust; topology cache rebuilt.
+  top frontier: 2; bottom frontier: 1
+wip_trust    verus-mimalloc/alloc_generic.rs:945 page_extend_free  [verus-mimalloc/alloc_generic.rs::page_extend_free@L945]

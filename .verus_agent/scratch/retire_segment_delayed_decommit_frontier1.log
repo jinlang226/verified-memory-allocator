@@ -1,0 +1,26 @@
+### proof_state next
+proof_state: 185 reachable functions, 497 edges; 23 WIP nodes/23 trust leaves, 0 unentered, 2 unknown; 0 unmapped trust; 29 unreachable trust; topology cache rebuilt.
+  top frontier: 3; bottom frontier: 6
+wip_trust    verus-mimalloc/alloc_generic.rs:99 page_free_list_extend  [verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99]
+wip_trust    verus-mimalloc/alloc_generic.rs:77 page_thread_free_collect  [verus-mimalloc/alloc_generic.rs::page_thread_free_collect@L77]
+unknown      verus-mimalloc/linked_list.rs:1123 new  [verus-mimalloc/linked_list.rs::new@L1123]
+wip_trust    verus-mimalloc/page.rs:833 page_try_use_delayed_free  [verus-mimalloc/page.rs::page_try_use_delayed_free@L833]
+wip_trust    verus-mimalloc/segment.rs:751 segment_span_allocate  [verus-mimalloc/segment.rs::segment_span_allocate@L751]
+wip_trust    verus-mimalloc/segment.rs:1533 segment_span_free  [verus-mimalloc/segment.rs::segment_span_free@L1533]
+PROOF_STATE_STATUS=0
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  27 reachable proof-node obligation(s) remain:
+    wip_trust: page_free_list_extend (verus-mimalloc/alloc_generic.rs:99)
+    wip_trust: page_thread_free_collect (verus-mimalloc/alloc_generic.rs:77)
+    wip_trust: segment_delayed_decommit (verus-mimalloc/commit_segment.rs:735)
+    unknown: new (verus-mimalloc/linked_list.rs:1123)
+    wip_trust: page_try_use_delayed_free (verus-mimalloc/page.rs:833)
+    wip_trust: segment_span_allocate (verus-mimalloc/segment.rs:751)
+COMPLETION_STATUS=1
+### PageOrg assume_false
+0
+### PageOrg true_body
+0

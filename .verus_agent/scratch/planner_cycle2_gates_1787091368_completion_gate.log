@@ -1,0 +1,5 @@
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (16s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  11 reachable proof-node obligation(s) remain:
+    wip_trust: heap_malloc_zero_ex (verus-mimalloc/alloc_fast.rs:78)

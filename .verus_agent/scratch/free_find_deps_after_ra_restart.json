@@ -1,0 +1,21 @@
+{
+  "source": {
+    "file": "verus-mimalloc/init.rs",
+    "crate": "verus_mimalloc",
+    "module": "init"
+  },
+  "project_dir": ".",
+  "depth": 50,
+  "entries": [
+    "verus-mimalloc/init.rs:heap_init",
+    "verus-mimalloc/alloc_fast.rs:heap_malloc",
+    "verus-mimalloc/free.rs:free"
+  ],
+  "summary": {
+    "total_dep_crates": 0,
+    "total_dep_modules": 0,
+    "dep_crates": [],
+    "dep_modules": []
+  },
+  "modules": {}
+}

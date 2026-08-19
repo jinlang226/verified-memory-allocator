@@ -1,0 +1,84 @@
+{
+  "targets": [
+    {
+      "symbol": "global_init",
+      "file": "verus-mimalloc/init.rs",
+      "contract_sha": "a0a2998aa6416fac52b6623c24109960f54d441156ae85d3616facf25a725146",
+      "contract": {
+        "requires": [],
+        "ensures": [
+          "// $line_count$Trusted$ forall |tid: ThreadId| #[trigger] res.1.dom().contains(tid) // $line_count$Trusted$ && res.0.wf_right_to_use_thread(res.1[tid], tid)"
+        ],
+        "recommends": [],
+        "decreases": [],
+        "extra_qualifiers": []
+      },
+      "frontier": false,
+      "frontier_note": "proof fn: erased by the verus! expansion, so rust-analyzer cannot prepare a call hierarchy on it. Contract stays frozen and is still checked by boundary_guard/middle_guard; it carries no exec obligations, so it seeds no frontier."
+    },
+    {
+      "symbol": "heap_init",
+      "file": "verus-mimalloc/init.rs",
+      "contract_sha": "bfe9bb644199dc3e1f05aa83aa9fa158d81c1a9a06ea669afb20b8b2ff31a0c7",
+      "contract": {
+        "requires": [
+          "global.wf_right_to_use_thread(right, cur_thread@)"
+        ],
+        "ensures": [
+          "({ let (heap, local_opt) = res; { // $line_count$Trusted$ heap.heap_ptr.addr() != 0 ==> // $line_count$Trusted$ local_opt@.is_some() // $line_count$Trusted$ && local_opt@.unwrap().wf() // $line_count$Trusted$ && local_opt@.unwrap().inst() == global.inst() // $line_count$Trusted$ && heap.wf() // $line_count$Trusted$ && heap.is_in(local_opt@.unwrap()) // $line_count$Trusted$ }})"
+        ],
+        "recommends": [],
+        "decreases": [],
+        "extra_qualifiers": [
+          "// $line_count$Trusted$"
+        ]
+      }
+    },
+    {
+      "symbol": "heap_malloc",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "contract_sha": "2f11567c9c7ad9c83eb42384bdbfc5f83a56094342590ed167518cc2a43d59d5",
+      "contract": {
+        "requires": [
+          "// $line_count$Trusted$ heap.is_in(*old(local))",
+          "// $line_count$Trusted$ heap.wf()",
+          "// $line_count$Trusted$ old(local).wf()"
+        ],
+        "ensures": [
+          "// $line_count$Trusted$ ({ // $line_count$Trusted$ let (ptr, points_to_raw, dealloc) = t; // $line_count$Trusted$ points_to_raw@.is_range(ptr as int, size as int) // $line_count$Trusted$ && points_to_raw@.provenance() == ptr@.provenance // $line_count$Trusted$ && ptr == dealloc@.ptr() // $line_count$Trusted$ && dealloc@.inst() == final(local).inst() // $line_count$Trusted$ && dealloc@.size() == size // $line_count$Trusted$ })",
+          "// $line_count$Trusted$ final(local).inst() == old(local).inst()",
+          "// $line_count$Trusted$ final(local).wf()",
+          "// $line_count$Trusted$ forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*final(local))"
+        ],
+        "recommends": [],
+        "decreases": [],
+        "extra_qualifiers": [
+          "// $line_count$Trusted$"
+        ]
+      }
+    },
+    {
+      "symbol": "free",
+      "file": "verus-mimalloc/free.rs",
+      "contract_sha": "046ec0d6177bac1ea8dbb0d0e932bf349af20a45cb5f1afb957f3d940164ee12",
+      "contract": {
+        "requires": [
+          "old(local).wf()",
+          "ptr.addr() != 0 ==> old(local).inst() == user_dealloc.unwrap().inst()",
+          "ptr.addr() != 0 ==> ptr == user_dealloc.unwrap().ptr()",
+          "ptr.addr() != 0 ==> user_dealloc.is_some()",
+          "ptr.addr() != 0 ==> user_perm.is_range(ptr as int, user_dealloc.unwrap().size())",
+          "ptr.addr() != 0 ==> user_perm.provenance() == ptr@.provenance"
+        ],
+        "ensures": [
+          "final(local).inst() == old(local).inst()",
+          "final(local).wf()",
+          "forall |heap: HeapPtr| heap.is_in(*old(local)) ==> heap.is_in(*final(local))"
+        ],
+        "recommends": [],
+        "decreases": [],
+        "extra_qualifiers": []
+      }
+    }
+  ]
+}

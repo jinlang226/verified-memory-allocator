@@ -1,0 +1,158 @@
+### proof_state next
+proof_state: 195 reachable functions, 518 edges; 52 WIP nodes/52 trust leaves, 5 unentered, 18 unknown; 0 unmapped trust; 27 unreachable trust; topology cache rebuilt.
+  top frontier: 9; bottom frontier: 17
+unknown      .verus_deps/builtin/src/lib.rs:494 Ghost::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Ghost::assume_new_fallback@L494]
+unknown      .verus_deps/builtin/src/lib.rs:545 Tracked::assume_new  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new@L545]
+unknown      .verus_deps/builtin/src/lib.rs:552 Tracked::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new_fallback@L552]
+unknown      .verus_deps/vstd/atomic_ghost.rs:197 new  [.verus_deps/vstd/atomic_ghost.rs::new@L197]
+unknown      .verus_deps/vstd/atomic_ghost.rs:67 new  [.verus_deps/vstd/atomic_ghost.rs::new@L67]
+unknown      .verus_deps/vstd/cell/pcell.rs:145 borrow  [.verus_deps/vstd/cell/pcell.rs::borrow@L145]
+unknown      .verus_deps/vstd/cell/pcell.rs:159 borrow_mut  [.verus_deps/vstd/cell/pcell.rs::borrow_mut@L159]
+unknown      .verus_deps/vstd/layout.rs:118 layout_for_type_is_valid  [.verus_deps/vstd/layout.rs::layout_for_type_is_valid@L118]
+unknown      .verus_deps/vstd/raw_ptr.rs:602 ptr_mut_read  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_read@L602]
+unknown      .verus_deps/vstd/raw_ptr.rs:636 ptr_mut_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_ref@L636]
+unknown      .verus_deps/vstd/raw_ptr.rs:579 ptr_mut_write  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_write@L579]
+unknown      .verus_deps/vstd/raw_ptr.rs:620 ptr_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_ref@L620]
+unknown      .verus_deps/vstd/raw_ptr.rs:744 with_exposed_provenance  [.verus_deps/vstd/raw_ptr.rs::with_exposed_provenance@L744]
+unknown      verus-mimalloc/linked_list.rs:440 empty  [verus-mimalloc/linked_list.rs::empty@L440]
+unentered    verus-mimalloc/os_mem.rs:12 get_page_size  [verus-mimalloc/os_mem.rs::get_page_size@L12]
+unknown      verus-mimalloc/types.rs:2070 get_inner_ref  [verus-mimalloc/types.rs::get_inner_ref@L2070]
+unknown      verus-mimalloc/types.rs:3341 todo  [verus-mimalloc/types.rs::todo@L3341]
+PROOF_STATE_STATUS=0
+### boundary_guard
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+BOUNDARY_STATUS=0
+### spec_drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/alloc_fast.rs: 3 protected contract change(s)
+       - heap_malloc_zero_ex
+       - heap_malloc
+       - heap_malloc_zero
+  ❌ verus-mimalloc/commit_segment.rs: 2 protected contract change(s)
+       - segment_commitx
+       - segment_ensure_committed
+  ❌ verus-mimalloc/dealloc_token.rs: 2 protected contract change(s)
+       - valid_block_token
+       - MimDealloc::into_internal
+  ❌ verus-mimalloc/free.rs: 3 protected contract change(s)
+       - free_generic
+       - live_block_implies_page_used
+       - free
+  ❌ verus-mimalloc/init.rs: 3 protected contract change(s)
+       - heap_init
+       - init_empty_page_ptr
+       - thread_data_alloc
+  ❌ verus-mimalloc/layout.rs: 3 protected contract change(s)
+       - SegmentPtr::ptr_segment
+       - calculate_page_start
+       - segment_page_start_from_slice
+  ❌ verus-mimalloc/linked_list.rs: 6 protected contract change(s)
+       - LL::block_ids_contains_witness
+       - LL::entry_token_matches_metadata
+       - LL::two_lists_with_live_cardinality_gap
+       - ThreadLLSimple::empty
+       - LL::empty
+       - LL::new
+  ❌ verus-mimalloc/linked_list_insert_block.proof.rs: 1 protected contract change(s)
+       - LL::insert_block
+  ❌ verus-mimalloc/os_mem.rs: 4 protected contract change(s)
+       - mmap_prot_none
+       - mmap_prot_read_write
+       - mprotect_prot_none
+       - mprotect_prot_read_write
+  ❌ verus-mimalloc/page.rs: 1 protected contract change(s)
+       - page_retire
+  ❌ verus-mimalloc/segment.rs: 6 protected contract change(s)
+       - segment_reclaim_or_alloc
+       - segment_slice_split
+       - segment_span_free_coalesce
+       - segment_span_free_coalesce_before
+       - segments_page_find_and_allocate
+       - span_queue_delete
+  ❌ verus-mimalloc/types.rs: 42 protected contract change(s)
+       - PageInner::wf
+       - HeapPtr::get_arena_id
+       - HeapPtr::get_page_count
+       - HeapPtr::get_page_empty
+       - HeapPtr::get_page_retired_max
+       - HeapPtr::get_page_retired_min
+       - HeapPtr::get_pages
+       - HeapPtr::get_pages_free_direct
+       - HeapPtr::get_ref
+       - HeapPtr::set_page_count
+       - HeapPtr::set_page_retired_max
+       - HeapPtr::set_page_retired_min
+       - PagePtr::add_offset
+       - PagePtr::add_offset_and_check
+       - PagePtr::get_block_size
+       - PagePtr::get_count
+       - PagePtr::get_index
+       - PagePtr::get_inner_ref
+       - PagePtr::get_inner_ref_maybe_empty
+       - PagePtr::get_next
+       - PagePtr::get_prev
+       - PagePtr::get_ref
+       - PagePtr::is_gt_0th_slice
+       - PagePtr::slice_start
+       - PagePtr::sub_offset
+       - SegmentPtr::get_abandoned
+       - SegmentPtr::get_allow_decommit
+       - SegmentPtr::get_commit_mask
+       - SegmentPtr::get_decommit_expire
+       - SegmentPtr::get_decommit_mask
+       - SegmentPtr::get_main2_ref
+       - SegmentPtr::get_main_ref
+       - SegmentPtr::get_mem_is_pinned
+       - SegmentPtr::get_page_after_end
+       - SegmentPtr::get_page_header_ptr
+       - SegmentPtr::get_ref
+       - SegmentPtr::get_segment_kind
+       - SegmentPtr::get_used
+       - SegmentPtr::is_kind_huge
+       - TldPtr::get_mut
+       - TldPtr::get_ref
+       - TldPtr::get_segments_count
+  checked 29 module(s) in one global snapshot; 12 with contract drift; 1.5s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.
+SPEC_DRIFT_STATUS=1
+### ast_consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/free.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - free: MISMATCH
+  ❌ verus-mimalloc/linked_list.rs: exec body changed (mismatched=2 missing=0 extra=0)
+       - LL::new: MISMATCH
+       - ThreadLLSimple::empty: MISMATCH
+  checked 28 exec file(s); 2 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+AST_STATUS=1
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+OP_DECISIONS_STATUS=0
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  72 reachable proof-node obligation(s) remain:
+    unknown: Ghost::assume_new_fallback (.verus_deps/builtin/src/lib.rs:494)
+    unknown: Tracked::assume_new (.verus_deps/builtin/src/lib.rs:545)
+    unknown: Tracked::assume_new_fallback (.verus_deps/builtin/src/lib.rs:552)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:197)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:67)
+    unknown: borrow (.verus_deps/vstd/cell/pcell.rs:145)
+    unknown: borrow_mut (.verus_deps/vstd/cell/pcell.rs:159)
+    unknown: layout_for_type_is_valid (.verus_deps/vstd/layout.rs:118)
+    unknown: ptr_mut_read (.verus_deps/vstd/raw_ptr.rs:602)
+    unknown: ptr_mut_ref (.verus_deps/vstd/raw_ptr.rs:636)
+    unknown: ptr_mut_write (.verus_deps/vstd/raw_ptr.rs:579)
+    unknown: ptr_ref (.verus_deps/vstd/raw_ptr.rs:620)
+    unknown: with_exposed_provenance (.verus_deps/vstd/raw_ptr.rs:744)
+    unentered: get_page_size (verus-mimalloc/os_mem.rs:12)
+COMPLETION_STATUS=1
+### page_organization assume(false)
+0
+ASSUME_GREP_STATUS=0

@@ -1,0 +1,97 @@
+## segment_commitx (exec-only): MISMATCH
+
+--- source
++++ verus
+@@ -5,16 +5,22 @@
+     size: usize,
+     Tracked(local): Tracked<&mut Local>,
+ ) -> (success: bool)
++    
+ {
+-    let ghost sid = segment.segment_id@;
++    
++    
+ 
+     let mut mask: CommitMask = CommitMask::empty();
++    
+     let (start, full_size) = segment_commit_mask(
+         segment.segment_ptr as *mut u8, !commit, p, size, &mut mask);
+ 
+     if mask.is_empty() || full_size == 0 {
++        
+         return true;
+     }
++
++    
+ 
+     if commit && !segment.get_commit_mask(Tracked(&*local)).all_set(&mask) {
+ 
+@@ -22,6 +28,7 @@
+         let mut cmask = CommitMask::empty();
+         segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
+ 
++        
+         let success;
+         segment_get_mut_local!(segment, local, l => {
+             let (_success, _is_zero) =
+@@ -29,25 +36,45 @@
+             success = _success;
+         });
+         if (!success) {
++            
+             return false;
+         }
+ 
+         segment_get_mut_main!(segment, local, main => {
+             main.commit_mask.set(&mask);
+         });
++        
++    }
++    else if commit {
++        
+     }
+     else if !commit && segment.get_commit_mask(Tracked(&*local)).any_set(&mask) {
+         let mut cmask = CommitMask::empty();
+         segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
++        
++        
+         if segment.get_allow_decommit(Tracked(&*local)) {
++            
+             segment_get_mut_local!(segment, local, l => {
+                 crate::os_commit::os_decommit(start, full_size, Tracked(&mut l.mem));
+             });
++            
+         }
++        
++        
++        
+         segment_get_mut_main!(segment, local, main => {
+             main.commit_mask.clear(&mask);
+         });
++        
+     }
++
++    
++
++    
++
++    
++    
+ 
+     if commit && segment.get_main_ref(Tracked(&*local)).decommit_mask.any_set(&mask) {
+         segment_get_mut_main!(segment, local, main => {
+@@ -55,10 +82,14 @@
+         });
+     }
+ 
++    
++    
+     segment_get_mut_main!(segment, local, main => {
+         main.decommit_mask.clear(&mask);
+     });
+ 
++    
+ 
++    
+     return true;
+ }

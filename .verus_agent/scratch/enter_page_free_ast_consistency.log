@@ -1,0 +1,4 @@
+usage: ast_consistency.py [-h] [--base-ref BASE_REF]
+                          [source] verus {count,summary,diff,report} ...
+ast_consistency.py: error: unrecognized arguments: --crate-root
+=== ast_consistency exit 2 ===

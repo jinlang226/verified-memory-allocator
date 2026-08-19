@@ -1,0 +1,32 @@
+--- spec_drift check help ---
+usage: spec_drift.py check [-h] [--phase PHASE] [--logs-dir LOGS_DIR]
+                           [--before BEFORE] [--after AFTER] [-o OUTPUT]
+                           [--json]
+                           module
+
+positional arguments:
+  module                Module name (e.g. volume_impl)
+
+options:
+  -h, --help            show this help message and exit
+  --phase PHASE         Phase to check (default: current phase from pipeline
+                        state)
+  --logs-dir LOGS_DIR   Logs directory
+  --before BEFORE       Override baseline git ref (instead of auto-detect)
+  --after AFTER         Git ref for current state
+  -o OUTPUT, --output OUTPUT
+                        Output report file
+  --json                JSON output
+--- ast_consistency report help ---
+usage: ast_consistency.py [source] verus report [-h] -o OUTPUT [--json]
+
+options:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        Output directory for diffs and reports.
+  --json                Also write JSON report.
+--- operator_decisions gate help ---
+usage: operator_decisions gate [-h]
+
+options:
+  -h, --help  show this help message and exit

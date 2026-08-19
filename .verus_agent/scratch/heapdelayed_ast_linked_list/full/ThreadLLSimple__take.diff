@@ -1,0 +1,47 @@
+--- source:ThreadLLSimple::take
++++ verus:ThreadLLSimple::take
+@@ -1,8 +1,17 @@
+     pub fn take(&self) -> (ll: LL)
++        requires
++            self.wf(),
++        ensures
++            ll.wf(),
++            ll.no_duplicate_keys(),
++            ll.instance() == self.instance@,
++            !ll.fixed_page(),
++            ll.heap_id() == Some(self.heap_id@),
+     {
+         let res = self.atomic.load();
+         if res.addr() == 0 {
+-            return LL::new(Ghost(arbitrary()), Ghost(arbitrary()),
++            proof { reveal(LL::no_duplicate_keys); }
++            return LL::new(Ghost(arbitrary()), Ghost(false),
+                 Ghost(self.instance@), Ghost(arbitrary()), Ghost(Some(self.heap_id@)));
+         }
+ 
+@@ -14,11 +23,14 @@
+                 ll = g.get();
+                 let mut data = ll.data@;
+                 data.len = 0;
++                data.block_ids = Set::empty();
++                data.idx_bound = 0;
+                 let tracked new_ll = LL {
+                     first: p,
+                     data: Ghost(data),
+                     perms: Tracked(Map::tracked_empty()),
+                 };
++                new_ll.empty_fields_wf();
+                 g = Tracked(new_ll);
+             }
+         );
+@@ -27,6 +39,10 @@
+             data: Ghost(ll.data@),
+             perms: Tracked(ll.perms.get()),
+         };
++        proof {
++            reveal(LL::no_duplicate_keys);
++            assert(new_ll.no_duplicate_keys());
++        }
+ 
+         new_ll
+     }

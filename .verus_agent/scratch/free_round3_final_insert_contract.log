@@ -1,0 +1,25 @@
+170:    pub fn insert_block(&mut self, ptr: *mut u8, Tracked(points_to_raw): Tracked<PointsToRaw>, Tracked(block_token): Tracked<Mim::block>)
+171-        requires
+172-            old(self).wf(),
+173-            old(self).fixed_page(),
+174-            block_token.instance_id() == old(self).instance().id(),
+175-            block_token.key().page_id == old(self).page_id(),
+176-            block_token.key().block_size == old(self).block_size(),
+177-            match old(self).heap_id() {
+178-                Some(heap_id) => block_token.value().heap_id == Some(heap_id),
+179-                None => true,
+180-            },
+181-            is_block_ptr(ptr, block_token.key()),
+182-            points_to_raw.is_range(ptr as int, block_token.key().block_size as int),
+183-            points_to_raw.provenance() == ptr@.provenance,
+184-        ensures
+185-            final(self).wf(),
+186-            final(self).fixed_page() == old(self).fixed_page(),
+187-            final(self).page_id() == old(self).page_id(),
+188-            final(self).block_size() == old(self).block_size(),
+189-            final(self).instance() == old(self).instance(),
+190-            final(self).heap_id() == old(self).heap_id(),
+191-            final(self).len() == old(self).len() + 1,
+192-    {
+193-        let ghost old_len = self.data@.len;
+194-        let ghost old_first = self.first;

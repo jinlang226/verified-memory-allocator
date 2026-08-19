@@ -1,0 +1,23 @@
+### boundary_guard
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+BOUNDARY_STATUS=0
+### spec_drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.7s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+SPEC_DRIFT_STATUS=0
+### ast_consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/commit_segment.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - segment_delayed_decommit: MISMATCH
+  checked 28 exec file(s); 1 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+AST_STATUS=1
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+OP_DECISIONS_STATUS=0

@@ -1,0 +1,6 @@
+proof_state: 192 reachable functions, 519 edges; 21 WIP nodes/21 trust leaves, 0 unentered, 0 unknown; 0 unmapped trust; 24 unreachable trust; topology cache rebuilt.
+  top frontier: 1; bottom frontier: 4
+wip_trust    verus-mimalloc/alloc_generic.rs:99 page_free_list_extend  [verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99]
+wip_trust    verus-mimalloc/alloc_generic.rs:77 page_thread_free_collect  [verus-mimalloc/alloc_generic.rs::page_thread_free_collect@L77]
+wip_trust    verus-mimalloc/page.rs:833 page_try_use_delayed_free  [verus-mimalloc/page.rs::page_try_use_delayed_free@L833]
+wip_trust    verus-mimalloc/segment.rs:1284 segment_alloc  [verus-mimalloc/segment.rs::segment_alloc@L1284]

@@ -1,0 +1,34 @@
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 3 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+middle_guard spec-drift: baseline 4f0be60b7d3c -> working tree (goal-scoped: 3 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.5s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+middle_guard ast-consistency: baseline 4f0be60b7d3c -> working tree
+  checked 29 exec file(s); 0 with body edits
+middle_guard: exec bodies unchanged vs frozen baseline. ✅
+proof_state: 192 reachable functions, 518 edges; 54 WIP nodes/54 trust leaves, 6 unentered, 15 unknown; 0 unmapped trust; 29 unreachable trust; topology cache rebuilt.
+  top frontier: 3; bottom frontier: 14
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  75 reachable proof-node obligation(s) remain:
+    unknown: Ghost::assume_new_fallback (.verus_deps/builtin/src/lib.rs:494)
+    unknown: Tracked::assume_new (.verus_deps/builtin/src/lib.rs:545)
+    unknown: Tracked::assume_new_fallback (.verus_deps/builtin/src/lib.rs:552)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:197)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:67)
+    unknown: borrow (.verus_deps/vstd/cell/pcell.rs:145)
+    unknown: borrow_mut (.verus_deps/vstd/cell/pcell.rs:159)
+    unknown: layout_for_type_is_valid (.verus_deps/vstd/layout.rs:118)
+    unknown: ptr_mut_read (.verus_deps/vstd/raw_ptr.rs:602)
+    unknown: ptr_mut_ref (.verus_deps/vstd/raw_ptr.rs:636)
+    unknown: ptr_mut_write (.verus_deps/vstd/raw_ptr.rs:579)
+    unknown: ptr_ref (.verus_deps/vstd/raw_ptr.rs:620)
+    unknown: with_exposed_provenance (.verus_deps/vstd/raw_ptr.rs:744)
+    unentered: get_page_size (verus-mimalloc/os_mem.rs:12)
+  1 goal target(s) not yet PROVEN (the proof GOAL must be proven against its frozen contract, not trusted/admitted):
+    free in verus-mimalloc/free.rs is TRUSTED/ADMITTED (external_body) — a goal must be PROVEN, not trusted or admitted

@@ -1,0 +1,534 @@
+#![allow(unused_imports)]
+
+use vstd::prelude::*;
+use vstd::set_lib::*;
+
+use crate::commit_mask::*;
+use crate::types::*;
+use crate::layout::*;
+use crate::config::*;
+use crate::segment::*;
+use crate::os_mem_util::*;
+use crate::tokens::*;
+use crate::os_mem::*;
+
+verus!{
+
+#[verifier::rlimit(200)]
+proof fn lemma_segment_commit_mask_constants()
+    ensures
+        COMMIT_SIZE as usize == SLICE_SIZE as usize,
+        COMMIT_SIZE as usize == 65536,
+        SEGMENT_SIZE as usize == 33554432,
+        COMMIT_MASK_BITS as usize == 512,
+        SEGMENT_SIZE as usize == COMMIT_MASK_BITS as usize * COMMIT_SIZE as usize,
+        SLICE_SIZE as usize <= SEGMENT_SIZE as usize,
+        2 * SEGMENT_SIZE as usize + COMMIT_SIZE as usize <= usize::MAX,
+{
+    assert(COMMIT_SIZE == SLICE_SIZE) by(compute_only);
+    assert(COMMIT_SIZE == 65536) by(compute_only);
+    assert(SEGMENT_SIZE == 33554432) by(compute_only);
+    assert(COMMIT_MASK_BITS == 512) by(compute_only);
+    assert(SEGMENT_SIZE == COMMIT_MASK_BITS * COMMIT_SIZE) by(compute_only);
+}
+
+#[verifier::rlimit(200)]
+proof fn lemma_commit_mask_bit_range(start: usize, full_size: usize)
+    requires
+        start as int % COMMIT_SIZE as int == 0,
+        full_size as int % COMMIT_SIZE as int == 0,
+        start as int + full_size as int <= SEGMENT_SIZE as int,
+    ensures
+        full_size / COMMIT_SIZE as usize <= COMMIT_MASK_BITS as usize,
+        (start / COMMIT_SIZE as usize) as int + (full_size / COMMIT_SIZE as usize) as int
+            <= COMMIT_MASK_BITS as int,
+{
+    lemma_segment_commit_mask_constants();
+    let d = COMMIT_SIZE as usize;
+    let bits = COMMIT_MASK_BITS as usize;
+    let segsize = SEGMENT_SIZE as usize;
+    assert(d > 0);
+    assert(segsize == bits * d);
+    assert(start as int + full_size as int <= segsize as int);
+    assert(full_size as int <= segsize as int) by(nonlinear_arith)
+        requires
+            start as int + full_size as int <= segsize as int;
+    assert((full_size / d) as int <= bits as int) by(nonlinear_arith)
+        requires
+            d > 0,
+            segsize == bits * d,
+            full_size as int <= segsize as int;
+    assert(start as int / d as int + full_size as int / d as int
+        == (start as int + full_size as int) / d as int) by(nonlinear_arith)
+        requires
+            d > 0,
+            start as int % d as int == 0,
+            full_size as int % d as int == 0;
+    assert((start / d) as int == start as int / d as int) by(nonlinear_arith)
+        requires d > 0;
+    assert((full_size / d) as int == full_size as int / d as int) by(nonlinear_arith)
+        requires d > 0;
+    assert((start as int + full_size as int) / d as int <= bits as int) by(nonlinear_arith)
+        requires
+            d > 0,
+            segsize == bits * d,
+            start as int + full_size as int <= segsize as int;
+}
+
+pub open spec fn clock_now_millis_from_timespec(tv_sec: i64, tv_nsec: i64, millis: i64) -> bool {
+    millis == tv_sec.wrapping_mul(1000).wrapping_add((((tv_nsec as u64) / 1000000) as i64))
+}
+
+#[verus_verify]
+fn clock_now() -> (now: i64)
+    ensures
+        exists |tv_sec: i64, tv_nsec: i64| #[trigger] clock_now_millis_from_timespec(tv_sec, tv_nsec, now),
+{
+    let t = clock_gettime_monotonic();
+    proof {
+        assert(clock_now_millis_from_timespec(
+            t.tv_sec,
+            t.tv_nsec,
+            t.tv_sec.wrapping_mul(1000).wrapping_add((((t.tv_nsec as u64) / 1000000) as i64)),
+        ));
+        assert(exists |tv_sec: i64, tv_nsec: i64| #[trigger] clock_now_millis_from_timespec(
+            tv_sec,
+            tv_nsec,
+            t.tv_sec.wrapping_mul(1000).wrapping_add((((t.tv_nsec as u64) / 1000000) as i64)),
+        ));
+    }
+    t.tv_sec.wrapping_mul(1000).wrapping_add( (((t.tv_nsec as u64) / 1000000) as i64) )
+}
+
+// Should not be called for huge segments, I think? TODO can probably optimize out some checks
+fn segment_commit_mask(
+    segment_ptr: *mut u8,
+    conservative: bool,
+    p: usize,
+    size: usize,
+    cm: &mut CommitMask)
+ -> (res: (*mut u8, usize)) // start_p, full_size
+    requires
+        cm.concrete_empty(),
+        segment_ptr.addr() as int + SEGMENT_SIZE as int <= usize::MAX as int,
+        size != 0 && size <= SEGMENT_SIZE as usize ==> segment_ptr.addr() <= p,
+    ensures
+        res.1 <= SEGMENT_SIZE as usize,
+        res.1 as int % COMMIT_SIZE as int == 0,
+{
+
+    if size == 0 || size > SEGMENT_SIZE as usize {
+        return (core::ptr::null_mut(), 0);
+    }
+
+    let segstart: usize = SLICE_SIZE as usize;
+    let segsize: usize = SEGMENT_SIZE as usize;
+    proof {
+        lemma_segment_commit_mask_constants();
+        assert(segment_ptr.addr() + segsize <= usize::MAX) by(nonlinear_arith)
+            requires
+                segment_ptr.addr() as int + SEGMENT_SIZE as int <= usize::MAX as int,
+                segsize == SEGMENT_SIZE as usize;
+    }
+
+    if p >= segment_ptr.addr() + segsize {
+        return (core::ptr::null_mut(), 0);
+    }
+
+    proof {
+        assert(segment_ptr.addr() <= p);
+    }
+    let pstart: usize = p - segment_ptr.addr();
+    proof {
+        assert(pstart < segsize) by(nonlinear_arith)
+            requires
+                segment_ptr.addr() <= p,
+                p < segment_ptr.addr() + segsize,
+                pstart == p - segment_ptr.addr();
+        assert(pstart + size <= usize::MAX) by(nonlinear_arith)
+            requires
+                pstart < segsize,
+                size <= segsize,
+                segsize == SEGMENT_SIZE as usize,
+                2 * SEGMENT_SIZE as usize + COMMIT_SIZE as usize <= usize::MAX;
+        assert(pstart + COMMIT_SIZE as usize - 1 <= usize::MAX) by(nonlinear_arith)
+            requires
+                pstart < segsize,
+                segsize == SEGMENT_SIZE as usize,
+                2 * SEGMENT_SIZE as usize + COMMIT_SIZE as usize <= usize::MAX;
+        assert(pstart + size + COMMIT_SIZE as usize - 1 <= usize::MAX) by(nonlinear_arith)
+            requires
+                pstart < segsize,
+                size <= segsize,
+                segsize == SEGMENT_SIZE as usize,
+                2 * SEGMENT_SIZE as usize + COMMIT_SIZE as usize <= usize::MAX;
+    }
+
+    let mut start: usize;
+    let mut end: usize;
+    if conservative {
+        start = align_up(pstart, COMMIT_SIZE as usize);
+        end = align_down(pstart + size, COMMIT_SIZE as usize);
+        proof {
+            assert(pstart as int <= segsize as int) by(nonlinear_arith)
+                requires pstart < segsize;
+            assert(segsize as int % COMMIT_SIZE as int == 0) by(nonlinear_arith)
+                requires
+                    segsize == SEGMENT_SIZE as usize,
+                    SEGMENT_SIZE as usize == COMMIT_MASK_BITS as usize * COMMIT_SIZE as usize,
+                    COMMIT_SIZE as usize > 0;
+            assert(start as int <= segsize as int);
+            assert(start as int % COMMIT_SIZE as int == 0);
+            assert(end as int % COMMIT_SIZE as int == 0);
+        }
+    } else {
+        start = align_down(pstart, COMMIT_SIZE as usize);
+        end = align_up(pstart + size, COMMIT_SIZE as usize);
+        proof {
+            assert(start as int <= pstart as int);
+            assert(start as int <= segsize as int) by(nonlinear_arith)
+                requires
+                    start as int <= pstart as int,
+                    pstart < segsize;
+            assert(start as int % COMMIT_SIZE as int == 0);
+            assert(end as int % COMMIT_SIZE as int == 0);
+        }
+    }
+    proof {
+        assert(start as int <= segsize as int);
+        assert(start as int % COMMIT_SIZE as int == 0);
+        assert(end as int % COMMIT_SIZE as int == 0);
+    }
+
+    if pstart >= segstart && start < segstart {
+        start = segstart;
+    }
+    proof {
+        assert(segstart as int % COMMIT_SIZE as int == 0) by(nonlinear_arith)
+            requires
+                segstart == SLICE_SIZE as usize,
+                COMMIT_SIZE as usize == SLICE_SIZE as usize,
+                COMMIT_SIZE as usize > 0;
+        assert(start as int <= segsize as int) by(nonlinear_arith)
+            requires
+                start as int <= segsize as int,
+                segstart <= segsize;
+        assert(start as int % COMMIT_SIZE as int == 0);
+    }
+
+    if end > segsize {
+        end = segsize;
+    }
+    proof {
+        assert(segsize as int % COMMIT_SIZE as int == 0) by(nonlinear_arith)
+            requires
+                segsize == SEGMENT_SIZE as usize,
+                SEGMENT_SIZE as usize == COMMIT_MASK_BITS as usize * COMMIT_SIZE as usize,
+                COMMIT_SIZE as usize > 0;
+        assert(end as int <= segsize as int);
+        assert(end as int % COMMIT_SIZE as int == 0);
+        assert(start as int <= segsize as int);
+    }
+
+    proof {
+        assert(segment_ptr.addr() + start <= usize::MAX) by(nonlinear_arith)
+            requires
+                segment_ptr.addr() + segsize <= usize::MAX,
+                start <= segsize;
+    }
+    let start_p = segment_ptr.with_addr(segment_ptr.addr() + start);
+    let full_size = if end > start { end - start } else { 0 };
+    proof {
+        if end > start {
+            assert(start + full_size == end) by(nonlinear_arith)
+                requires
+                    full_size == end - start,
+                    end > start;
+            assert(full_size as int % COMMIT_SIZE as int == 0) by(nonlinear_arith)
+                requires
+                    end as int % COMMIT_SIZE as int == 0,
+                    start as int % COMMIT_SIZE as int == 0,
+                    full_size == end - start,
+                    end > start,
+                    COMMIT_SIZE as usize > 0;
+            assert(start as int + full_size as int <= segsize as int) by(nonlinear_arith)
+                requires
+                    start + full_size == end,
+                    end <= segsize;
+        } else {
+            assert(full_size as int % COMMIT_SIZE as int == 0);
+            assert(start as int + full_size as int <= segsize as int) by(nonlinear_arith)
+                requires
+                    start <= segsize,
+                    full_size == 0;
+        }
+    }
+    if full_size == 0 {
+        return (start_p, full_size);
+    }
+
+    let bitidx = start / COMMIT_SIZE as usize;
+    let bitcount = full_size / COMMIT_SIZE as usize;
+    proof {
+        lemma_commit_mask_bit_range(start, full_size);
+        assert(bitcount <= COMMIT_MASK_BITS as usize);
+        assert(bitidx as int + bitcount as int <= COMMIT_MASK_BITS as int);
+        assert(COMMIT_MASK_BITS as int == 512) by(nonlinear_arith)
+            requires
+                COMMIT_MASK_BITS as usize == 512;
+        assert(cm.concrete_empty());
+    }
+    cm.create(bitidx, bitcount);
+
+
+    return (start_p, full_size);
+}
+
+#[verifier::spinoff_prover]
+fn segment_commitx(
+    segment: SegmentPtr,
+    commit: bool,
+    p: usize,
+    size: usize,
+    Tracked(local): Tracked<&mut Local>,
+) -> (success: bool)
+    requires
+        local.wf_main(),
+        segment.wf(),
+        segment.is_in(*local),
+        size != 0 && size <= SEGMENT_SIZE as usize ==> segment.segment_ptr.addr() <= p,
+    ensures
+        common_preserves(*old(local), *final(local)),
+{
+    let ghost sid = segment.segment_id@;
+
+    let mut mask: CommitMask = CommitMask::empty();
+    proof {
+        assert(mask.concrete_empty());
+        assert((segment.segment_ptr as int) + (SEGMENT_SIZE as int) < (usize::MAX as int));
+        assert((segment.segment_ptr.addr() as int) + (SEGMENT_SIZE as int) <= (usize::MAX as int));
+    }
+    let (start, full_size) = segment_commit_mask(
+        segment.segment_ptr as *mut u8, !commit, p, size, &mut mask);
+
+    if mask.is_empty() || full_size == 0 {
+        return true;
+    }
+
+    if commit && !segment.get_commit_mask(Tracked(&*local)).all_set(&mask) {
+
+        let mut is_zero = false;
+        let mut cmask = CommitMask::empty();
+        segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
+
+        let success;
+        segment_get_mut_local!(segment, local, l => {
+            let (_success, _is_zero) =
+                crate::os_commit::os_commit(start, full_size, Tracked(&mut l.mem));
+            success = _success;
+        });
+        if (!success) {
+            return false;
+        }
+
+        segment_get_mut_main!(segment, local, main => {
+            main.commit_mask.set(&mask);
+        });
+    }
+    else if !commit && segment.get_commit_mask(Tracked(&*local)).any_set(&mask) {
+        let mut cmask = CommitMask::empty();
+        segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
+        if segment.get_allow_decommit(Tracked(&*local)) {
+            segment_get_mut_local!(segment, local, l => {
+                crate::os_commit::os_decommit(start, full_size, Tracked(&mut l.mem));
+            });
+        }
+        segment_get_mut_main!(segment, local, main => {
+            main.commit_mask.clear(&mask);
+        });
+    }
+
+    if commit && segment.get_main_ref(Tracked(&*local)).decommit_mask.any_set(&mask) {
+        segment_get_mut_main!(segment, local, main => {
+            main.decommit_expire = clock_now().wrapping_add(option_decommit_delay());
+        });
+    }
+
+    segment_get_mut_main!(segment, local, main => {
+        main.decommit_mask.clear(&mask);
+    });
+
+
+    return true;
+}
+
+pub fn segment_ensure_committed(
+    segment: SegmentPtr,
+    p: usize,
+    size: usize,
+    Tracked(local): Tracked<&mut Local>
+) -> (success: bool)
+    requires
+        local.wf_main(),
+        segment.wf(),
+        segment.is_in(*local),
+        size != 0 && size <= SEGMENT_SIZE as usize ==> segment.segment_ptr.addr() <= p,
+    ensures
+        common_preserves(*old(local), *final(local)),
+{
+    if segment.get_commit_mask(Tracked(&*local)).is_full()
+        && segment.get_decommit_mask(Tracked(&*local)).is_empty()
+    {
+
+        return true;
+    }
+
+    segment_commitx(segment, true, p, size, Tracked(local))
+}
+
+#[verifier::external_body]
+pub fn segment_perhaps_decommit(
+    segment: SegmentPtr,
+    p: usize,
+    size: usize,
+    Tracked(local): Tracked<&mut Local>,
+)
+{
+    if !segment.get_allow_decommit(Tracked(&*local)) {
+        return;
+    }
+
+    if option_decommit_delay() == 0 {
+        todo();
+    } else {
+
+        let mut mask: CommitMask = CommitMask::empty();
+        proof {
+            assert(mask.concrete_empty());
+            assert((segment.segment_ptr as int) + (SEGMENT_SIZE as int) < (usize::MAX as int));
+            assert((segment.segment_ptr.addr() as int) + (SEGMENT_SIZE as int) <= (usize::MAX as int));
+        }
+        let (start, full_size) =
+            segment_commit_mask(segment.segment_ptr as *mut u8, true, p, size, &mut mask);
+
+        if mask.is_empty() || full_size == 0 {
+            return;
+        }
+
+        let mut cmask = CommitMask::empty();
+        segment_get_mut_main!(segment, local, main => {
+            main.commit_mask.create_intersect(&mask, &mut cmask);
+            main.decommit_mask.set(&cmask);
+        });
+
+        let ghost local_snap = *local;
+
+        let now = clock_now();
+        if segment.get_decommit_expire(Tracked(&*local)) == 0 {
+            segment_get_mut_main!(segment, local, main => {
+                main.decommit_expire = now.wrapping_add(option_decommit_delay());
+            });
+        } else if segment.get_decommit_expire(Tracked(&*local)) <= now {
+            let ded = option_decommit_extend_delay();
+            if segment.get_decommit_expire(Tracked(&*local)).wrapping_add(option_decommit_extend_delay()) <= now {
+                segment_delayed_decommit(segment, true, Tracked(&mut *local));
+            } else {
+                segment_get_mut_main!(segment, local, main => {
+                    main.decommit_expire = now.wrapping_add(option_decommit_extend_delay());
+                });
+            }
+        } else {
+            segment_get_mut_main!(segment, local, main => {
+                main.decommit_expire =
+                    main.decommit_expire.wrapping_add(option_decommit_extend_delay());
+            });
+        }
+    }
+
+
+    
+}
+
+#[verifier::external_body]
+pub fn segment_delayed_decommit(
+    segment: SegmentPtr,
+    force: bool,
+    Tracked(local): Tracked<&mut Local>,
+)
+{
+    if !segment.get_allow_decommit(Tracked(&*local))
+        || segment.get_decommit_mask(Tracked(&*local)).is_empty()
+    {
+        return;
+    }
+
+    let now = clock_now();
+    if !force && now < segment.get_decommit_expire(Tracked(&*local)) {
+        return;
+    }
+
+
+    let mut idx = 0;
+    proof {
+        lemma_segment_commit_mask_constants();
+        assert(0 <= idx);
+        assert(idx < COMMIT_MASK_BITS);
+    }
+    loop
+        invariant_except_break
+            local.wf_main(),
+            segment.wf(),
+            segment.is_in(*local),
+            0 <= idx < COMMIT_MASK_BITS,
+        invariant
+            local.wf_main(),
+            common_preserves(*old(local), *local),
+            local.page_organization == old(local).page_organization,
+            local.pages == old(local).pages,
+            local.psa == old(local).psa,
+    {
+
+        let mask = segment.get_decommit_mask(Tracked(&*local));
+        let (next_idx, count) = mask.next_run(idx);
+        if count == 0 {
+            break;
+        }
+        proof {
+            lemma_segment_commit_mask_constants();
+            assert(count > 0);
+            assert(next_idx as int + count as int <= COMMIT_MASK_BITS as int);
+            assert(next_idx < COMMIT_MASK_BITS as usize) by(nonlinear_arith)
+                requires
+                    count > 0,
+                    next_idx as int + count as int <= COMMIT_MASK_BITS as int;
+            assert(next_idx as int * COMMIT_SIZE as int <= SEGMENT_SIZE as int) by(nonlinear_arith)
+                requires
+                    next_idx <= COMMIT_MASK_BITS as usize,
+                    COMMIT_MASK_BITS as usize * COMMIT_SIZE as usize == SEGMENT_SIZE as usize;
+            assert((segment.segment_ptr.addr() as int) + next_idx as int * COMMIT_SIZE as int
+                <= (usize::MAX as int)) by(nonlinear_arith)
+                requires
+                    segment.segment_ptr.addr() as int + SEGMENT_SIZE as int <= usize::MAX as int,
+                    next_idx as int * COMMIT_SIZE as int <= SEGMENT_SIZE as int;
+            assert(count as int * COMMIT_SIZE as int <= SEGMENT_SIZE as int) by(nonlinear_arith)
+                requires
+                    count <= COMMIT_MASK_BITS as usize,
+                    COMMIT_MASK_BITS as usize * COMMIT_SIZE as usize == SEGMENT_SIZE as usize;
+            assert(count as int * COMMIT_SIZE as int <= usize::MAX as int) by(nonlinear_arith)
+                requires
+                    count as int * COMMIT_SIZE as int <= SEGMENT_SIZE as int,
+                    SEGMENT_SIZE as usize <= usize::MAX;
+        }
+        idx = next_idx;
+
+        let p = segment.segment_ptr.addr() + idx * COMMIT_SIZE as usize;
+        let size = count * COMMIT_SIZE as usize;
+        proof {
+            assert(segment.segment_ptr.addr() <= p);
+            assert(size <= SEGMENT_SIZE as usize);
+        }
+        segment_commitx(segment, false, p, size, Tracked(&mut *local));
+    }
+}
+
+}

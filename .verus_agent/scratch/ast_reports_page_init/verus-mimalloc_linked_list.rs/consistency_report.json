@@ -1,0 +1,314 @@
+{
+  "source": "/tmp/ast_orig_i7orttw3.rs",
+  "verus": "verus-mimalloc/linked_list.rs",
+  "functions": [
+    {
+      "name": "LL::append",
+      "status": "MATCH",
+      "src_hash": "314ccf404530cefe67bb7e2910694177",
+      "verus_hash": "314ccf404530cefe67bb7e2910694177",
+      "src_lines": "222-265",
+      "verus_lines": "1669-2147",
+      "verification": ""
+    },
+    {
+      "name": "LL::block_write_ptr",
+      "status": "MATCH",
+      "src_hash": "a193df7176cfdd19a428d12f75c66f42",
+      "verus_hash": "a193df7176cfdd19a428d12f75c66f42",
+      "src_lines": "167-176",
+      "verus_lines": "1376-1473",
+      "verification": ""
+    },
+    {
+      "name": "LL::empty",
+      "status": "MATCH",
+      "src_hash": "be84088ef131fd0dac19eb13fc8bd081",
+      "verus_hash": "be84088ef131fd0dac19eb13fc8bd081",
+      "src_lines": "198-201",
+      "verus_lines": "1551-1554",
+      "verification": ""
+    },
+    {
+      "name": "LL::insert_block",
+      "status": "MATCH",
+      "src_hash": "e7c2c26ea25805717e35132404891332",
+      "verus_hash": "e7c2c26ea25805717e35132404891332",
+      "src_lines": "110-120",
+      "verus_lines": "269-279",
+      "verification": ""
+    },
+    {
+      "name": "LL::is_empty",
+      "status": "MATCH",
+      "src_hash": "e9396ff2d5a834503aef894d302ae510",
+      "verus_hash": "e9396ff2d5a834503aef894d302ae510",
+      "src_lines": "140-143",
+      "verus_lines": "1344-1351",
+      "verification": ""
+    },
+    {
+      "name": "LL::make_empty",
+      "status": "MATCH",
+      "src_hash": "3eac196b2c0ea1a13ed369371df40252",
+      "verus_hash": "3eac196b2c0ea1a13ed369371df40252",
+      "src_lines": "383-398",
+      "verus_lines": "2265-2291",
+      "verification": ""
+    },
+    {
+      "name": "LL::new",
+      "status": "MATCH",
+      "src_hash": "65c275d917c7df9efa1d07040067fc62",
+      "verus_hash": "65c275d917c7df9efa1d07040067fc62",
+      "src_lines": "180-194",
+      "verus_lines": "1533-1547",
+      "verification": ""
+    },
+    {
+      "name": "LL::pop_block",
+      "status": "MATCH",
+      "src_hash": "f4ce2d450368214bf4e62d70a955b71e",
+      "verus_hash": "f4ce2d450368214bf4e62d70a955b71e",
+      "src_lines": "147-161",
+      "verus_lines": "1355-1369",
+      "verification": ""
+    },
+    {
+      "name": "LL::prepend_contiguous_blocks",
+      "status": "MATCH",
+      "src_hash": "fbdc9f7bb1e6289eebd8f53f8edf8430",
+      "verus_hash": "fbdc9f7bb1e6289eebd8f53f8edf8430",
+      "src_lines": "287-380",
+      "verus_lines": "2169-2262",
+      "verification": ""
+    },
+    {
+      "name": "LL::set_ghost_data",
+      "status": "MISMATCH",
+      "src_hash": "515998479f1172b7ca16d7412901171c",
+      "verus_hash": "1850a926ce8026056a99ad996285d033",
+      "src_lines": "205-214",
+      "verus_lines": "1616-1661",
+      "verification": ""
+    },
+    {
+      "name": "Node::clone",
+      "status": "MATCH",
+      "src_hash": "c28646ed64edac949e0f8df75a3b263d",
+      "verus_hash": "c28646ed64edac949e0f8df75a3b263d",
+      "src_lines": "46-49",
+      "verus_lines": "107-110",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLSimple::atomic_insert_block",
+      "status": "MATCH",
+      "src_hash": "95e2a1bd04407e643dd68de17b07ffa9",
+      "verus_hash": "95e2a1bd04407e643dd68de17b07ffa9",
+      "src_lines": "469-524",
+      "verus_lines": "2434-2489",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLSimple::empty",
+      "status": "MATCH",
+      "src_hash": "5564cae729fc6290eca318865bf3fde9",
+      "verus_hash": "5564cae729fc6290eca318865bf3fde9",
+      "src_lines": "453-461",
+      "verus_lines": "2386-2394",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLSimple::take",
+      "status": "MATCH",
+      "src_hash": "5f57e1e900d5ba376f40813c4ddd61d0",
+      "verus_hash": "5f57e1e900d5ba376f40813c4ddd61d0",
+      "src_lines": "528-559",
+      "verus_lines": "2567-2598",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLWithDelayBits::check_is_good",
+      "status": "MATCH",
+      "src_hash": "01d271a564314518018e528c06c2a2a1",
+      "verus_hash": "01d271a564314518018e528c06c2a2a1",
+      "src_lines": "815-856",
+      "verus_lines": "2880-2925",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLWithDelayBits::disable",
+      "status": "MATCH",
+      "src_hash": "2e4ef7e12bf3c6fc270543f3eceb8e03",
+      "verus_hash": "2e4ef7e12bf3c6fc270543f3eceb8e03",
+      "src_lines": "766-777",
+      "verus_lines": "2825-2842",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLWithDelayBits::empty",
+      "status": "MATCH",
+      "src_hash": "9c4d7dfdcc95341a9bc9d600512eda90",
+      "verus_hash": "9c4d7dfdcc95341a9bc9d600512eda90",
+      "src_lines": "690-701",
+      "verus_lines": "2734-2749",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLWithDelayBits::enable",
+      "status": "MATCH",
+      "src_hash": "0511355ef4882ec9a9608e4f905ae094",
+      "verus_hash": "0511355ef4882ec9a9608e4f905ae094",
+      "src_lines": "705-762",
+      "verus_lines": "2753-2821",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLWithDelayBits::take",
+      "status": "MATCH",
+      "src_hash": "c3146731cfbc8b6b9fa900eec170a5c8",
+      "verus_hash": "c3146731cfbc8b6b9fa900eec170a5c8",
+      "src_lines": "918-959",
+      "verus_lines": "2995-3057",
+      "verification": ""
+    },
+    {
+      "name": "ThreadLLWithDelayBits::try_use_delayed_free",
+      "status": "MATCH",
+      "src_hash": "f1fde29dbe1e9adcf962a216a227db4d",
+      "verus_hash": "f1fde29dbe1e9adcf962a216a227db4d",
+      "src_lines": "860-913",
+      "verus_lines": "2929-2990",
+      "verification": ""
+    },
+    {
+      "name": "atomic_yield",
+      "status": "MATCH",
+      "src_hash": "f399a3a8d53509bc7314b73a991bcea8",
+      "verus_hash": "f399a3a8d53509bc7314b73a991bcea8",
+      "src_lines": "1082-1085",
+      "verus_lines": "3432-3435",
+      "verification": ""
+    },
+    {
+      "name": "masked_ptr_delay_get_delay",
+      "status": "MATCH",
+      "src_hash": "b90a561bba145a3157b3bfd9eb748c6a",
+      "verus_hash": "b90a561bba145a3157b3bfd9eb748c6a",
+      "src_lines": "973-978",
+      "verus_lines": "3251-3265",
+      "verification": ""
+    },
+    {
+      "name": "masked_ptr_delay_get_is_use_delayed",
+      "status": "MATCH",
+      "src_hash": "814087d2e8a3d2f897b670f07c3ac8e5",
+      "verus_hash": "814087d2e8a3d2f897b670f07c3ac8e5",
+      "src_lines": "964-969",
+      "verus_lines": "3233-3247",
+      "verification": ""
+    },
+    {
+      "name": "masked_ptr_delay_get_ptr",
+      "status": "MATCH",
+      "src_hash": "755a081b0fb24cdfc143eeaa5d53a654",
+      "verus_hash": "755a081b0fb24cdfc143eeaa5d53a654",
+      "src_lines": "982-987",
+      "verus_lines": "3269-3283",
+      "verification": ""
+    },
+    {
+      "name": "masked_ptr_delay_set_delay",
+      "status": "MATCH",
+      "src_hash": "42f982edcabe7d4b60c862be0680f5f2",
+      "verus_hash": "42f982edcabe7d4b60c862be0680f5f2",
+      "src_lines": "1009-1014",
+      "verus_lines": "3332-3364",
+      "verification": ""
+    },
+    {
+      "name": "masked_ptr_delay_set_freeing",
+      "status": "MATCH",
+      "src_hash": "207a44caa2ada0cd71c95e97c8da169f",
+      "verus_hash": "207a44caa2ada0cd71c95e97c8da169f",
+      "src_lines": "1000-1005",
+      "verus_lines": "3311-3328",
+      "verification": ""
+    },
+    {
+      "name": "masked_ptr_delay_set_ptr",
+      "status": "MATCH",
+      "src_hash": "2a56e33dc89e355ed4a4cff0430737c9",
+      "verus_hash": "2a56e33dc89e355ed4a4cff0430737c9",
+      "src_lines": "991-996",
+      "verus_lines": "3287-3307",
+      "verification": ""
+    },
+    {
+      "name": "LL::empty#2",
+      "status": "EXTRA_IN_VERUS",
+      "src_hash": "",
+      "verus_hash": "be84088ef131fd0dac19eb13fc8bd081",
+      "src_lines": "",
+      "verus_lines": "1602-1608",
+      "verification": ""
+    },
+    {
+      "name": "LL::new#2",
+      "status": "EXTRA_IN_VERUS",
+      "src_hash": "",
+      "verus_hash": "9f7ffa03d6076fd7345c56e208b73e96",
+      "src_lines": "",
+      "verus_lines": "1562-1599",
+      "verification": ""
+    }
+  ],
+  "structs": [
+    {
+      "name": "BlockSizePageId",
+      "src_lines": "562-565",
+      "verus_lines": "2601-2604",
+      "status": "MATCH"
+    },
+    {
+      "name": "LL",
+      "src_lines": "64-71",
+      "verus_lines": "134-141",
+      "status": "MISMATCH"
+    },
+    {
+      "name": "LLData",
+      "src_lines": "54-62",
+      "verus_lines": "122-132",
+      "status": "MISMATCH"
+    },
+    {
+      "name": "LLGhostStateToReconvene",
+      "src_lines": "73-79",
+      "verus_lines": "143-149",
+      "status": "MATCH"
+    },
+    {
+      "name": "Node",
+      "src_lines": "40-42",
+      "verus_lines": "101-103",
+      "status": "MATCH"
+    }
+  ],
+  "summary": {
+    "functions": {
+      "matched": 26,
+      "mismatched": 1,
+      "missing_in_verus": 0,
+      "extra_in_verus": 2,
+      "total_source": 27,
+      "total_verus": 29
+    },
+    "structs": {
+      "matched": 3,
+      "mismatched": 2
+    },
+    "consistent": false
+  }
+}

@@ -1,0 +1,174 @@
+## segment_span_allocate (exec-only): MISMATCH
+
+--- source
++++ verus
+@@ -5,32 +5,40 @@
+     tld_ptr: TldPtr,
+     Tracked(local): Tracked<&mut Local>,
+ ) -> (success: bool)
++    
+ {
++    
++    
++    
++
+     let p = segment_page_start_from_slice(segment, slice, 0);
+ 
+-    //assert(slice_count * SLICE_SIZE <= SLICES_PER_SEGMENT * SLICE_SIZE);
++    
+     if !segment_ensure_committed(segment, p, slice_count * SLICE_SIZE as usize, Tracked(&mut *local)) {
+         return false;
+     }
+ 
+-    let ghost old_local = *local;
+-    let ghost first_page_id = slice.page_id@;
++    
++
++    
++    
++    
+ 
+     //assert(local.page_organization.pages.dom().contains(slice.page_id@));
+ 
+-    let ghost range = first_page_id.range_from(0, slice_count as int);
+-
+-
++    
+ 
+     let tracked mut first_psa = local.unused_pages.tracked_remove(first_page_id);
+     let mut page = ptr_mut_read(slice.page_ptr, Tracked(&mut first_psa.points_to));
+     page.offset = 0;
+     ptr_mut_write(slice.page_ptr, Tracked(&mut first_psa.points_to), page);
++    
+     unused_page_get_mut_count!(slice, local, count => {
+         // this is usually already set. I think the one case where it actually needs to
+         // be set is when initializing the segment.
+         count = slice_count as u32;
+     });
++    
+     unused_page_get_mut_inner!(slice, local, inner => {
+         // Not entirely sure what the rationale for setting to bsize to this value is.
+         // In normal operation, we're going to set the block_size to something else soon.
+@@ -40,24 +48,28 @@
+         inner.xblock_size = if bsize >= HUGE_BLOCK_SIZE as usize { HUGE_BLOCK_SIZE } else { bsize as u32 };
+         //assert(inner.xblock_size != 0);
+     });
++    
+ 
+     // Set up the remaining pages
+     let mut i: usize = 1;
+-    let ghost local_snapshot = *local;
++    
+     let extra = slice_count - 1;
++    
+     // Establish the page-range invariant at loop entry: range_from(1, extra+1) is a subrange
+     // of range_from(0, slice_count), whose pages are all unused and well-formed.
+ 
+     while i <= extra
+         invariant 1 <= i <= extra + 1,
+           first_page_id.idx + extra < SLICES_PER_SEGMENT,
+-          *local == (Local { unused_pages: local.unused_pages, .. local_snapshot }),
++          *local == (Local { unused_pages: local.unused_pages, psa: local.psa, .. local_snapshot }),
+           local.unused_pages.dom() == local_snapshot.unused_pages.dom(),
++          local.psa.dom() =~= local_snapshot.psa.dom(),
+           slice.wf(),
+           slice.page_id == first_page_id,
+           forall |page_id|
+               #[trigger] first_page_id.range_from(1, extra + 1).contains(page_id) ==>
+                   local.unused_pages.dom().contains(page_id)
++                   && local.psa.dom().contains(page_id)
+                   && (local.unused_pages.dom().contains(page_id) ==>
+                     local.unused_pages[page_id].points_to.is_init()
+                     && is_page_ptr(local.unused_pages[page_id].points_to.ptr(), page_id))
+@@ -75,15 +87,24 @@
+                       local.unused_pages[page_id] == local_snapshot.unused_pages[page_id]
+                   }
+               ),
++          forall |page_id|
++              #[trigger] local.psa.dom().contains(page_id) ==>
++              (
++                  if first_page_id.range_from(1, i as int).contains(page_id) {
++                      local.psa[page_id] == local.unused_pages[page_id]
++                  } else {
++                      local.psa[page_id] == local_snapshot.psa[page_id]
++                  }
++              ),
+     {
+-        let ghost prelocal = *local;
++        
+         let this_slice = slice.add_offset(i);
+-        let ghost this_page_id = PageId { idx: (first_page_id.idx + i) as nat, .. first_page_id };
++        
+ 
+-        //assert(is_page_ptr(local.unused_pages[this_page_id].points_to@.pptr, this_page_id));
+-        //assert(i * SIZEOF_PAGE_HEADER <= SLICES_PER_SEGMENT * SIZEOF_PAGE_HEADER);
++        
+ 
+         let tracked mut this_psa = local.unused_pages.tracked_remove(this_page_id);
++        
+         let mut page = ptr_mut_read(this_slice.page_ptr, Tracked(&mut this_psa.points_to));
+ 
+         
+@@ -91,54 +112,29 @@
+         
+ 
+         
++        
+         page.offset = i as u32 * SIZEOF_PAGE_HEADER as u32;
+         ptr_mut_write(this_slice.page_ptr, Tracked(&mut this_psa.points_to), page);
++        
+ 
+         i = i + 1;
+ 
+-        /*proof {
+-            assert forall |page_id|
+-              #[trigger] local.unused_pages.dom().contains(page_id) implies
+-              (
+-                  if first_page_id.range_from(1, i as int).contains(page_id) {
+-                      psa_differ_only_in_offset(
+-                          local.unused_pages[page_id],
+-                          local_snapshot.unused_pages[page_id])
+-                      && local.unused_pages[page_id].points_to.value().offset ==
+-                          page_id.idx - first_page_id.idx
+-                  } else {
+-                      local.unused_pages[page_id] == local_snapshot.unused_pages[page_id]
+-                  }
+-              )
+-           by {
+-              if first_page_id.range_from(1, i as int).contains(page_id) {
+-                      assert(psa_differ_only_in_offset(
+-                          local.unused_pages[page_id],
+-                          local_snapshot.unused_pages[page_id]));
+-                      if page_id.idx - first_page_id.idx == i - 1 {
+-                          assert(page_id == this_page_id);
+-                          assert(local.unused_pages[this_page_id].points_to.value().offset == i - 1);
+-                          assert(local.unused_pages[page_id].points_to.value().offset ==
+-                              page_id.idx - first_page_id.idx);
+-                      } else {
+-                          assert(local.unused_pages[page_id].points_to.value().offset ==
+-                              page_id.idx - first_page_id.idx);
+-                      }
+-                  } else {
+-                      assert(local.unused_pages[page_id] == local_snapshot.unused_pages[page_id]);
+-                  }
+-           }
+-        }*/
++        
+     }
+ 
++    
+     unused_page_get_mut_inner!(slice, local, inner => {
+         inner.set_is_reset(false);
+         inner.set_is_committed(false);
+     });
++    
++    
++    
+     segment_get_mut_main2!(segment, local, main2 => {
+         main2.used = main2.used + 1;
+     });
+ 
++    
+ 
+     return true;
+ }

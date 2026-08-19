@@ -1,0 +1,3 @@
+usage: spec_drift.py [-h] {snapshot,diff,check,git-diff} ...
+spec_drift.py: error: argument command: invalid choice: '.' (choose from 'snapshot', 'diff', 'check', 'git-diff')
+=== spec_drift exit 2 ===

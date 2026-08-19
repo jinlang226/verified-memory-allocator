@@ -1,0 +1,3 @@
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.5s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅

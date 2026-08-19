@@ -1,0 +1,12 @@
+top frontier:
+- .verus_deps/builtin/src/lib.rs::Ghost::assume_new_fallback@L494
+- .verus_deps/builtin/src/lib.rs::Tracked::assume_new_fallback@L552
+- .verus_deps/vstd/cell/pcell.rs::borrow@L145
+- .verus_deps/vstd/cell/pcell.rs::new@L132
+- .verus_deps/vstd/layout.rs::layout_for_type_is_valid@L118
+- .verus_deps/vstd/raw_ptr.rs::ptr_mut_write@L579
+- .verus_deps/vstd/raw_ptr.rs::ptr_ref@L620
+- verus-mimalloc/alloc_fast.rs::heap_malloc_zero_ex@L77
+- verus-mimalloc/free.rs::free_generic@L290
+- verus-mimalloc/init.rs::init_empty_page_ptr@L1212
+- verus-mimalloc/page.rs::page_retire@L295

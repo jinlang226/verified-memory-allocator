@@ -1,0 +1,76 @@
+{
+  "source": "/tmp/ast_orig_454zez_n.rs",
+  "verus": "verus-mimalloc/alloc_generic.rs",
+  "functions": [
+    {
+      "name": "heap_delayed_free_partial",
+      "status": "MISMATCH",
+      "src_hash": "a9b54a5c5ccbdabf97fc9b0ff8bfb31c",
+      "verus_hash": "48501ba7c823b445a1bfc59e9fdd88dd",
+      "src_lines": "240-272",
+      "verus_lines": "1093-1178",
+      "verification": ""
+    },
+    {
+      "name": "malloc_generic",
+      "status": "MATCH",
+      "src_hash": "3e09dd18cab56d29b16746a660f17a7b",
+      "verus_hash": "3e09dd18cab56d29b16746a660f17a7b",
+      "src_lines": "22-46",
+      "verus_lines": "542-566",
+      "verification": ""
+    },
+    {
+      "name": "page_extend_free",
+      "status": "MATCH",
+      "src_hash": "f4b1be2c20af9a80765c5134f93b6d2a",
+      "verus_hash": "f4b1be2c20af9a80765c5134f93b6d2a",
+      "src_lines": "186-237",
+      "verus_lines": "915-1089",
+      "verification": ""
+    },
+    {
+      "name": "page_free_collect",
+      "status": "MATCH",
+      "src_hash": "190acf606fa4c93f984daca402010204",
+      "verus_hash": "190acf606fa4c93f984daca402010204",
+      "src_lines": "49-74",
+      "verus_lines": "571-610",
+      "verification": ""
+    },
+    {
+      "name": "page_free_list_extend",
+      "status": "MATCH",
+      "src_hash": "fc2cb523e9449189bc34295c157d10a4",
+      "verus_hash": "fc2cb523e9449189bc34295c157d10a4",
+      "src_lines": "99-180",
+      "verus_lines": "660-908",
+      "verification": ""
+    },
+    {
+      "name": "page_thread_free_collect",
+      "status": "MATCH",
+      "src_hash": "f9156a7138c530ee005929580f4ab025",
+      "verus_hash": "f9156a7138c530ee005929580f4ab025",
+      "src_lines": "77-95",
+      "verus_lines": "614-656",
+      "verification": ""
+    }
+  ],
+  "structs": [],
+  "summary": {
+    "functions": {
+      "matched": 5,
+      "mismatched": 1,
+      "missing_in_verus": 0,
+      "extra_in_verus": 0,
+      "total_source": 6,
+      "total_verus": 6
+    },
+    "structs": {
+      "matched": 0,
+      "mismatched": 0
+    },
+    "consistent": false
+  }
+}

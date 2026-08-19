@@ -1,0 +1,5 @@
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/page.rs: 1 protected contract change(s)
+       - page_queue_find_free_ex
+  checked 29 module(s) in one global snapshot; 1 with contract drift; 1.9s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.

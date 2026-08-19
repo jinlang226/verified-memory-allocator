@@ -1,0 +1,18 @@
+### proof_state
+/usr/bin/python3: Error while finding module specification for 'argus_skill.verticals.verus.tools.proof_state' (ModuleNotFoundError: No module named 'argus_skill')
+PROOF_STATE_STATUS=1
+### boundary_guard
+/bin/bash: line 3: boundary_guard: command not found
+BOUNDARY_STATUS=127
+### middle_guard spec-drift
+/bin/bash: line 4: middle_guard: command not found
+SPEC_STATUS=127
+### middle_guard ast-consistency
+/bin/bash: line 5: middle_guard: command not found
+AST_STATUS=127
+### operator_decisions
+/bin/bash: line 6: operator_decisions: command not found
+OP_STATUS=127
+### completion_gate
+/bin/bash: line 7: completion_gate: command not found
+COMPLETION_STATUS=127

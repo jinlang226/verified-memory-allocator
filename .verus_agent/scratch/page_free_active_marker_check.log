@@ -1,0 +1,18 @@
+verus-mimalloc/page.rs:27:#[verifier::external_body]
+verus-mimalloc/page.rs:43:#[verifier::external_body]
+verus-mimalloc/page.rs:62:#[verifier::external_body]
+verus-mimalloc/page.rs:123:#[verifier::external_body]
+verus-mimalloc/page.rs:130:#[verifier::external_body]
+verus-mimalloc/page.rs:150:#[verifier::external_body]
+verus-mimalloc/page.rs:500:fn page_free(page: PagePtr, pq: usize, force: bool, Tracked(local): Tracked<&mut Local>, Ghost(list_idx): Ghost<int>)
+verus-mimalloc/page.rs:680:#[verifier::external_body]
+verus-mimalloc/page.rs:831:#[verifier::external_body]
+verus-mimalloc/segment.rs:77:#[verifier::external_body]
+verus-mimalloc/segment.rs:102:#[verifier::external_body]
+verus-mimalloc/segment.rs:750:#[verifier::external_body]
+verus-mimalloc/segment.rs:904:#[verifier::external_body]
+verus-mimalloc/segment.rs:1381:#[verifier::external_body]
+verus-mimalloc/segment.rs:1491:#[verifier::external_body]
+verus-mimalloc/segment.rs:1564:pub fn segment_page_free(page: PagePtr, force: bool, tld: TldPtr, Tracked(local): Tracked<&mut Local>)
+verus-mimalloc/segment.rs:1613:#[verifier::external_body]
+verus-mimalloc/segment.rs:1614:fn segment_page_clear(page: PagePtr, tld: TldPtr, Tracked(local): Tracked<&mut Local>)

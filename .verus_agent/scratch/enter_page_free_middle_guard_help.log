@@ -1,0 +1,19 @@
+usage: middle_guard [-h] [--crate-root CRATE_ROOT]
+                    [--baseline-dir BASELINE_DIR]
+                    {spec-drift,ast-consistency} ...
+
+Run the spec_drift / ast_consistency middle-cheat detectors across the crate
+against the frozen baseline commit.
+
+positional arguments:
+  {spec-drift,ast-consistency}
+    spec-drift          detect silent spec weakening
+    ast-consistency     detect silent exec-body edits
+
+options:
+  -h, --help            show this help message and exit
+  --crate-root CRATE_ROOT
+                        crate root (default: .)
+  --baseline-dir BASELINE_DIR
+                        dir holding the frozen baseline (default:
+                        .verus_agent)

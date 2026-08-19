@@ -1,0 +1,6817 @@
+{
+  "source": {
+    "file": "verus-mimalloc/init.rs",
+    "crate": "verus_mimalloc",
+    "module": "init"
+  },
+  "project_dir": ".",
+  "depth": 50,
+  "entries": [
+    "verus-mimalloc/init.rs:heap_init",
+    "verus-mimalloc/alloc_fast.rs:heap_malloc",
+    "verus-mimalloc/free.rs:free"
+  ],
+  "summary": {
+    "total_dep_crates": 3,
+    "total_dep_modules": 24,
+    "dep_crates": [
+      "verus_builtin",
+      "verus_mimalloc",
+      "vstd"
+    ],
+    "dep_modules": [
+      "verus_builtin::root",
+      "verus_mimalloc::alloc_fast",
+      "verus_mimalloc::alloc_generic",
+      "verus_mimalloc::arena",
+      "verus_mimalloc::bin_sizes",
+      "verus_mimalloc::commit_mask",
+      "verus_mimalloc::commit_segment",
+      "verus_mimalloc::config",
+      "verus_mimalloc::flags",
+      "verus_mimalloc::free",
+      "verus_mimalloc::layout",
+      "verus_mimalloc::linked_list",
+      "verus_mimalloc::os_alloc",
+      "verus_mimalloc::os_commit",
+      "verus_mimalloc::os_mem",
+      "verus_mimalloc::page",
+      "verus_mimalloc::queues",
+      "verus_mimalloc::segment",
+      "verus_mimalloc::thread",
+      "verus_mimalloc::types",
+      "vstd::atomic_ghost",
+      "vstd::layout",
+      "vstd::pcell",
+      "vstd::raw_ptr"
+    ]
+  },
+  "modules": {
+    "vstd::layout": {
+      "crate": "vstd",
+      "module": "layout",
+      "file": ".verus_deps/vstd/layout.rs",
+      "depth": 0,
+      "dependencies": {},
+      "fn_verification_order": [
+        {
+          "name": "layout_for_type_is_valid",
+          "line": 118,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "vstd::raw_ptr": {
+      "crate": "vstd",
+      "module": "raw_ptr",
+      "file": ".verus_deps/vstd/raw_ptr.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "with_exposed_provenance",
+          "line": 744,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "ptr_ref",
+          "line": 620,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "ptr_mut_write",
+          "line": 579,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "ptr_mut_ref",
+          "line": 636,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "ptr_mut_read",
+          "line": 602,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "expose_provenance",
+          "line": 731,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::os_alloc": {
+      "crate": "verus_mimalloc",
+      "module": "os_alloc",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::layout": {
+          "crate": "verus_mimalloc",
+          "module": "layout",
+          "file": "verus-mimalloc/layout.rs",
+          "symbols": [
+            {
+              "name": "align_down",
+              "kind": "fn",
+              "context": "line 987"
+            },
+            {
+              "name": "align_up",
+              "kind": "fn",
+              "context": "line 1055"
+            },
+            {
+              "name": "calculate_page_block_at",
+              "kind": "fn",
+              "context": "line 794"
+            },
+            {
+              "name": "calculate_page_ptr_subtract_offset",
+              "kind": "fn",
+              "context": "line 697"
+            },
+            {
+              "name": "calculate_page_start",
+              "kind": "fn",
+              "context": "line 777"
+            },
+            {
+              "name": "calculate_segment_ptr_from_block",
+              "kind": "fn",
+              "context": "line 472"
+            },
+            {
+              "name": "calculate_slice_page_ptr_from_block",
+              "kind": "fn",
+              "context": "line 581"
+            },
+            {
+              "name": "ptr_segment",
+              "kind": "fn",
+              "context": "line 1155"
+            },
+            {
+              "name": "segment_page_start_from_slice",
+              "kind": "fn",
+              "context": "line 858"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        },
+        "verus_mimalloc::os_mem": {
+          "crate": "verus_mimalloc",
+          "module": "os_mem",
+          "file": "verus-mimalloc/os_mem.rs",
+          "symbols": [
+            {
+              "name": "_mmap_prot_none",
+              "kind": "fn",
+              "context": "line 222"
+            },
+            {
+              "name": "_mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 207"
+            },
+            {
+              "name": "_mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 252"
+            },
+            {
+              "name": "_mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 238"
+            },
+            {
+              "name": "clock_gettime_monotonic",
+              "kind": "fn",
+              "context": "line 273"
+            },
+            {
+              "name": "get_page_size",
+              "kind": "fn",
+              "context": "line 12"
+            },
+            {
+              "name": "mmap_prot_none",
+              "kind": "fn",
+              "context": "line 125"
+            },
+            {
+              "name": "mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 143"
+            },
+            {
+              "name": "mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 163"
+            },
+            {
+              "name": "mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 184"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "aligned_base_add",
+          "line": 225,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "aligned_base_cas",
+          "line": 232,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "os_get_aligned_hint",
+          "line": 242,
+          "calls_in_module": [
+            "aligned_base_add",
+            "aligned_base_cas"
+          ],
+          "cross_module_deps": [
+            "verus_mimalloc::layout"
+          ]
+        },
+        {
+          "name": "use_large_os_page",
+          "line": 188,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "unix_mmapx",
+          "line": 287,
+          "calls_in_module": [
+            "os_get_aligned_hint"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::os_mem"
+          ]
+        },
+        {
+          "name": "unix_mmap",
+          "line": 195,
+          "calls_in_module": [
+            "unix_mmapx",
+            "use_large_os_page"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "os_mem_alloc",
+          "line": 165,
+          "calls_in_module": [
+            "unix_mmap"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "os_mem_alloc_aligned",
+          "line": 136,
+          "calls_in_module": [
+            "os_mem_alloc"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::os_mem",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "os_good_alloc_size",
+          "line": 46,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::layout",
+            "verus_mimalloc::os_mem"
+          ]
+        },
+        {
+          "name": "os_alloc_aligned",
+          "line": 120,
+          "calls_in_module": [
+            "os_good_alloc_size",
+            "os_mem_alloc_aligned"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::os_mem"
+          ]
+        },
+        {
+          "name": "os_alloc_aligned_offset",
+          "line": 12,
+          "calls_in_module": [
+            "os_alloc_aligned"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::types": {
+      "crate": "verus_mimalloc",
+      "module": "types",
+      "file": "verus-mimalloc/types.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::layout": {
+          "crate": "verus_mimalloc",
+          "module": "layout",
+          "file": "verus-mimalloc/layout.rs",
+          "symbols": [
+            {
+              "name": "align_down",
+              "kind": "fn",
+              "context": "line 987"
+            },
+            {
+              "name": "align_up",
+              "kind": "fn",
+              "context": "line 1055"
+            },
+            {
+              "name": "calculate_page_block_at",
+              "kind": "fn",
+              "context": "line 794"
+            },
+            {
+              "name": "calculate_page_ptr_subtract_offset",
+              "kind": "fn",
+              "context": "line 697"
+            },
+            {
+              "name": "calculate_page_start",
+              "kind": "fn",
+              "context": "line 777"
+            },
+            {
+              "name": "calculate_segment_ptr_from_block",
+              "kind": "fn",
+              "context": "line 472"
+            },
+            {
+              "name": "calculate_slice_page_ptr_from_block",
+              "kind": "fn",
+              "context": "line 581"
+            },
+            {
+              "name": "ptr_segment",
+              "kind": "fn",
+              "context": "line 1155"
+            },
+            {
+              "name": "segment_page_start_from_slice",
+              "kind": "fn",
+              "context": "line 858"
+            }
+          ]
+        },
+        "vstd::raw_ptr": {
+          "crate": "vstd",
+          "module": "raw_ptr",
+          "file": ".verus_deps/vstd/raw_ptr.rs",
+          "symbols": [
+            {
+              "name": "expose_provenance",
+              "kind": "fn",
+              "context": "line 731"
+            },
+            {
+              "name": "ptr_mut_read",
+              "kind": "fn",
+              "context": "line 602"
+            },
+            {
+              "name": "ptr_mut_ref",
+              "kind": "fn",
+              "context": "line 636"
+            },
+            {
+              "name": "ptr_mut_write",
+              "kind": "fn",
+              "context": "line 579"
+            },
+            {
+              "name": "ptr_ref",
+              "kind": "fn",
+              "context": "line 620"
+            },
+            {
+              "name": "with_exposed_provenance",
+              "kind": "fn",
+              "context": "line 744"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        },
+        "vstd::pcell": {
+          "crate": "vstd",
+          "module": "pcell",
+          "file": ".verus_deps/vstd/cell/pcell.rs",
+          "symbols": [
+            {
+              "name": "borrow",
+              "kind": "fn",
+              "context": "line 145"
+            },
+            {
+              "name": "borrow_mut",
+              "kind": "fn",
+              "context": "line 159"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 132"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "SegmentPtr::get_ref",
+          "line": 1716,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "PagePtr::get_ref",
+          "line": 2005,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_page_header_ptr",
+          "line": 1524,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_main2_ref",
+          "line": 1778,
+          "calls_in_module": [
+            "SegmentPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "TldPtr::get_ref",
+          "line": 1409,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_ref",
+          "line": 1135,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_main_ref",
+          "line": 1749,
+          "calls_in_module": [
+            "SegmentPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::get_inner_ref",
+          "line": 2070,
+          "calls_in_module": [
+            "PagePtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_page_after_end",
+          "line": 1639,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "todo",
+          "line": 3341,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "PagePtr::sub_offset",
+          "line": 2483,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::slice_start",
+          "line": 2686,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::layout"
+          ]
+        },
+        {
+          "name": "HeapPtr::set_page_retired_min",
+          "line": 1237,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "HeapPtr::set_page_retired_max",
+          "line": 1282,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "HeapPtr::set_page_count",
+          "line": 1192,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "PagePtr::null",
+          "line": 1986,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::null",
+          "line": 1513,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::is_null",
+          "line": 1997,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "SegmentPtr::is_null",
+          "line": 1504,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "PagePtr::is_gt_0th_slice",
+          "line": 2603,
+          "calls_in_module": [
+            "SegmentPtr::get_page_header_ptr"
+          ],
+          "cross_module_deps": []
+        },
+        {
+          "name": "SegmentPtr::is_abandoned",
+          "line": 1899,
+          "calls_in_module": [
+            "SegmentPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_used",
+          "line": 1860,
+          "calls_in_module": [
+            "SegmentPtr::get_main2_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "TldPtr::get_segments_count",
+          "line": 1462,
+          "calls_in_module": [
+            "TldPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_segment_kind",
+          "line": 1906,
+          "calls_in_module": [
+            "SegmentPtr::get_main2_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::get_prev",
+          "line": 2314,
+          "calls_in_module": [
+            "PagePtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_pages_free_direct",
+          "line": 1310,
+          "calls_in_module": [
+            "HeapPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_pages",
+          "line": 1157,
+          "calls_in_module": [
+            "HeapPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_page_retired_min",
+          "line": 1220,
+          "calls_in_module": [
+            "HeapPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_page_retired_max",
+          "line": 1265,
+          "calls_in_module": [
+            "HeapPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_page_empty",
+          "line": 1341,
+          "calls_in_module": [
+            "HeapPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_page_count",
+          "line": 1175,
+          "calls_in_module": [
+            "HeapPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "PagePtr::get_next",
+          "line": 2275,
+          "calls_in_module": [
+            "PagePtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "TldPtr::get_mut",
+          "line": 1426,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_mem_is_pinned",
+          "line": 1886,
+          "calls_in_module": [
+            "SegmentPtr::get_main_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::get_inner_ref_maybe_empty",
+          "line": 2116,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "PagePtr::get_index",
+          "line": 2623,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::layout"
+          ]
+        },
+        {
+          "name": "PagePtr::get_heap",
+          "line": 2954,
+          "calls_in_module": [
+            "PagePtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_decommit_mask",
+          "line": 1820,
+          "calls_in_module": [
+            "SegmentPtr::get_main_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_decommit_expire",
+          "line": 1833,
+          "calls_in_module": [
+            "SegmentPtr::get_main_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::get_count",
+          "line": 2233,
+          "calls_in_module": [
+            "PagePtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::pcell"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_commit_mask",
+          "line": 1807,
+          "calls_in_module": [
+            "SegmentPtr::get_main_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::get_block_size",
+          "line": 2940,
+          "calls_in_module": [
+            "PagePtr::get_inner_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "HeapPtr::get_arena_id",
+          "line": 1328,
+          "calls_in_module": [
+            "HeapPtr::get_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_allow_decommit",
+          "line": 1847,
+          "calls_in_module": [
+            "SegmentPtr::get_main_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "SegmentPtr::get_abandoned",
+          "line": 1873,
+          "calls_in_module": [
+            "SegmentPtr::get_main2_ref"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::add_offset_and_check",
+          "line": 2768,
+          "calls_in_module": [
+            "SegmentPtr::get_page_after_end"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "PagePtr::add_offset",
+          "line": 2353,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::segment": {
+      "crate": "verus_mimalloc",
+      "module": "segment",
+      "file": "verus-mimalloc/segment.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::layout": {
+          "crate": "verus_mimalloc",
+          "module": "layout",
+          "file": "verus-mimalloc/layout.rs",
+          "symbols": [
+            {
+              "name": "align_down",
+              "kind": "fn",
+              "context": "line 987"
+            },
+            {
+              "name": "align_up",
+              "kind": "fn",
+              "context": "line 1055"
+            },
+            {
+              "name": "calculate_page_block_at",
+              "kind": "fn",
+              "context": "line 794"
+            },
+            {
+              "name": "calculate_page_ptr_subtract_offset",
+              "kind": "fn",
+              "context": "line 697"
+            },
+            {
+              "name": "calculate_page_start",
+              "kind": "fn",
+              "context": "line 777"
+            },
+            {
+              "name": "calculate_segment_ptr_from_block",
+              "kind": "fn",
+              "context": "line 472"
+            },
+            {
+              "name": "calculate_slice_page_ptr_from_block",
+              "kind": "fn",
+              "context": "line 581"
+            },
+            {
+              "name": "ptr_segment",
+              "kind": "fn",
+              "context": "line 1155"
+            },
+            {
+              "name": "segment_page_start_from_slice",
+              "kind": "fn",
+              "context": "line 858"
+            }
+          ]
+        },
+        "vstd::raw_ptr": {
+          "crate": "vstd",
+          "module": "raw_ptr",
+          "file": ".verus_deps/vstd/raw_ptr.rs",
+          "symbols": [
+            {
+              "name": "expose_provenance",
+              "kind": "fn",
+              "context": "line 731"
+            },
+            {
+              "name": "ptr_mut_read",
+              "kind": "fn",
+              "context": "line 602"
+            },
+            {
+              "name": "ptr_mut_ref",
+              "kind": "fn",
+              "context": "line 636"
+            },
+            {
+              "name": "ptr_mut_write",
+              "kind": "fn",
+              "context": "line 579"
+            },
+            {
+              "name": "ptr_ref",
+              "kind": "fn",
+              "context": "line 620"
+            },
+            {
+              "name": "with_exposed_provenance",
+              "kind": "fn",
+              "context": "line 744"
+            }
+          ]
+        },
+        "verus_mimalloc::init": {
+          "crate": "verus_mimalloc",
+          "module": "init",
+          "file": "verus-mimalloc/init.rs",
+          "symbols": [
+            {
+              "name": "current_thread_count",
+              "kind": "fn",
+              "context": "line 1353"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 430"
+            },
+            {
+              "name": "heap_init",
+              "kind": "fn",
+              "context": "line 114"
+            },
+            {
+              "name": "increment_thread_count",
+              "kind": "fn",
+              "context": "line 1346"
+            },
+            {
+              "name": "init_empty_page_ptr",
+              "kind": "fn",
+              "context": "line 1212"
+            },
+            {
+              "name": "pages_free_direct_tmp",
+              "kind": "fn",
+              "context": "line 881"
+            },
+            {
+              "name": "pages_tmp",
+              "kind": "fn",
+              "context": "line 474"
+            },
+            {
+              "name": "span_queue_headers_tmp",
+              "kind": "fn",
+              "context": "line 1020"
+            },
+            {
+              "name": "thread_data_alloc",
+              "kind": "fn",
+              "context": "line 1062"
+            }
+          ]
+        },
+        "vstd::layout": {
+          "crate": "vstd",
+          "module": "layout",
+          "file": ".verus_deps/vstd/layout.rs",
+          "symbols": [
+            {
+              "name": "layout_for_type_is_valid",
+              "kind": "fn",
+              "context": "line 118"
+            }
+          ]
+        },
+        "verus_mimalloc::arena": {
+          "crate": "verus_mimalloc",
+          "module": "arena",
+          "file": "verus-mimalloc/arena.rs",
+          "symbols": [
+            {
+              "name": "arena_alloc_aligned",
+              "kind": "fn",
+              "context": "line 21"
+            }
+          ]
+        },
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::flags": {
+          "crate": "verus_mimalloc",
+          "module": "flags",
+          "file": "verus-mimalloc/flags.rs",
+          "symbols": [
+            {
+              "name": "get_in_full",
+              "kind": "fn",
+              "context": "line 59"
+            },
+            {
+              "name": "get_is_reset",
+              "kind": "fn",
+              "context": "line 37"
+            }
+          ]
+        },
+        "verus_mimalloc::bin_sizes": {
+          "crate": "verus_mimalloc",
+          "module": "bin_sizes",
+          "file": "verus-mimalloc/bin_sizes.rs",
+          "symbols": [
+            {
+              "name": "bin",
+              "kind": "fn",
+              "context": "line 514"
+            },
+            {
+              "name": "slice_bin",
+              "kind": "fn",
+              "context": "line 734"
+            }
+          ]
+        },
+        "verus_mimalloc::commit_mask": {
+          "crate": "verus_mimalloc",
+          "module": "commit_mask",
+          "file": "verus-mimalloc/commit_mask.rs",
+          "symbols": [
+            {
+              "name": "all_set",
+              "kind": "fn",
+              "context": "line 384"
+            },
+            {
+              "name": "any_set",
+              "kind": "fn",
+              "context": "line 401"
+            },
+            {
+              "name": "create",
+              "kind": "fn",
+              "context": "line 466"
+            },
+            {
+              "name": "create_empty",
+              "kind": "fn",
+              "context": "line 708"
+            },
+            {
+              "name": "create_full",
+              "kind": "fn",
+              "context": "line 722"
+            },
+            {
+              "name": "create_intersect",
+              "kind": "fn",
+              "context": "line 418"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 374"
+            },
+            {
+              "name": "is_empty",
+              "kind": "fn",
+              "context": "line 1004"
+            },
+            {
+              "name": "is_full",
+              "kind": "fn",
+              "context": "line 1021"
+            },
+            {
+              "name": "next_run",
+              "kind": "fn",
+              "context": "line 742"
+            },
+            {
+              "name": "set",
+              "kind": "fn",
+              "context": "line 449"
+            }
+          ]
+        },
+        "vstd::pcell": {
+          "crate": "vstd",
+          "module": "pcell",
+          "file": ".verus_deps/vstd/cell/pcell.rs",
+          "symbols": [
+            {
+              "name": "borrow",
+              "kind": "fn",
+              "context": "line 145"
+            },
+            {
+              "name": "borrow_mut",
+              "kind": "fn",
+              "context": "line 159"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 132"
+            }
+          ]
+        },
+        "verus_mimalloc::linked_list": {
+          "crate": "verus_mimalloc",
+          "module": "linked_list",
+          "file": "verus-mimalloc/linked_list.rs",
+          "symbols": [
+            {
+              "name": "block_write_ptr",
+              "kind": "fn",
+              "context": "line 657"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 743"
+            },
+            {
+              "name": "is_empty",
+              "kind": "fn",
+              "context": "line 626"
+            },
+            {
+              "name": "masked_ptr_delay_get_is_use_delayed",
+              "kind": "fn",
+              "context": "line 1661"
+            },
+            {
+              "name": "masked_ptr_delay_get_ptr",
+              "kind": "fn",
+              "context": "line 1697"
+            },
+            {
+              "name": "masked_ptr_delay_set_freeing",
+              "kind": "fn",
+              "context": "line 1739"
+            },
+            {
+              "name": "masked_ptr_delay_set_ptr",
+              "kind": "fn",
+              "context": "line 1715"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 703"
+            }
+          ]
+        },
+        "verus_mimalloc::os_mem": {
+          "crate": "verus_mimalloc",
+          "module": "os_mem",
+          "file": "verus-mimalloc/os_mem.rs",
+          "symbols": [
+            {
+              "name": "_mmap_prot_none",
+              "kind": "fn",
+              "context": "line 222"
+            },
+            {
+              "name": "_mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 207"
+            },
+            {
+              "name": "_mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 252"
+            },
+            {
+              "name": "_mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 238"
+            },
+            {
+              "name": "clock_gettime_monotonic",
+              "kind": "fn",
+              "context": "line 273"
+            },
+            {
+              "name": "get_page_size",
+              "kind": "fn",
+              "context": "line 12"
+            },
+            {
+              "name": "mmap_prot_none",
+              "kind": "fn",
+              "context": "line 125"
+            },
+            {
+              "name": "mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 143"
+            },
+            {
+              "name": "mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 163"
+            },
+            {
+              "name": "mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 184"
+            }
+          ]
+        },
+        "verus_mimalloc::commit_segment": {
+          "crate": "verus_mimalloc",
+          "module": "commit_segment",
+          "file": "verus-mimalloc/commit_segment.rs",
+          "symbols": [
+            {
+              "name": "clock_now",
+              "kind": "fn",
+              "context": "line 83"
+            },
+            {
+              "name": "segment_commit_mask",
+              "kind": "fn",
+              "context": "line 105"
+            },
+            {
+              "name": "segment_commitx",
+              "kind": "fn",
+              "context": "line 290"
+            },
+            {
+              "name": "segment_delayed_decommit",
+              "kind": "fn",
+              "context": "line 456"
+            },
+            {
+              "name": "segment_ensure_committed",
+              "kind": "fn",
+              "context": "line 368"
+            },
+            {
+              "name": "segment_perhaps_decommit",
+              "kind": "fn",
+              "context": "line 393"
+            }
+          ]
+        },
+        "verus_mimalloc::config": {
+          "crate": "verus_mimalloc",
+          "module": "config",
+          "file": "verus-mimalloc/config.rs",
+          "symbols": [
+            {
+              "name": "option_allow_decommit",
+              "kind": "fn",
+              "context": "line 121"
+            },
+            {
+              "name": "option_decommit_delay",
+              "kind": "fn",
+              "context": "line 133"
+            },
+            {
+              "name": "option_decommit_extend_delay",
+              "kind": "fn",
+              "context": "line 137"
+            },
+            {
+              "name": "option_eager_commit",
+              "kind": "fn",
+              "context": "line 117"
+            },
+            {
+              "name": "option_eager_commit_delay",
+              "kind": "fn",
+              "context": "line 113"
+            },
+            {
+              "name": "option_page_reset",
+              "kind": "fn",
+              "context": "line 125"
+            }
+          ]
+        },
+        "verus_mimalloc::os_commit": {
+          "crate": "verus_mimalloc",
+          "module": "os_commit",
+          "file": "verus-mimalloc/os_commit.rs",
+          "symbols": [
+            {
+              "name": "os_commit",
+              "kind": "fn",
+              "context": "line 16"
+            },
+            {
+              "name": "os_commitx",
+              "kind": "fn",
+              "context": "line 152"
+            },
+            {
+              "name": "os_page_align_areax",
+              "kind": "fn",
+              "context": "line 69"
+            }
+          ]
+        },
+        "vstd::atomic_ghost": {
+          "crate": "vstd",
+          "module": "atomic_ghost",
+          "file": ".verus_deps/vstd/atomic_ghost.rs",
+          "symbols": [
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 67"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 197"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        },
+        "verus_mimalloc::thread": {
+          "crate": "verus_mimalloc",
+          "module": "thread",
+          "file": "verus-mimalloc/thread.rs",
+          "symbols": [
+            {
+              "name": "thread_id",
+              "kind": "fn",
+              "context": "line 90"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "span_queue_delete",
+          "line": 355,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segments_page_find_and_allocate",
+          "line": 161,
+          "calls_in_module": [
+            "segment_slice_split",
+            "segment_span_allocate",
+            "span_queue_delete"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "segments_page_alloc",
+          "line": 103,
+          "calls_in_module": [
+            "segment_reclaim_or_alloc",
+            "segments_page_alloc",
+            "segments_page_find_and_allocate"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_span_free",
+          "line": 1492,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::commit_segment",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_span_allocate",
+          "line": 751,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::commit_segment",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "segment_slice_split",
+          "line": 530,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_reclaim_or_alloc",
+          "line": 135,
+          "calls_in_module": [
+            "segment_alloc"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_os_alloc",
+          "line": 1184,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::arena",
+            "verus_mimalloc::commit_mask",
+            "verus_mimalloc::os_commit",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_calculate_slices",
+          "line": 1409,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::layout",
+            "verus_mimalloc::os_mem"
+          ]
+        },
+        {
+          "name": "segment_alloc",
+          "line": 905,
+          "calls_in_module": [
+            "segment_calculate_slices",
+            "segment_os_alloc",
+            "segment_span_allocate",
+            "segment_span_free"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::commit_mask",
+            "verus_mimalloc::config",
+            "verus_mimalloc::init",
+            "verus_mimalloc::linked_list",
+            "verus_mimalloc::thread",
+            "verus_mimalloc::types",
+            "vstd::atomic_ghost",
+            "vstd::layout",
+            "vstd::pcell",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "segment_span_free_coalesce_before",
+          "line": 1851,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_span_free_coalesce",
+          "line": 1646,
+          "calls_in_module": [
+            "segment_span_free",
+            "segment_span_free_coalesce_before"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_free",
+          "line": 1331,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_page_clear",
+          "line": 1577,
+          "calls_in_module": [
+            "segment_span_free_coalesce"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::config",
+            "verus_mimalloc::flags",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "segment_page_free",
+          "line": 1562,
+          "calls_in_module": [
+            "segment_free",
+            "segment_page_clear"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_page_alloc",
+          "line": 78,
+          "calls_in_module": [
+            "segments_page_alloc"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "vstd::pcell": {
+      "crate": "vstd",
+      "module": "pcell",
+      "file": ".verus_deps/vstd/cell/pcell.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "new",
+          "line": 132,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "borrow_mut",
+          "line": 159,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "borrow",
+          "line": 145,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::os_mem": {
+      "crate": "verus_mimalloc",
+      "module": "os_mem",
+      "file": "verus-mimalloc/os_mem.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "_mprotect_prot_read_write",
+          "line": 238,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "_mprotect_prot_none",
+          "line": 252,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "_mmap_prot_read_write",
+          "line": 207,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "_mmap_prot_none",
+          "line": 222,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "mprotect_prot_read_write",
+          "line": 184,
+          "calls_in_module": [
+            "_mprotect_prot_read_write"
+          ],
+          "cross_module_deps": []
+        },
+        {
+          "name": "mprotect_prot_none",
+          "line": 163,
+          "calls_in_module": [
+            "_mprotect_prot_none"
+          ],
+          "cross_module_deps": []
+        },
+        {
+          "name": "mmap_prot_read_write",
+          "line": 143,
+          "calls_in_module": [
+            "_mmap_prot_read_write"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "mmap_prot_none",
+          "line": 125,
+          "calls_in_module": [
+            "_mmap_prot_none"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "get_page_size",
+          "line": 12,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "clock_gettime_monotonic",
+          "line": 273,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::page": {
+      "crate": "verus_mimalloc",
+      "module": "page",
+      "file": "verus-mimalloc/page.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::flags": {
+          "crate": "verus_mimalloc",
+          "module": "flags",
+          "file": "verus-mimalloc/flags.rs",
+          "symbols": [
+            {
+              "name": "get_in_full",
+              "kind": "fn",
+              "context": "line 59"
+            },
+            {
+              "name": "get_is_reset",
+              "kind": "fn",
+              "context": "line 37"
+            }
+          ]
+        },
+        "verus_mimalloc::segment": {
+          "crate": "verus_mimalloc",
+          "module": "segment",
+          "file": "verus-mimalloc/segment.rs",
+          "symbols": [
+            {
+              "name": "segment_alloc",
+              "kind": "fn",
+              "context": "line 905"
+            },
+            {
+              "name": "segment_calculate_slices",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "segment_free",
+              "kind": "fn",
+              "context": "line 1331"
+            },
+            {
+              "name": "segment_os_alloc",
+              "kind": "fn",
+              "context": "line 1184"
+            },
+            {
+              "name": "segment_page_alloc",
+              "kind": "fn",
+              "context": "line 78"
+            },
+            {
+              "name": "segment_page_clear",
+              "kind": "fn",
+              "context": "line 1577"
+            },
+            {
+              "name": "segment_page_free",
+              "kind": "fn",
+              "context": "line 1562"
+            },
+            {
+              "name": "segment_reclaim_or_alloc",
+              "kind": "fn",
+              "context": "line 135"
+            },
+            {
+              "name": "segment_slice_split",
+              "kind": "fn",
+              "context": "line 530"
+            },
+            {
+              "name": "segment_span_allocate",
+              "kind": "fn",
+              "context": "line 751"
+            },
+            {
+              "name": "segment_span_free",
+              "kind": "fn",
+              "context": "line 1492"
+            },
+            {
+              "name": "segment_span_free_coalesce",
+              "kind": "fn",
+              "context": "line 1646"
+            },
+            {
+              "name": "segment_span_free_coalesce_before",
+              "kind": "fn",
+              "context": "line 1851"
+            },
+            {
+              "name": "segments_page_alloc",
+              "kind": "fn",
+              "context": "line 103"
+            },
+            {
+              "name": "segments_page_find_and_allocate",
+              "kind": "fn",
+              "context": "line 161"
+            },
+            {
+              "name": "span_queue_delete",
+              "kind": "fn",
+              "context": "line 355"
+            }
+          ]
+        },
+        "verus_mimalloc::linked_list": {
+          "crate": "verus_mimalloc",
+          "module": "linked_list",
+          "file": "verus-mimalloc/linked_list.rs",
+          "symbols": [
+            {
+              "name": "block_write_ptr",
+              "kind": "fn",
+              "context": "line 657"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 743"
+            },
+            {
+              "name": "is_empty",
+              "kind": "fn",
+              "context": "line 626"
+            },
+            {
+              "name": "masked_ptr_delay_get_is_use_delayed",
+              "kind": "fn",
+              "context": "line 1661"
+            },
+            {
+              "name": "masked_ptr_delay_get_ptr",
+              "kind": "fn",
+              "context": "line 1697"
+            },
+            {
+              "name": "masked_ptr_delay_set_freeing",
+              "kind": "fn",
+              "context": "line 1739"
+            },
+            {
+              "name": "masked_ptr_delay_set_ptr",
+              "kind": "fn",
+              "context": "line 1715"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 703"
+            }
+          ]
+        },
+        "verus_mimalloc::alloc_generic": {
+          "crate": "verus_mimalloc",
+          "module": "alloc_generic",
+          "file": "verus-mimalloc/alloc_generic.rs",
+          "symbols": [
+            {
+              "name": "heap_delayed_free_partial",
+              "kind": "fn",
+              "context": "line 240"
+            },
+            {
+              "name": "malloc_generic",
+              "kind": "fn",
+              "context": "line 22"
+            },
+            {
+              "name": "page_extend_free",
+              "kind": "fn",
+              "context": "line 186"
+            },
+            {
+              "name": "page_free_collect",
+              "kind": "fn",
+              "context": "line 49"
+            },
+            {
+              "name": "page_free_list_extend",
+              "kind": "fn",
+              "context": "line 99"
+            },
+            {
+              "name": "page_thread_free_collect",
+              "kind": "fn",
+              "context": "line 77"
+            }
+          ]
+        },
+        "verus_mimalloc::queues": {
+          "crate": "verus_mimalloc",
+          "module": "queues",
+          "file": "verus-mimalloc/queues.rs",
+          "symbols": [
+            {
+              "name": "heap_queue_first_update",
+              "kind": "fn",
+              "context": "line 202"
+            },
+            {
+              "name": "page_queue_push",
+              "kind": "fn",
+              "context": "line 84"
+            },
+            {
+              "name": "page_queue_push_back",
+              "kind": "fn",
+              "context": "line 130"
+            },
+            {
+              "name": "page_queue_remove",
+              "kind": "fn",
+              "context": "line 27"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        },
+        "verus_mimalloc::bin_sizes": {
+          "crate": "verus_mimalloc",
+          "module": "bin_sizes",
+          "file": "verus-mimalloc/bin_sizes.rs",
+          "symbols": [
+            {
+              "name": "bin",
+              "kind": "fn",
+              "context": "line 514"
+            },
+            {
+              "name": "slice_bin",
+              "kind": "fn",
+              "context": "line 734"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "page_to_full",
+          "line": 350,
+          "calls_in_module": [
+            "page_queue_enqueue_from"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_generic"
+          ]
+        },
+        {
+          "name": "page_queue_find_free_ex",
+          "line": 63,
+          "calls_in_module": [
+            "page_fresh",
+            "page_queue_find_free_ex",
+            "page_to_full"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_generic",
+            "verus_mimalloc::linked_list",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_queue_enqueue_from",
+          "line": 369,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::queues"
+          ]
+        },
+        {
+          "name": "page_init",
+          "line": 151,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_generic",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_fresh_alloc",
+          "line": 131,
+          "calls_in_module": [
+            "page_init"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::queues",
+            "verus_mimalloc::segment",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_fresh",
+          "line": 124,
+          "calls_in_module": [
+            "page_fresh_alloc"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_queue_of",
+          "line": 239,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::flags",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_free",
+          "line": 336,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::queues",
+            "verus_mimalloc::segment",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "find_free_page",
+          "line": 44,
+          "calls_in_module": [
+            "page_queue_find_free_ex"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_generic",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::linked_list",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_unfull",
+          "line": 359,
+          "calls_in_module": [
+            "page_queue_enqueue_from"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_try_use_delayed_free",
+          "line": 376,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_retire",
+          "line": 295,
+          "calls_in_module": [
+            "page_free",
+            "page_queue_of"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "find_page",
+          "line": 28,
+          "calls_in_module": [
+            "find_free_page"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_builtin::root": {
+      "crate": "verus_builtin",
+      "module": "root",
+      "file": ".verus_deps/builtin/src/lib.rs",
+      "depth": 0,
+      "dependencies": {},
+      "fn_verification_order": [
+        {
+          "name": "Tracked::assume_new_fallback",
+          "line": 552,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "Ghost::assume_new_fallback",
+          "line": 494,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "Tracked::assume_new",
+          "line": 545,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::init": {
+      "crate": "verus_mimalloc",
+      "module": "init",
+      "file": "verus-mimalloc/init.rs",
+      "depth": 0,
+      "dependencies": {
+        "vstd::raw_ptr": {
+          "crate": "vstd",
+          "module": "raw_ptr",
+          "file": ".verus_deps/vstd/raw_ptr.rs",
+          "symbols": [
+            {
+              "name": "expose_provenance",
+              "kind": "fn",
+              "context": "line 731"
+            },
+            {
+              "name": "ptr_mut_read",
+              "kind": "fn",
+              "context": "line 602"
+            },
+            {
+              "name": "ptr_mut_ref",
+              "kind": "fn",
+              "context": "line 636"
+            },
+            {
+              "name": "ptr_mut_write",
+              "kind": "fn",
+              "context": "line 579"
+            },
+            {
+              "name": "ptr_ref",
+              "kind": "fn",
+              "context": "line 620"
+            },
+            {
+              "name": "with_exposed_provenance",
+              "kind": "fn",
+              "context": "line 744"
+            }
+          ]
+        },
+        "vstd::layout": {
+          "crate": "vstd",
+          "module": "layout",
+          "file": ".verus_deps/vstd/layout.rs",
+          "symbols": [
+            {
+              "name": "layout_for_type_is_valid",
+              "kind": "fn",
+              "context": "line 118"
+            }
+          ]
+        },
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "vstd::pcell": {
+          "crate": "vstd",
+          "module": "pcell",
+          "file": ".verus_deps/vstd/cell/pcell.rs",
+          "symbols": [
+            {
+              "name": "borrow",
+              "kind": "fn",
+              "context": "line 145"
+            },
+            {
+              "name": "borrow_mut",
+              "kind": "fn",
+              "context": "line 159"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 132"
+            }
+          ]
+        },
+        "verus_mimalloc::os_mem": {
+          "crate": "verus_mimalloc",
+          "module": "os_mem",
+          "file": "verus-mimalloc/os_mem.rs",
+          "symbols": [
+            {
+              "name": "_mmap_prot_none",
+              "kind": "fn",
+              "context": "line 222"
+            },
+            {
+              "name": "_mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 207"
+            },
+            {
+              "name": "_mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 252"
+            },
+            {
+              "name": "_mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 238"
+            },
+            {
+              "name": "clock_gettime_monotonic",
+              "kind": "fn",
+              "context": "line 273"
+            },
+            {
+              "name": "get_page_size",
+              "kind": "fn",
+              "context": "line 12"
+            },
+            {
+              "name": "mmap_prot_none",
+              "kind": "fn",
+              "context": "line 125"
+            },
+            {
+              "name": "mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 143"
+            },
+            {
+              "name": "mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 163"
+            },
+            {
+              "name": "mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 184"
+            }
+          ]
+        },
+        "verus_mimalloc::linked_list": {
+          "crate": "verus_mimalloc",
+          "module": "linked_list",
+          "file": "verus-mimalloc/linked_list.rs",
+          "symbols": [
+            {
+              "name": "block_write_ptr",
+              "kind": "fn",
+              "context": "line 657"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 743"
+            },
+            {
+              "name": "is_empty",
+              "kind": "fn",
+              "context": "line 626"
+            },
+            {
+              "name": "masked_ptr_delay_get_is_use_delayed",
+              "kind": "fn",
+              "context": "line 1661"
+            },
+            {
+              "name": "masked_ptr_delay_get_ptr",
+              "kind": "fn",
+              "context": "line 1697"
+            },
+            {
+              "name": "masked_ptr_delay_set_freeing",
+              "kind": "fn",
+              "context": "line 1739"
+            },
+            {
+              "name": "masked_ptr_delay_set_ptr",
+              "kind": "fn",
+              "context": "line 1715"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 703"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        },
+        "verus_mimalloc::thread": {
+          "crate": "verus_mimalloc",
+          "module": "thread",
+          "file": "verus-mimalloc/thread.rs",
+          "symbols": [
+            {
+              "name": "thread_id",
+              "kind": "fn",
+              "context": "line 90"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "PageQueue::empty",
+          "line": 430,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "thread_data_alloc",
+          "line": 1062,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::os_mem",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "pages_free_direct_tmp",
+          "line": 881,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "pages_tmp",
+          "line": 474,
+          "calls_in_module": [
+            "PageQueue::empty"
+          ],
+          "cross_module_deps": []
+        },
+        {
+          "name": "init_empty_page_ptr",
+          "line": 1212,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::linked_list",
+            "verus_mimalloc::os_mem",
+            "verus_mimalloc::types",
+            "vstd::layout",
+            "vstd::pcell",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "span_queue_headers_tmp",
+          "line": 1020,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "increment_thread_count",
+          "line": 1346,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "heap_init",
+          "line": 114,
+          "calls_in_module": [
+            "increment_thread_count",
+            "init_empty_page_ptr",
+            "pages_free_direct_tmp",
+            "pages_tmp",
+            "span_queue_headers_tmp",
+            "thread_data_alloc"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::thread",
+            "vstd::layout",
+            "vstd::pcell",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "current_thread_count",
+          "line": 1353,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::linked_list": {
+      "crate": "verus_mimalloc",
+      "module": "linked_list",
+      "file": "verus-mimalloc/linked_list.rs",
+      "depth": 0,
+      "dependencies": {
+        "vstd::raw_ptr": {
+          "crate": "vstd",
+          "module": "raw_ptr",
+          "file": ".verus_deps/vstd/raw_ptr.rs",
+          "symbols": [
+            {
+              "name": "expose_provenance",
+              "kind": "fn",
+              "context": "line 731"
+            },
+            {
+              "name": "ptr_mut_read",
+              "kind": "fn",
+              "context": "line 602"
+            },
+            {
+              "name": "ptr_mut_ref",
+              "kind": "fn",
+              "context": "line 636"
+            },
+            {
+              "name": "ptr_mut_write",
+              "kind": "fn",
+              "context": "line 579"
+            },
+            {
+              "name": "ptr_ref",
+              "kind": "fn",
+              "context": "line 620"
+            },
+            {
+              "name": "with_exposed_provenance",
+              "kind": "fn",
+              "context": "line 744"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        },
+        "vstd::layout": {
+          "crate": "vstd",
+          "module": "layout",
+          "file": ".verus_deps/vstd/layout.rs",
+          "symbols": [
+            {
+              "name": "layout_for_type_is_valid",
+              "kind": "fn",
+              "context": "line 118"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "new",
+          "line": 703,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "masked_ptr_delay_set_ptr",
+          "line": 1715,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "masked_ptr_delay_set_freeing",
+          "line": 1739,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "masked_ptr_delay_get_ptr",
+          "line": 1697,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "masked_ptr_delay_get_is_use_delayed",
+          "line": 1661,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "LL::is_empty",
+          "line": 626,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "empty",
+          "line": 743,
+          "calls_in_module": [
+            "new"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "LL::block_write_ptr",
+          "line": 657,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "vstd::layout",
+            "vstd::raw_ptr"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::commit_segment": {
+      "crate": "verus_mimalloc",
+      "module": "commit_segment",
+      "file": "verus-mimalloc/commit_segment.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::layout": {
+          "crate": "verus_mimalloc",
+          "module": "layout",
+          "file": "verus-mimalloc/layout.rs",
+          "symbols": [
+            {
+              "name": "align_down",
+              "kind": "fn",
+              "context": "line 987"
+            },
+            {
+              "name": "align_up",
+              "kind": "fn",
+              "context": "line 1055"
+            },
+            {
+              "name": "calculate_page_block_at",
+              "kind": "fn",
+              "context": "line 794"
+            },
+            {
+              "name": "calculate_page_ptr_subtract_offset",
+              "kind": "fn",
+              "context": "line 697"
+            },
+            {
+              "name": "calculate_page_start",
+              "kind": "fn",
+              "context": "line 777"
+            },
+            {
+              "name": "calculate_segment_ptr_from_block",
+              "kind": "fn",
+              "context": "line 472"
+            },
+            {
+              "name": "calculate_slice_page_ptr_from_block",
+              "kind": "fn",
+              "context": "line 581"
+            },
+            {
+              "name": "ptr_segment",
+              "kind": "fn",
+              "context": "line 1155"
+            },
+            {
+              "name": "segment_page_start_from_slice",
+              "kind": "fn",
+              "context": "line 858"
+            }
+          ]
+        },
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::commit_mask": {
+          "crate": "verus_mimalloc",
+          "module": "commit_mask",
+          "file": "verus-mimalloc/commit_mask.rs",
+          "symbols": [
+            {
+              "name": "all_set",
+              "kind": "fn",
+              "context": "line 384"
+            },
+            {
+              "name": "any_set",
+              "kind": "fn",
+              "context": "line 401"
+            },
+            {
+              "name": "create",
+              "kind": "fn",
+              "context": "line 466"
+            },
+            {
+              "name": "create_empty",
+              "kind": "fn",
+              "context": "line 708"
+            },
+            {
+              "name": "create_full",
+              "kind": "fn",
+              "context": "line 722"
+            },
+            {
+              "name": "create_intersect",
+              "kind": "fn",
+              "context": "line 418"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 374"
+            },
+            {
+              "name": "is_empty",
+              "kind": "fn",
+              "context": "line 1004"
+            },
+            {
+              "name": "is_full",
+              "kind": "fn",
+              "context": "line 1021"
+            },
+            {
+              "name": "next_run",
+              "kind": "fn",
+              "context": "line 742"
+            },
+            {
+              "name": "set",
+              "kind": "fn",
+              "context": "line 449"
+            }
+          ]
+        },
+        "verus_mimalloc::os_mem": {
+          "crate": "verus_mimalloc",
+          "module": "os_mem",
+          "file": "verus-mimalloc/os_mem.rs",
+          "symbols": [
+            {
+              "name": "_mmap_prot_none",
+              "kind": "fn",
+              "context": "line 222"
+            },
+            {
+              "name": "_mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 207"
+            },
+            {
+              "name": "_mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 252"
+            },
+            {
+              "name": "_mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 238"
+            },
+            {
+              "name": "clock_gettime_monotonic",
+              "kind": "fn",
+              "context": "line 273"
+            },
+            {
+              "name": "get_page_size",
+              "kind": "fn",
+              "context": "line 12"
+            },
+            {
+              "name": "mmap_prot_none",
+              "kind": "fn",
+              "context": "line 125"
+            },
+            {
+              "name": "mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 143"
+            },
+            {
+              "name": "mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 163"
+            },
+            {
+              "name": "mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 184"
+            }
+          ]
+        },
+        "verus_mimalloc::config": {
+          "crate": "verus_mimalloc",
+          "module": "config",
+          "file": "verus-mimalloc/config.rs",
+          "symbols": [
+            {
+              "name": "option_allow_decommit",
+              "kind": "fn",
+              "context": "line 121"
+            },
+            {
+              "name": "option_decommit_delay",
+              "kind": "fn",
+              "context": "line 133"
+            },
+            {
+              "name": "option_decommit_extend_delay",
+              "kind": "fn",
+              "context": "line 137"
+            },
+            {
+              "name": "option_eager_commit",
+              "kind": "fn",
+              "context": "line 117"
+            },
+            {
+              "name": "option_eager_commit_delay",
+              "kind": "fn",
+              "context": "line 113"
+            },
+            {
+              "name": "option_page_reset",
+              "kind": "fn",
+              "context": "line 125"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "segment_commit_mask",
+          "line": 105,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::commit_mask",
+            "verus_mimalloc::layout"
+          ]
+        },
+        {
+          "name": "segment_commitx",
+          "line": 290,
+          "calls_in_module": [
+            "segment_commit_mask"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::commit_mask",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "clock_now",
+          "line": 83,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::os_mem"
+          ]
+        },
+        {
+          "name": "segment_delayed_decommit",
+          "line": 456,
+          "calls_in_module": [
+            "clock_now",
+            "segment_commitx"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::commit_mask",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_perhaps_decommit",
+          "line": 393,
+          "calls_in_module": [
+            "clock_now",
+            "segment_commit_mask",
+            "segment_delayed_decommit"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::commit_mask",
+            "verus_mimalloc::config",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "segment_ensure_committed",
+          "line": 368,
+          "calls_in_module": [
+            "segment_commitx"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::commit_mask",
+            "verus_mimalloc::types"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::alloc_fast": {
+      "crate": "verus_mimalloc",
+      "module": "alloc_fast",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "depth": 0,
+      "dependencies": {
+        "vstd::raw_ptr": {
+          "crate": "vstd",
+          "module": "raw_ptr",
+          "file": ".verus_deps/vstd/raw_ptr.rs",
+          "symbols": [
+            {
+              "name": "expose_provenance",
+              "kind": "fn",
+              "context": "line 731"
+            },
+            {
+              "name": "ptr_mut_read",
+              "kind": "fn",
+              "context": "line 602"
+            },
+            {
+              "name": "ptr_mut_ref",
+              "kind": "fn",
+              "context": "line 636"
+            },
+            {
+              "name": "ptr_mut_write",
+              "kind": "fn",
+              "context": "line 579"
+            },
+            {
+              "name": "ptr_ref",
+              "kind": "fn",
+              "context": "line 620"
+            },
+            {
+              "name": "with_exposed_provenance",
+              "kind": "fn",
+              "context": "line 744"
+            }
+          ]
+        },
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::linked_list": {
+          "crate": "verus_mimalloc",
+          "module": "linked_list",
+          "file": "verus-mimalloc/linked_list.rs",
+          "symbols": [
+            {
+              "name": "block_write_ptr",
+              "kind": "fn",
+              "context": "line 657"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 743"
+            },
+            {
+              "name": "is_empty",
+              "kind": "fn",
+              "context": "line 626"
+            },
+            {
+              "name": "masked_ptr_delay_get_is_use_delayed",
+              "kind": "fn",
+              "context": "line 1661"
+            },
+            {
+              "name": "masked_ptr_delay_get_ptr",
+              "kind": "fn",
+              "context": "line 1697"
+            },
+            {
+              "name": "masked_ptr_delay_set_freeing",
+              "kind": "fn",
+              "context": "line 1739"
+            },
+            {
+              "name": "masked_ptr_delay_set_ptr",
+              "kind": "fn",
+              "context": "line 1715"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 703"
+            }
+          ]
+        },
+        "verus_mimalloc::alloc_generic": {
+          "crate": "verus_mimalloc",
+          "module": "alloc_generic",
+          "file": "verus-mimalloc/alloc_generic.rs",
+          "symbols": [
+            {
+              "name": "heap_delayed_free_partial",
+              "kind": "fn",
+              "context": "line 240"
+            },
+            {
+              "name": "malloc_generic",
+              "kind": "fn",
+              "context": "line 22"
+            },
+            {
+              "name": "page_extend_free",
+              "kind": "fn",
+              "context": "line 186"
+            },
+            {
+              "name": "page_free_collect",
+              "kind": "fn",
+              "context": "line 49"
+            },
+            {
+              "name": "page_free_list_extend",
+              "kind": "fn",
+              "context": "line 99"
+            },
+            {
+              "name": "page_thread_free_collect",
+              "kind": "fn",
+              "context": "line 77"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "heap_get_free_small_page",
+          "line": 102,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "page_malloc",
+          "line": 141,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_generic",
+            "verus_mimalloc::linked_list",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "heap_malloc_small_zero",
+          "line": 118,
+          "calls_in_module": [
+            "heap_get_free_small_page",
+            "page_malloc"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "heap_malloc_zero_ex",
+          "line": 77,
+          "calls_in_module": [
+            "heap_malloc_small_zero"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_generic"
+          ]
+        },
+        {
+          "name": "heap_malloc_zero",
+          "line": 56,
+          "calls_in_module": [
+            "heap_malloc_zero_ex"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "heap_malloc",
+          "line": 31,
+          "calls_in_module": [
+            "heap_malloc_zero"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::config": {
+      "crate": "verus_mimalloc",
+      "module": "config",
+      "file": "verus-mimalloc/config.rs",
+      "depth": 0,
+      "dependencies": {},
+      "fn_verification_order": [
+        {
+          "name": "option_page_reset",
+          "line": 125,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "option_eager_commit_delay",
+          "line": 113,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "option_eager_commit",
+          "line": 117,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "option_decommit_extend_delay",
+          "line": 137,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "option_decommit_delay",
+          "line": 133,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "option_allow_decommit",
+          "line": 121,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::os_commit": {
+      "crate": "verus_mimalloc",
+      "module": "os_commit",
+      "file": "verus-mimalloc/os_commit.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::layout": {
+          "crate": "verus_mimalloc",
+          "module": "layout",
+          "file": "verus-mimalloc/layout.rs",
+          "symbols": [
+            {
+              "name": "align_down",
+              "kind": "fn",
+              "context": "line 987"
+            },
+            {
+              "name": "align_up",
+              "kind": "fn",
+              "context": "line 1055"
+            },
+            {
+              "name": "calculate_page_block_at",
+              "kind": "fn",
+              "context": "line 794"
+            },
+            {
+              "name": "calculate_page_ptr_subtract_offset",
+              "kind": "fn",
+              "context": "line 697"
+            },
+            {
+              "name": "calculate_page_start",
+              "kind": "fn",
+              "context": "line 777"
+            },
+            {
+              "name": "calculate_segment_ptr_from_block",
+              "kind": "fn",
+              "context": "line 472"
+            },
+            {
+              "name": "calculate_slice_page_ptr_from_block",
+              "kind": "fn",
+              "context": "line 581"
+            },
+            {
+              "name": "ptr_segment",
+              "kind": "fn",
+              "context": "line 1155"
+            },
+            {
+              "name": "segment_page_start_from_slice",
+              "kind": "fn",
+              "context": "line 858"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        },
+        "verus_mimalloc::os_mem": {
+          "crate": "verus_mimalloc",
+          "module": "os_mem",
+          "file": "verus-mimalloc/os_mem.rs",
+          "symbols": [
+            {
+              "name": "_mmap_prot_none",
+              "kind": "fn",
+              "context": "line 222"
+            },
+            {
+              "name": "_mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 207"
+            },
+            {
+              "name": "_mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 252"
+            },
+            {
+              "name": "_mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 238"
+            },
+            {
+              "name": "clock_gettime_monotonic",
+              "kind": "fn",
+              "context": "line 273"
+            },
+            {
+              "name": "get_page_size",
+              "kind": "fn",
+              "context": "line 12"
+            },
+            {
+              "name": "mmap_prot_none",
+              "kind": "fn",
+              "context": "line 125"
+            },
+            {
+              "name": "mmap_prot_read_write",
+              "kind": "fn",
+              "context": "line 143"
+            },
+            {
+              "name": "mprotect_prot_none",
+              "kind": "fn",
+              "context": "line 163"
+            },
+            {
+              "name": "mprotect_prot_read_write",
+              "kind": "fn",
+              "context": "line 184"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "os_page_align_areax",
+          "line": 69,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_mimalloc::layout",
+            "verus_mimalloc::os_mem"
+          ]
+        },
+        {
+          "name": "os_commitx",
+          "line": 152,
+          "calls_in_module": [
+            "os_page_align_areax"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::os_mem"
+          ]
+        },
+        {
+          "name": "os_commit",
+          "line": 16,
+          "calls_in_module": [
+            "os_commitx"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::layout": {
+      "crate": "verus_mimalloc",
+      "module": "layout",
+      "file": "verus-mimalloc/layout.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "segment_page_start_from_slice",
+          "line": 858,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "SegmentPtr::ptr_segment",
+          "line": 1155,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "calculate_slice_page_ptr_from_block",
+          "line": 581,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "calculate_segment_ptr_from_block",
+          "line": 472,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "calculate_page_start",
+          "line": 777,
+          "calls_in_module": [
+            "SegmentPtr::ptr_segment",
+            "segment_page_start_from_slice"
+          ],
+          "cross_module_deps": []
+        },
+        {
+          "name": "calculate_page_ptr_subtract_offset",
+          "line": 697,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "calculate_page_block_at",
+          "line": 794,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "align_up",
+          "line": 1055,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "align_down",
+          "line": 987,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::commit_mask": {
+      "crate": "verus_mimalloc",
+      "module": "commit_mask",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "CommitMask::create_full",
+          "line": 722,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::set",
+          "line": 449,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::next_run",
+          "line": 742,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::is_full",
+          "line": 1021,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::is_empty",
+          "line": 1004,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::empty",
+          "line": 374,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::create_intersect",
+          "line": 418,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::create_empty",
+          "line": 708,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::create",
+          "line": 466,
+          "calls_in_module": [
+            "CommitMask::create_full"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        },
+        {
+          "name": "CommitMask::any_set",
+          "line": 401,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "CommitMask::all_set",
+          "line": 384,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::queues": {
+      "crate": "verus_mimalloc",
+      "module": "queues",
+      "file": "verus-mimalloc/queues.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::bin_sizes": {
+          "crate": "verus_mimalloc",
+          "module": "bin_sizes",
+          "file": "verus-mimalloc/bin_sizes.rs",
+          "symbols": [
+            {
+              "name": "bin",
+              "kind": "fn",
+              "context": "line 514"
+            },
+            {
+              "name": "slice_bin",
+              "kind": "fn",
+              "context": "line 734"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "heap_queue_first_update",
+          "line": 202,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::bin_sizes",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_queue_remove",
+          "line": 27,
+          "calls_in_module": [
+            "heap_queue_first_update"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_queue_push_back",
+          "line": 130,
+          "calls_in_module": [
+            "heap_queue_first_update"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_queue_push",
+          "line": 84,
+          "calls_in_module": [
+            "heap_queue_first_update"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "vstd::atomic_ghost": {
+      "crate": "vstd",
+      "module": "atomic_ghost",
+      "file": ".verus_deps/vstd/atomic_ghost.rs",
+      "depth": 0,
+      "dependencies": {},
+      "fn_verification_order": [
+        {
+          "name": "new",
+          "line": 197,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "new",
+          "line": 67,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::bin_sizes": {
+      "crate": "verus_mimalloc",
+      "module": "bin_sizes",
+      "file": "verus-mimalloc/bin_sizes.rs",
+      "depth": 0,
+      "dependencies": {},
+      "fn_verification_order": [
+        {
+          "name": "slice_bin",
+          "line": 734,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "bin",
+          "line": 514,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::thread": {
+      "crate": "verus_mimalloc",
+      "module": "thread",
+      "file": "verus-mimalloc/thread.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "thread_id",
+          "line": 90,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::flags": {
+      "crate": "verus_mimalloc",
+      "module": "flags",
+      "file": "verus-mimalloc/flags.rs",
+      "depth": 0,
+      "dependencies": {},
+      "fn_verification_order": [
+        {
+          "name": "PageInner::get_is_reset",
+          "line": 37,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        },
+        {
+          "name": "PageInner::get_in_full",
+          "line": 59,
+          "calls_in_module": [],
+          "cross_module_deps": []
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::alloc_generic": {
+      "crate": "verus_mimalloc",
+      "module": "alloc_generic",
+      "file": "verus-mimalloc/alloc_generic.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::layout": {
+          "crate": "verus_mimalloc",
+          "module": "layout",
+          "file": "verus-mimalloc/layout.rs",
+          "symbols": [
+            {
+              "name": "align_down",
+              "kind": "fn",
+              "context": "line 987"
+            },
+            {
+              "name": "align_up",
+              "kind": "fn",
+              "context": "line 1055"
+            },
+            {
+              "name": "calculate_page_block_at",
+              "kind": "fn",
+              "context": "line 794"
+            },
+            {
+              "name": "calculate_page_ptr_subtract_offset",
+              "kind": "fn",
+              "context": "line 697"
+            },
+            {
+              "name": "calculate_page_start",
+              "kind": "fn",
+              "context": "line 777"
+            },
+            {
+              "name": "calculate_segment_ptr_from_block",
+              "kind": "fn",
+              "context": "line 472"
+            },
+            {
+              "name": "calculate_slice_page_ptr_from_block",
+              "kind": "fn",
+              "context": "line 581"
+            },
+            {
+              "name": "ptr_segment",
+              "kind": "fn",
+              "context": "line 1155"
+            },
+            {
+              "name": "segment_page_start_from_slice",
+              "kind": "fn",
+              "context": "line 858"
+            }
+          ]
+        },
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::page": {
+          "crate": "verus_mimalloc",
+          "module": "page",
+          "file": "verus-mimalloc/page.rs",
+          "symbols": [
+            {
+              "name": "find_free_page",
+              "kind": "fn",
+              "context": "line 44"
+            },
+            {
+              "name": "find_page",
+              "kind": "fn",
+              "context": "line 28"
+            },
+            {
+              "name": "page_free",
+              "kind": "fn",
+              "context": "line 336"
+            },
+            {
+              "name": "page_fresh",
+              "kind": "fn",
+              "context": "line 124"
+            },
+            {
+              "name": "page_fresh_alloc",
+              "kind": "fn",
+              "context": "line 131"
+            },
+            {
+              "name": "page_init",
+              "kind": "fn",
+              "context": "line 151"
+            },
+            {
+              "name": "page_queue_enqueue_from",
+              "kind": "fn",
+              "context": "line 369"
+            },
+            {
+              "name": "page_queue_find_free_ex",
+              "kind": "fn",
+              "context": "line 63"
+            },
+            {
+              "name": "page_queue_of",
+              "kind": "fn",
+              "context": "line 239"
+            },
+            {
+              "name": "page_retire",
+              "kind": "fn",
+              "context": "line 295"
+            },
+            {
+              "name": "page_to_full",
+              "kind": "fn",
+              "context": "line 350"
+            },
+            {
+              "name": "page_try_use_delayed_free",
+              "kind": "fn",
+              "context": "line 376"
+            },
+            {
+              "name": "page_unfull",
+              "kind": "fn",
+              "context": "line 359"
+            }
+          ]
+        },
+        "verus_mimalloc::alloc_fast": {
+          "crate": "verus_mimalloc",
+          "module": "alloc_fast",
+          "file": "verus-mimalloc/alloc_fast.rs",
+          "symbols": [
+            {
+              "name": "heap_get_free_small_page",
+              "kind": "fn",
+              "context": "line 102"
+            },
+            {
+              "name": "heap_malloc",
+              "kind": "fn",
+              "context": "line 31"
+            },
+            {
+              "name": "heap_malloc_small_zero",
+              "kind": "fn",
+              "context": "line 118"
+            },
+            {
+              "name": "heap_malloc_zero",
+              "kind": "fn",
+              "context": "line 56"
+            },
+            {
+              "name": "heap_malloc_zero_ex",
+              "kind": "fn",
+              "context": "line 77"
+            },
+            {
+              "name": "page_malloc",
+              "kind": "fn",
+              "context": "line 141"
+            }
+          ]
+        },
+        "verus_mimalloc::free": {
+          "crate": "verus_mimalloc",
+          "module": "free",
+          "file": "verus-mimalloc/free.rs",
+          "symbols": [
+            {
+              "name": "free_block",
+              "kind": "fn",
+              "context": "line 821"
+            },
+            {
+              "name": "free_block_mt",
+              "kind": "fn",
+              "context": "line 853"
+            },
+            {
+              "name": "free_delayed_block",
+              "kind": "fn",
+              "context": "line 1073"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "page_thread_free_collect",
+          "line": 77,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_free_list_extend",
+          "line": 99,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "heap_delayed_free_partial",
+          "line": 240,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::free",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_free_collect",
+          "line": 49,
+          "calls_in_module": [
+            "page_thread_free_collect"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "page_extend_free",
+          "line": 186,
+          "calls_in_module": [
+            "page_free_list_extend"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "malloc_generic",
+          "line": 22,
+          "calls_in_module": [
+            "heap_delayed_free_partial"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_fast",
+            "verus_mimalloc::page",
+            "verus_mimalloc::types"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::free": {
+      "crate": "verus_mimalloc",
+      "module": "free",
+      "file": "verus-mimalloc/free.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::layout": {
+          "crate": "verus_mimalloc",
+          "module": "layout",
+          "file": "verus-mimalloc/layout.rs",
+          "symbols": [
+            {
+              "name": "align_down",
+              "kind": "fn",
+              "context": "line 987"
+            },
+            {
+              "name": "align_up",
+              "kind": "fn",
+              "context": "line 1055"
+            },
+            {
+              "name": "calculate_page_block_at",
+              "kind": "fn",
+              "context": "line 794"
+            },
+            {
+              "name": "calculate_page_ptr_subtract_offset",
+              "kind": "fn",
+              "context": "line 697"
+            },
+            {
+              "name": "calculate_page_start",
+              "kind": "fn",
+              "context": "line 777"
+            },
+            {
+              "name": "calculate_segment_ptr_from_block",
+              "kind": "fn",
+              "context": "line 472"
+            },
+            {
+              "name": "calculate_slice_page_ptr_from_block",
+              "kind": "fn",
+              "context": "line 581"
+            },
+            {
+              "name": "ptr_segment",
+              "kind": "fn",
+              "context": "line 1155"
+            },
+            {
+              "name": "segment_page_start_from_slice",
+              "kind": "fn",
+              "context": "line 858"
+            }
+          ]
+        },
+        "vstd::raw_ptr": {
+          "crate": "vstd",
+          "module": "raw_ptr",
+          "file": ".verus_deps/vstd/raw_ptr.rs",
+          "symbols": [
+            {
+              "name": "expose_provenance",
+              "kind": "fn",
+              "context": "line 731"
+            },
+            {
+              "name": "ptr_mut_read",
+              "kind": "fn",
+              "context": "line 602"
+            },
+            {
+              "name": "ptr_mut_ref",
+              "kind": "fn",
+              "context": "line 636"
+            },
+            {
+              "name": "ptr_mut_write",
+              "kind": "fn",
+              "context": "line 579"
+            },
+            {
+              "name": "ptr_ref",
+              "kind": "fn",
+              "context": "line 620"
+            },
+            {
+              "name": "with_exposed_provenance",
+              "kind": "fn",
+              "context": "line 744"
+            }
+          ]
+        },
+        "verus_mimalloc::types": {
+          "crate": "verus_mimalloc",
+          "module": "types",
+          "file": "verus-mimalloc/types.rs",
+          "symbols": [
+            {
+              "name": "add_offset",
+              "kind": "fn",
+              "context": "line 2353"
+            },
+            {
+              "name": "add_offset_and_check",
+              "kind": "fn",
+              "context": "line 2768"
+            },
+            {
+              "name": "get_abandoned",
+              "kind": "fn",
+              "context": "line 1873"
+            },
+            {
+              "name": "get_allow_decommit",
+              "kind": "fn",
+              "context": "line 1847"
+            },
+            {
+              "name": "get_arena_id",
+              "kind": "fn",
+              "context": "line 1328"
+            },
+            {
+              "name": "get_block_size",
+              "kind": "fn",
+              "context": "line 2940"
+            },
+            {
+              "name": "get_commit_mask",
+              "kind": "fn",
+              "context": "line 1807"
+            },
+            {
+              "name": "get_count",
+              "kind": "fn",
+              "context": "line 2233"
+            },
+            {
+              "name": "get_decommit_expire",
+              "kind": "fn",
+              "context": "line 1833"
+            },
+            {
+              "name": "get_decommit_mask",
+              "kind": "fn",
+              "context": "line 1820"
+            },
+            {
+              "name": "get_heap",
+              "kind": "fn",
+              "context": "line 2954"
+            },
+            {
+              "name": "get_index",
+              "kind": "fn",
+              "context": "line 2623"
+            },
+            {
+              "name": "get_inner_ref",
+              "kind": "fn",
+              "context": "line 2070"
+            },
+            {
+              "name": "get_inner_ref_maybe_empty",
+              "kind": "fn",
+              "context": "line 2116"
+            },
+            {
+              "name": "get_main2_ref",
+              "kind": "fn",
+              "context": "line 1778"
+            },
+            {
+              "name": "get_main_ref",
+              "kind": "fn",
+              "context": "line 1749"
+            },
+            {
+              "name": "get_mem_is_pinned",
+              "kind": "fn",
+              "context": "line 1886"
+            },
+            {
+              "name": "get_mut",
+              "kind": "fn",
+              "context": "line 1426"
+            },
+            {
+              "name": "get_next",
+              "kind": "fn",
+              "context": "line 2275"
+            },
+            {
+              "name": "get_page_after_end",
+              "kind": "fn",
+              "context": "line 1639"
+            },
+            {
+              "name": "get_page_count",
+              "kind": "fn",
+              "context": "line 1175"
+            },
+            {
+              "name": "get_page_empty",
+              "kind": "fn",
+              "context": "line 1341"
+            },
+            {
+              "name": "get_page_header_ptr",
+              "kind": "fn",
+              "context": "line 1524"
+            },
+            {
+              "name": "get_page_retired_max",
+              "kind": "fn",
+              "context": "line 1265"
+            },
+            {
+              "name": "get_page_retired_min",
+              "kind": "fn",
+              "context": "line 1220"
+            },
+            {
+              "name": "get_pages",
+              "kind": "fn",
+              "context": "line 1157"
+            },
+            {
+              "name": "get_pages_free_direct",
+              "kind": "fn",
+              "context": "line 1310"
+            },
+            {
+              "name": "get_prev",
+              "kind": "fn",
+              "context": "line 2314"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1135"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1409"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 1716"
+            },
+            {
+              "name": "get_ref",
+              "kind": "fn",
+              "context": "line 2005"
+            },
+            {
+              "name": "get_segment_kind",
+              "kind": "fn",
+              "context": "line 1906"
+            },
+            {
+              "name": "get_segments_count",
+              "kind": "fn",
+              "context": "line 1462"
+            },
+            {
+              "name": "get_used",
+              "kind": "fn",
+              "context": "line 1860"
+            },
+            {
+              "name": "is_abandoned",
+              "kind": "fn",
+              "context": "line 1899"
+            },
+            {
+              "name": "is_gt_0th_slice",
+              "kind": "fn",
+              "context": "line 2603"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1504"
+            },
+            {
+              "name": "is_null",
+              "kind": "fn",
+              "context": "line 1997"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1513"
+            },
+            {
+              "name": "null",
+              "kind": "fn",
+              "context": "line 1986"
+            },
+            {
+              "name": "set_page_count",
+              "kind": "fn",
+              "context": "line 1192"
+            },
+            {
+              "name": "set_page_retired_max",
+              "kind": "fn",
+              "context": "line 1282"
+            },
+            {
+              "name": "set_page_retired_min",
+              "kind": "fn",
+              "context": "line 1237"
+            },
+            {
+              "name": "slice_start",
+              "kind": "fn",
+              "context": "line 2686"
+            },
+            {
+              "name": "sub_offset",
+              "kind": "fn",
+              "context": "line 2483"
+            },
+            {
+              "name": "todo",
+              "kind": "fn",
+              "context": "line 3341"
+            }
+          ]
+        },
+        "verus_mimalloc::flags": {
+          "crate": "verus_mimalloc",
+          "module": "flags",
+          "file": "verus-mimalloc/flags.rs",
+          "symbols": [
+            {
+              "name": "get_in_full",
+              "kind": "fn",
+              "context": "line 59"
+            },
+            {
+              "name": "get_is_reset",
+              "kind": "fn",
+              "context": "line 37"
+            }
+          ]
+        },
+        "verus_mimalloc::linked_list": {
+          "crate": "verus_mimalloc",
+          "module": "linked_list",
+          "file": "verus-mimalloc/linked_list.rs",
+          "symbols": [
+            {
+              "name": "block_write_ptr",
+              "kind": "fn",
+              "context": "line 657"
+            },
+            {
+              "name": "empty",
+              "kind": "fn",
+              "context": "line 743"
+            },
+            {
+              "name": "is_empty",
+              "kind": "fn",
+              "context": "line 626"
+            },
+            {
+              "name": "masked_ptr_delay_get_is_use_delayed",
+              "kind": "fn",
+              "context": "line 1661"
+            },
+            {
+              "name": "masked_ptr_delay_get_ptr",
+              "kind": "fn",
+              "context": "line 1697"
+            },
+            {
+              "name": "masked_ptr_delay_set_freeing",
+              "kind": "fn",
+              "context": "line 1739"
+            },
+            {
+              "name": "masked_ptr_delay_set_ptr",
+              "kind": "fn",
+              "context": "line 1715"
+            },
+            {
+              "name": "new",
+              "kind": "fn",
+              "context": "line 703"
+            }
+          ]
+        },
+        "verus_mimalloc::alloc_generic": {
+          "crate": "verus_mimalloc",
+          "module": "alloc_generic",
+          "file": "verus-mimalloc/alloc_generic.rs",
+          "symbols": [
+            {
+              "name": "heap_delayed_free_partial",
+              "kind": "fn",
+              "context": "line 240"
+            },
+            {
+              "name": "malloc_generic",
+              "kind": "fn",
+              "context": "line 22"
+            },
+            {
+              "name": "page_extend_free",
+              "kind": "fn",
+              "context": "line 186"
+            },
+            {
+              "name": "page_free_collect",
+              "kind": "fn",
+              "context": "line 49"
+            },
+            {
+              "name": "page_free_list_extend",
+              "kind": "fn",
+              "context": "line 99"
+            },
+            {
+              "name": "page_thread_free_collect",
+              "kind": "fn",
+              "context": "line 77"
+            }
+          ]
+        },
+        "verus_mimalloc::page": {
+          "crate": "verus_mimalloc",
+          "module": "page",
+          "file": "verus-mimalloc/page.rs",
+          "symbols": [
+            {
+              "name": "find_free_page",
+              "kind": "fn",
+              "context": "line 44"
+            },
+            {
+              "name": "find_page",
+              "kind": "fn",
+              "context": "line 28"
+            },
+            {
+              "name": "page_free",
+              "kind": "fn",
+              "context": "line 336"
+            },
+            {
+              "name": "page_fresh",
+              "kind": "fn",
+              "context": "line 124"
+            },
+            {
+              "name": "page_fresh_alloc",
+              "kind": "fn",
+              "context": "line 131"
+            },
+            {
+              "name": "page_init",
+              "kind": "fn",
+              "context": "line 151"
+            },
+            {
+              "name": "page_queue_enqueue_from",
+              "kind": "fn",
+              "context": "line 369"
+            },
+            {
+              "name": "page_queue_find_free_ex",
+              "kind": "fn",
+              "context": "line 63"
+            },
+            {
+              "name": "page_queue_of",
+              "kind": "fn",
+              "context": "line 239"
+            },
+            {
+              "name": "page_retire",
+              "kind": "fn",
+              "context": "line 295"
+            },
+            {
+              "name": "page_to_full",
+              "kind": "fn",
+              "context": "line 350"
+            },
+            {
+              "name": "page_try_use_delayed_free",
+              "kind": "fn",
+              "context": "line 376"
+            },
+            {
+              "name": "page_unfull",
+              "kind": "fn",
+              "context": "line 359"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "free_block_mt",
+          "line": 853,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::linked_list",
+            "vstd::raw_ptr"
+          ]
+        },
+        {
+          "name": "free_block",
+          "line": 821,
+          "calls_in_module": [
+            "free_block_mt"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::flags",
+            "verus_mimalloc::page",
+            "verus_mimalloc::types"
+          ]
+        },
+        {
+          "name": "free_delayed_block",
+          "line": 1073,
+          "calls_in_module": [
+            "free_block"
+          ],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::alloc_generic",
+            "verus_mimalloc::layout",
+            "verus_mimalloc::page",
+            "vstd::raw_ptr"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    },
+    "verus_mimalloc::arena": {
+      "crate": "verus_mimalloc",
+      "module": "arena",
+      "file": "verus-mimalloc/arena.rs",
+      "depth": 0,
+      "dependencies": {
+        "verus_mimalloc::os_alloc": {
+          "crate": "verus_mimalloc",
+          "module": "os_alloc",
+          "file": "verus-mimalloc/os_alloc.rs",
+          "symbols": [
+            {
+              "name": "aligned_base_add",
+              "kind": "fn",
+              "context": "line 225"
+            },
+            {
+              "name": "aligned_base_cas",
+              "kind": "fn",
+              "context": "line 232"
+            },
+            {
+              "name": "os_alloc_aligned",
+              "kind": "fn",
+              "context": "line 120"
+            },
+            {
+              "name": "os_alloc_aligned_offset",
+              "kind": "fn",
+              "context": "line 12"
+            },
+            {
+              "name": "os_get_aligned_hint",
+              "kind": "fn",
+              "context": "line 242"
+            },
+            {
+              "name": "os_good_alloc_size",
+              "kind": "fn",
+              "context": "line 46"
+            },
+            {
+              "name": "os_mem_alloc",
+              "kind": "fn",
+              "context": "line 165"
+            },
+            {
+              "name": "os_mem_alloc_aligned",
+              "kind": "fn",
+              "context": "line 136"
+            },
+            {
+              "name": "unix_mmap",
+              "kind": "fn",
+              "context": "line 195"
+            },
+            {
+              "name": "unix_mmapx",
+              "kind": "fn",
+              "context": "line 287"
+            },
+            {
+              "name": "use_large_os_page",
+              "kind": "fn",
+              "context": "line 188"
+            }
+          ]
+        },
+        "verus_builtin::root": {
+          "crate": "verus_builtin",
+          "module": "root",
+          "file": ".verus_deps/builtin/src/lib.rs",
+          "symbols": [
+            {
+              "name": "assume_new",
+              "kind": "fn",
+              "context": "line 545"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 494"
+            },
+            {
+              "name": "assume_new_fallback",
+              "kind": "fn",
+              "context": "line 552"
+            }
+          ]
+        }
+      },
+      "fn_verification_order": [
+        {
+          "name": "arena_alloc_aligned",
+          "line": 21,
+          "calls_in_module": [],
+          "cross_module_deps": [
+            "verus_builtin::root",
+            "verus_mimalloc::os_alloc"
+          ]
+        }
+      ],
+      "unresolved_count": 0,
+      "external_count": 0
+    }
+  }
+}

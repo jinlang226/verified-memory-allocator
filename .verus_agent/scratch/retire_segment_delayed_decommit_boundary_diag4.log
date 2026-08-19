@@ -1,0 +1,4 @@
+boundary_guard: FAIL — a frozen boundary was breached.
+VACUOUS trust retirement (an admit was removed without any postcondition taking its place):
+  [vacuous retire] verus-mimalloc/commit_segment.rs: `segment_delayed_decommit` dropped its trust marker but declares no `ensures`
+      the admit count fell without any obligation replacing it; restore the postcondition and prove it.

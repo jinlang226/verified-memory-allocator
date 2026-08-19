@@ -1,0 +1,139 @@
+{
+  "source": "/tmp/ast_orig_ons1kkh6.rs",
+  "verus": "verus-mimalloc/page.rs",
+  "functions": [
+    {
+      "name": "find_free_page",
+      "status": "MATCH",
+      "src_hash": "88a74818f4192e3256009ebcb0d28e69",
+      "verus_hash": "88a74818f4192e3256009ebcb0d28e69",
+      "src_lines": "44-60",
+      "verus_lines": "45-61",
+      "verification": ""
+    },
+    {
+      "name": "find_page",
+      "status": "MATCH",
+      "src_hash": "dada6f1c9b5b9be575d30b0c45ce9fb3",
+      "verus_hash": "dada6f1c9b5b9be575d30b0c45ce9fb3",
+      "src_lines": "28-41",
+      "verus_lines": "29-42",
+      "verification": ""
+    },
+    {
+      "name": "page_free",
+      "status": "MATCH",
+      "src_hash": "8ebead3347381f297ed932e5743488c8",
+      "verus_hash": "8ebead3347381f297ed932e5743488c8",
+      "src_lines": "290-301",
+      "verus_lines": "828-1006",
+      "verification": ""
+    },
+    {
+      "name": "page_fresh",
+      "status": "MATCH",
+      "src_hash": "818f1b9f984c5d4fdcb32fe01fb76e60",
+      "verus_hash": "818f1b9f984c5d4fdcb32fe01fb76e60",
+      "src_lines": "124-128",
+      "verus_lines": "125-129",
+      "verification": ""
+    },
+    {
+      "name": "page_fresh_alloc",
+      "status": "MATCH",
+      "src_hash": "cc43cd8c4317f88ee880f4adf3c27a3f",
+      "verus_hash": "cc43cd8c4317f88ee880f4adf3c27a3f",
+      "src_lines": "131-147",
+      "verus_lines": "132-148",
+      "verification": ""
+    },
+    {
+      "name": "page_init",
+      "status": "MISMATCH",
+      "src_hash": "5378cd2da1a53568dad0a39c1a4d93d1",
+      "verus_hash": "8e4536ba162db565c7b8538d1b2147c8",
+      "src_lines": "151-236",
+      "verus_lines": "162-563",
+      "verification": ""
+    },
+    {
+      "name": "page_queue_enqueue_from",
+      "status": "MATCH",
+      "src_hash": "bcdf6a333b6de2686846ed5be3e885db",
+      "verus_hash": "bcdf6a333b6de2686846ed5be3e885db",
+      "src_lines": "323-327",
+      "verus_lines": "1156-1210",
+      "verification": ""
+    },
+    {
+      "name": "page_queue_find_free_ex",
+      "status": "MATCH",
+      "src_hash": "d9d853810d94d414fe7acdeb60451ce2",
+      "verus_hash": "d9d853810d94d414fe7acdeb60451ce2",
+      "src_lines": "63-121",
+      "verus_lines": "64-122",
+      "verification": ""
+    },
+    {
+      "name": "page_queue_of",
+      "status": "MATCH",
+      "src_hash": "c24b198cd90aa5854d9b43418a9c1c34",
+      "verus_hash": "c24b198cd90aa5854d9b43418a9c1c34",
+      "src_lines": "239-253",
+      "verus_lines": "568-630",
+      "verification": ""
+    },
+    {
+      "name": "page_retire",
+      "status": "MATCH",
+      "src_hash": "4d0e63331c9dbe4c329b6784517645bd",
+      "verus_hash": "4d0e63331c9dbe4c329b6784517645bd",
+      "src_lines": "258-287",
+      "verus_lines": "640-820",
+      "verification": ""
+    },
+    {
+      "name": "page_to_full",
+      "status": "MATCH",
+      "src_hash": "750207dc84c5ba1072d07071e0811745",
+      "verus_hash": "750207dc84c5ba1072d07071e0811745",
+      "src_lines": "304-310",
+      "verus_lines": "1010-1048",
+      "verification": ""
+    },
+    {
+      "name": "page_try_use_delayed_free",
+      "status": "MATCH",
+      "src_hash": "eef8bb858405f3df2f27833232429409",
+      "verus_hash": "eef8bb858405f3df2f27833232429409",
+      "src_lines": "330-333",
+      "verus_lines": "1212-1242",
+      "verification": ""
+    },
+    {
+      "name": "page_unfull",
+      "status": "MATCH",
+      "src_hash": "96c8c7e1a3fd7319d915117103df5b53",
+      "verus_hash": "96c8c7e1a3fd7319d915117103df5b53",
+      "src_lines": "313-320",
+      "verus_lines": "1055-1074",
+      "verification": ""
+    }
+  ],
+  "structs": [],
+  "summary": {
+    "functions": {
+      "matched": 12,
+      "mismatched": 1,
+      "missing_in_verus": 0,
+      "extra_in_verus": 0,
+      "total_source": 13,
+      "total_verus": 13
+    },
+    "structs": {
+      "matched": 0,
+      "mismatched": 0
+    },
+    "consistent": false
+  }
+}

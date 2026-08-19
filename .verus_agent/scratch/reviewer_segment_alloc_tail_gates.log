@@ -1,0 +1,40 @@
+### proof_state next
+proof_state: 175 reachable functions, 451 edges; 11 WIP nodes/11 trust leaves, 0 unentered, 0 unknown; 0 unmapped trust; 17 unreachable trust; topology cache rebuilt.
+  top frontier: 1; bottom frontier: 0
+wip_trust    verus-mimalloc/alloc_fast.rs:78 heap_malloc_zero_ex  [verus-mimalloc/alloc_fast.rs::heap_malloc_zero_ex@L78]
+PROOF_STATE_STATUS=0
+### boundary_guard check
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+BOUNDARY_STATUS=0
+### middle_guard spec-drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  checked 29 module(s) in one global snapshot; 0 with contract drift; 1.9s total
+middle_guard: no open goal-vocabulary or trusted-contract drift vs frozen baseline. ✅
+SPEC_DRIFT_STATUS=0
+### middle_guard ast-consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/segment.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - segment_alloc: MISMATCH
+  checked 28 exec file(s); 1 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+AST_STATUS=1
+### operator_decisions gate
+operator_decisions: gate PASS (no unresolved decisions)
+OP_DECISIONS_STATUS=0
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (16s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  11 reachable proof-node obligation(s) remain:
+    wip_trust: heap_malloc_zero_ex (verus-mimalloc/alloc_fast.rs:78)
+COMPLETION_STATUS=1
+### page_organization assume/true counts
+assume(false)=/bin/bash: line 23: rg: command not found
+0
+{ true }=/bin/bash: line 24: rg: command not found
+0

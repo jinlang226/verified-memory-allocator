@@ -1,0 +1,97 @@
+### middle_guard spec-drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/segment.rs: 1 protected contract change(s)
+       - segment_page_clear
+  checked 29 module(s) in one global snapshot; 1 with contract drift; 1.6s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.
+SPEC_DRIFT_STATUS=1
+### middle_guard ast-consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  checked 28 exec file(s); 0 with body edits
+middle_guard: exec bodies unchanged vs frozen baseline. ✅
+AST_STATUS=0
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+OP_DECISIONS_STATUS=0
+### page_free in refreshed proof_state
+168:        "caller": "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+921:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+931:        "verus-mimalloc/page.rs::page_free@L500",
+967:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+976:        "verus-mimalloc/page.rs::page_free@L500",
+1077:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+1078:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+1105:        "verus-mimalloc/page.rs::page_free@L500",
+1124:        "verus-mimalloc/segment.rs::segment_page_free@L1564",
+1177:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+1178:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+1197:        "verus-mimalloc/page.rs::page_free@L500",
+1333:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+1337:        "verus-mimalloc/page.rs::page_free@L500",
+1384:        "verus-mimalloc/page.rs::page_free@L500",
+1605:        "verus-mimalloc/page.rs::page_free@L500",
+1707:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+1708:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+1715:        "verus-mimalloc/page.rs::page_free@L500",
+1871:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+1872:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+1891:        "verus-mimalloc/page.rs::page_free@L500",
+1977:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+1978:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+1997:        "verus-mimalloc/page.rs::page_free@L500",
+2064:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+2065:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+2084:        "verus-mimalloc/page.rs::page_free@L500",
+2169:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+2170:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+2189:        "verus-mimalloc/page.rs::page_free@L500",
+2276:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+2277:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+2296:        "verus-mimalloc/page.rs::page_free@L500",
+2375:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+2380:        "verus-mimalloc/page.rs::page_free@L500",
+2460:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+2461:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+2480:        "verus-mimalloc/page.rs::page_free@L500",
+2536:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+2560:        "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99"
+2568:      "id": "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+2570:      "symbol": "page_free_collect",
+2571:      "name": "page_free_collect",
+2575:      "detail": "pub fn page_free_collect(page_ptr: PagePtr, force: bool, verus_tmp_local: Tracked<&mut Local>)",
+2587:          "symbol": "page_free_collect",
+2592:              "symbol": "page_free_collect",
+2634:      "id": "verus-mimalloc/alloc_generic.rs::page_free_list_extend@L99",
+2636:      "symbol": "page_free_list_extend",
+2637:      "name": "page_free_list_extend",
+2641:      "detail": "fn page_free_list_extend(page_ptr: PagePtr, bsize: usize, extend: usize, verus_tmp_local: Tracked<&mut Local>)",
+2653:          "symbol": "page_free_list_extend",
+2658:              "symbol": "page_free_list_extend",
+2738:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49"
+2746:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+2863:        "verus-mimalloc/page.rs::page_free@L500",
+2908:        "verus-mimalloc/page.rs::page_free@L500",
+2955:        "verus-mimalloc/page.rs::page_free@L500",
+3002:        "verus-mimalloc/page.rs::page_free@L500",
+3053:        "verus-mimalloc/page.rs::page_free@L500",
+3142:        "verus-mimalloc/page.rs::page_free@L500",
+3189:        "verus-mimalloc/page.rs::page_free@L500",
+3239:        "verus-mimalloc/page.rs::page_free@L500",
+3289:        "verus-mimalloc/page.rs::page_free@L500",
+3377:        "verus-mimalloc/page.rs::page_free@L500",
+3465:        "verus-mimalloc/page.rs::page_free@L500",
+3516:        "verus-mimalloc/page.rs::page_free@L500",
+3577:        "verus-mimalloc/page.rs::page_free@L500",
+3654:        "verus-mimalloc/page.rs::page_free@L500",
+3783:        "verus-mimalloc/page.rs::page_free@L500",
+3872:        "verus-mimalloc/page.rs::page_free@L500",
+3917:        "verus-mimalloc/page.rs::page_free@L500",
+4037:        "verus-mimalloc/page.rs::page_free@L500",
+4106:        "verus-mimalloc/page.rs::page_free@L500",
+4186:        "verus-mimalloc/page.rs::page_free@L500",
+4244:        "verus-mimalloc/page.rs::page_free@L500",
+4343:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+4371:        "verus-mimalloc/alloc_generic.rs::page_free_collect@L49",
+4375:        "verus-mimalloc/page.rs::page_free@L500",
+4422:        "verus-mimalloc/page.rs::page_free@L500",
+### page_free in current completion gate log

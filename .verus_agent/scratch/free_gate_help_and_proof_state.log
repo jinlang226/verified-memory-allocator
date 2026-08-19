@@ -1,0 +1,64 @@
+### proof_state next
+proof_state: FATAL — LSP did not prepare every frozen goal entry: expected 3, got 2
+PROOF_STATE_STATUS=2
+### boundary_guard help probe
+usage: boundary_guard [-h] [--crate-root CRATE_ROOT]
+                      [--baseline-dir BASELINE_DIR]
+                      {init,check,pin} ...
+
+Freeze and enforce the trusted boundaries of a Verus proof mission (TCB leaf-
+set + top-level spec).
+
+positional arguments:
+  {init,check,pin}
+    init                freeze the current boundaries
+    check               verify boundaries are intact
+    pin                 sanction a SPECIFIC leaf by its exact content
+                        (content-pinned; mainly for one operator-vetted
+                        assume)
+
+options:
+  -h, --help            show this help message and exit
+  --crate-root CRATE_ROOT
+                        crate root scanned for *.rs source (default: .)
+  --baseline-dir BASELINE_DIR
+                        dir holding frozen snapshots (default: .verus_agent)
+### operator_decisions help probe
+usage: operator_decisions [-h] [--project-root PROJECT_ROOT]
+                          {record-attempt,add,list,show,audit,gate,needs-evidence,migrate-legacy,certify,supersede,resolve}
+                          ...
+
+operator_decisions — a structured, machine-readable queue of operator-owned
+gates.
+
+positional arguments:
+  {record-attempt,add,list,show,audit,gate,needs-evidence,migrate-legacy,certify,supersede,resolve}
+    record-attempt      append a failed/inconclusive proof attempt
+    add                 append an operator-owned gate (engineer)
+    list                show queue
+    show                print one entry
+    audit               validate candidate packet structure
+    gate                classify invalid, candidate-review, and pending
+                        frontiers
+    needs-evidence      record Reviewer request for more evidence
+    migrate-legacy      preserve a pre-schema active entry as needs_evidence
+    certify             promote a reviewed candidate to pending_operator
+    supersede           retire a candidate after its obligations are
+                        discharged
+    resolve             set an entry's status (operator)
+
+options:
+  -h, --help            show this help message and exit
+  --project-root PROJECT_ROOT
+### completion_gate help probe
+usage: completion_gate [-h] [--crate-root CRATE_ROOT]
+                       [--baseline-dir BASELINE_DIR]
+
+Certify DONE from the source-derived reachable proof graph.
+
+options:
+  -h, --help            show this help message and exit
+  --crate-root CRATE_ROOT
+                        crate root (default: .)
+  --baseline-dir BASELINE_DIR
+                        dir holding frozen goals/TCB (default: .verus_agent)

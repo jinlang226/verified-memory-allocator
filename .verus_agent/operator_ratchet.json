@@ -1,0 +1,27 @@
+{
+  "_comment": [
+    "Operator-owned high-water marks. These counts may only shrink.",
+    "Enforced by tools/operator/audit.sh. The agent must not edit this file;",
+    "audit.sh check 3 fails on any uncommitted edit here.",
+    "",
+    "external_body_max: counts BOTH spellings, `verifier::external_body` and",
+    "  the paren form `verifier(external_body)`. The paren form (5 occurrences)",
+    "  was invisible to the audit until 2026-08-17. Frozen baseline had 313",
+    "  (308 colon + 5 paren); upstream mimalloc ships 19. Retiring these is the",
+    "  actual task, so this number is the headline progress metric.",
+    "",
+    "verus_verify_max: #[verus_verify] is INERT inside a verus!{} block. Verus",
+    "  itself warns 'likely used inside a verus! block' 230 times, and stripping",
+    "  all of them from a scratch copy left `make verify` byte-identical",
+    "  (960 verified / 1 error both ways, warnings 241 -> 12). It was only ever",
+    "  load-bearing because proof_state's _inside_verus_macro looked for a",
+    "  `macro_invocation` node while tree-sitter-verus emits `verus_block`, so",
+    "  the check was dead code and `entered` had collapsed to 'carries this",
+    "  attribute'. Fixed in verus-ai c8a2573a. The mark is set at the count",
+    "  observed when the ratchet was introduced; it must never grow, because",
+    "  adding one buys nothing and once bought the appearance of progress."
+  ],
+  "external_body_max": 72,
+  "verus_verify_max": 135,
+  "recorded_at": "2026-08-18T07:55:00-04:00"
+}

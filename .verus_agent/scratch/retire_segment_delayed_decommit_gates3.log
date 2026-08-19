@@ -1,0 +1,56 @@
+### boundary_guard
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 187, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/usr/lib/python3.10/runpy.py", line 110, in _get_module_details
+    __import__(pkg_name)
+  File "/users/jinlang/verus-ai/argus_skill/__init__.py", line 11, in <module>
+    from .core.models import (
+  File "/users/jinlang/verus-ai/argus_skill/core/models.py", line 12, in <module>
+    from .event_catalog import EventType
+  File "/users/jinlang/verus-ai/argus_skill/core/event_catalog.py", line 9, in <module>
+    from enum import StrEnum
+ImportError: cannot import name 'StrEnum' from 'enum' (/usr/lib/python3.10/enum.py)
+BOUNDARY_STATUS=1
+### spec_drift
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 187, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/usr/lib/python3.10/runpy.py", line 110, in _get_module_details
+    __import__(pkg_name)
+  File "/users/jinlang/verus-ai/argus_skill/__init__.py", line 11, in <module>
+    from .core.models import (
+  File "/users/jinlang/verus-ai/argus_skill/core/models.py", line 12, in <module>
+    from .event_catalog import EventType
+  File "/users/jinlang/verus-ai/argus_skill/core/event_catalog.py", line 9, in <module>
+    from enum import StrEnum
+ImportError: cannot import name 'StrEnum' from 'enum' (/usr/lib/python3.10/enum.py)
+SPEC_DRIFT_STATUS=1
+### ast_consistency
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 187, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/usr/lib/python3.10/runpy.py", line 110, in _get_module_details
+    __import__(pkg_name)
+  File "/users/jinlang/verus-ai/argus_skill/__init__.py", line 11, in <module>
+    from .core.models import (
+  File "/users/jinlang/verus-ai/argus_skill/core/models.py", line 12, in <module>
+    from .event_catalog import EventType
+  File "/users/jinlang/verus-ai/argus_skill/core/event_catalog.py", line 9, in <module>
+    from enum import StrEnum
+ImportError: cannot import name 'StrEnum' from 'enum' (/usr/lib/python3.10/enum.py)
+AST_STATUS=1
+### operator_decisions
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 187, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/usr/lib/python3.10/runpy.py", line 110, in _get_module_details
+    __import__(pkg_name)
+  File "/users/jinlang/verus-ai/argus_skill/__init__.py", line 11, in <module>
+    from .core.models import (
+  File "/users/jinlang/verus-ai/argus_skill/core/models.py", line 12, in <module>
+    from .event_catalog import EventType
+  File "/users/jinlang/verus-ai/argus_skill/core/event_catalog.py", line 9, in <module>
+    from enum import StrEnum
+ImportError: cannot import name 'StrEnum' from 'enum' (/usr/lib/python3.10/enum.py)
+OP_DECISIONS_STATUS=1

@@ -1,0 +1,73 @@
+### proof_state next
+proof_state: 192 reachable functions, 518 edges; 52 WIP nodes/52 trust leaves, 5 unentered, 15 unknown; 0 unmapped trust; 30 unreachable trust; topology cache hit.
+  top frontier: 8; bottom frontier: 14
+unknown      .verus_deps/builtin/src/lib.rs:494 Ghost::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Ghost::assume_new_fallback@L494]
+unknown      .verus_deps/builtin/src/lib.rs:545 Tracked::assume_new  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new@L545]
+unknown      .verus_deps/builtin/src/lib.rs:552 Tracked::assume_new_fallback  [.verus_deps/builtin/src/lib.rs::Tracked::assume_new_fallback@L552]
+unknown      .verus_deps/vstd/atomic_ghost.rs:197 new  [.verus_deps/vstd/atomic_ghost.rs::new@L197]
+unknown      .verus_deps/vstd/atomic_ghost.rs:67 new  [.verus_deps/vstd/atomic_ghost.rs::new@L67]
+unknown      .verus_deps/vstd/cell/pcell.rs:145 borrow  [.verus_deps/vstd/cell/pcell.rs::borrow@L145]
+unknown      .verus_deps/vstd/cell/pcell.rs:159 borrow_mut  [.verus_deps/vstd/cell/pcell.rs::borrow_mut@L159]
+unknown      .verus_deps/vstd/layout.rs:118 layout_for_type_is_valid  [.verus_deps/vstd/layout.rs::layout_for_type_is_valid@L118]
+unknown      .verus_deps/vstd/raw_ptr.rs:602 ptr_mut_read  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_read@L602]
+unknown      .verus_deps/vstd/raw_ptr.rs:636 ptr_mut_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_ref@L636]
+unknown      .verus_deps/vstd/raw_ptr.rs:579 ptr_mut_write  [.verus_deps/vstd/raw_ptr.rs::ptr_mut_write@L579]
+unknown      .verus_deps/vstd/raw_ptr.rs:620 ptr_ref  [.verus_deps/vstd/raw_ptr.rs::ptr_ref@L620]
+unknown      .verus_deps/vstd/raw_ptr.rs:744 with_exposed_provenance  [.verus_deps/vstd/raw_ptr.rs::with_exposed_provenance@L744]
+unentered    verus-mimalloc/os_mem.rs:12 get_page_size  [verus-mimalloc/os_mem.rs::get_page_size@L12]
+PROOF_STATE_STATUS=0
+### boundary_guard
+boundary_guard: FAIL — a frozen boundary was breached.
+FORBIDDEN trust growth (project-owned external/admit/assume scaffolds may not be ledgered or deferred):
+  [external_body] verus-mimalloc/free.rs in `live_block_implies_page_used`: +1 net-new trust leaf
+      project-owned trust scaffolds are forbidden; remove the marker and reprove.
+  [external_body] verus-mimalloc/free.rs in `page_inner_update_preserves_mem_chunk_good`: +1 net-new trust leaf
+      project-owned trust scaffolds are forbidden; remove the marker and reprove.
+BOUNDARY_STATUS=1
+### spec_drift
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/free.rs: 1 protected contract change(s)
+       - free_generic
+  ❌ verus-mimalloc/linked_list.rs: 1 protected contract change(s)
+       - LL::insert_block
+  ❌ verus-mimalloc/page.rs: 1 protected contract change(s)
+       - page_retire
+  checked 29 module(s) in one global snapshot; 3 with contract drift; 1.5s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.
+SPEC_DRIFT_STATUS=1
+### ast_consistency
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/free.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - free: MISMATCH
+  checked 28 exec file(s); 1 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+AST_STATUS=1
+### operator_decisions
+operator_decisions: gate PASS (no unresolved decisions)
+OP_DECISIONS_STATUS=0
+### completion_gate
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  2 forbidden net-new trust leaf/leaves:
+    [external_body] verus-mimalloc/free.rs in `live_block_implies_page_used`  x1
+    [external_body] verus-mimalloc/free.rs in `page_inner_update_preserves_mem_chunk_good`  x1
+  72 reachable proof-node obligation(s) remain:
+    unknown: Ghost::assume_new_fallback (.verus_deps/builtin/src/lib.rs:494)
+    unknown: Tracked::assume_new (.verus_deps/builtin/src/lib.rs:545)
+    unknown: Tracked::assume_new_fallback (.verus_deps/builtin/src/lib.rs:552)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:197)
+    unknown: new (.verus_deps/vstd/atomic_ghost.rs:67)
+    unknown: borrow (.verus_deps/vstd/cell/pcell.rs:145)
+    unknown: borrow_mut (.verus_deps/vstd/cell/pcell.rs:159)
+    unknown: layout_for_type_is_valid (.verus_deps/vstd/layout.rs:118)
+    unknown: ptr_mut_read (.verus_deps/vstd/raw_ptr.rs:602)
+    unknown: ptr_mut_ref (.verus_deps/vstd/raw_ptr.rs:636)
+    unknown: ptr_mut_write (.verus_deps/vstd/raw_ptr.rs:579)
+    unknown: ptr_ref (.verus_deps/vstd/raw_ptr.rs:620)
+    unknown: with_exposed_provenance (.verus_deps/vstd/raw_ptr.rs:744)
+    unentered: get_page_size (verus-mimalloc/os_mem.rs:12)
+COMPLETION_STATUS=1
+### page_organization assume(false)
+0
+ASSUME_GREP_STATUS=1

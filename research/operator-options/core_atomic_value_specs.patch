@@ -1,0 +1,97 @@
+--- a/.verus_deps/vstd/std_specs/atomic.rs
++++ b/.verus_deps/vstd/std_specs/atomic.rs
+@@ -5,6 +5,32 @@ use core::sync::atomic::*;
+ // Supports the core::sync::atomic functions
+ // This provides NO support for reasoning about the values inside the atomics.
+ // If you need to do that, see `vstd::atomic` or `vstd::atomic_ghost` instead.
++//
++// OPERATOR-DECISION OPTION: replace the no-value raw-core-atomic boundary with
++// an operator-sanctioned value model for the subset used by verus-mimalloc's
++// static AtomicUsize wrappers. This is new external-dependency trust and must
++// not be applied by the proof engineer without operator approval.
++verus! {
++    pub uninterp spec fn atomic_usize_value(atomic: &AtomicUsize) -> usize;
++}
+ #[verifier::external_type_specification]
+ #[verifier::external_body]
+ #[verifier::reject_recursive_types(T)]
+ pub struct ExAtomic<T: AtomicPrimitive>(Atomic<T>);
+@@ -28,7 +54,15 @@ macro_rules! atomic_specs_common {
+         pub assume_specification [ <$at>::compare_exchange ](
+             atomic: &$at,
+             current: $ty,
+             new: $ty,
+             success: Ordering,
+             failure: Ordering,
+-        ) -> Result<$ty, $ty>;
++        ) -> (res: Result<$ty, $ty>)
++            ensures
++                if old(atomic_usize_value(atomic)) == current {
++                    res == Ok(current) && atomic_usize_value(atomic) == new
++                } else {
++                    res == Err(old(atomic_usize_value(atomic)))
++                        && atomic_usize_value(atomic) == old(atomic_usize_value(atomic))
++                };
+@@ -52,7 +86,9 @@ macro_rules! atomic_specs_common {
+-        pub assume_specification [ <$at>::load ](atomic: &$at, order: Ordering) -> $ty;
++        pub assume_specification [ <$at>::load ](atomic: &$at, order: Ordering) -> (res: $ty)
++            ensures
++                res == atomic_usize_value(atomic);
+@@ -66,7 +102,10 @@ macro_rules! atomic_specs_int_specific {
+-        pub assume_specification [ <$at>::fetch_add ](atomic: &$at, val: $ty, order: Ordering) -> $ty;
++        pub assume_specification [ <$at>::fetch_add ](atomic: &$at, val: $ty, order: Ordering) -> (res: $ty)
++            ensures
++                res == old(atomic_usize_value(atomic)),
++                atomic_usize_value(atomic) == old(atomic_usize_value(atomic)).wrapping_add(val);
+ 
+--- a/verus-mimalloc/init.rs
++++ b/verus-mimalloc/init.rs
+@@ -1030,14 +1030,17 @@ exec static THREAD_COUNT: core::sync::atomic::AtomicUsize = core::sync::atomic::
+ //  { core::sync::atomic::AtomicUsize::new(0) }
+ 
+ #[inline]
+-#[verifier::external_body]
+ fn increment_thread_count()
++    ensures vstd::std_specs::atomic::atomic_usize_value(&THREAD_COUNT)
++        == old(vstd::std_specs::atomic::atomic_usize_value(&THREAD_COUNT)).wrapping_add(1),
+ {
+     THREAD_COUNT.fetch_add(1, core::sync::atomic::Ordering::Relaxed);
+ }
+ 
+ #[inline]
+-#[verifier::external_body]
+-pub fn current_thread_count() -> usize
++pub fn current_thread_count() -> (res: usize)
++    ensures res == vstd::std_specs::atomic::atomic_usize_value(&THREAD_COUNT),
+ {
+     THREAD_COUNT.load(core::sync::atomic::Ordering::Relaxed)
+ }
+
+--- a/verus-mimalloc/os_alloc.rs
++++ b/verus-mimalloc/os_alloc.rs
+@@ -173,15 +173,22 @@ exec static ALIGNED_BASE: core::sync::atomic::AtomicUsize = core::sync::atomic::
+ exec static ALIGNED_BASE: core::sync::atomic::AtomicUsize = core::sync::atomic::AtomicUsize::new(0);
+ 
+ #[inline]
+-#[verifier::external_body]
+-fn aligned_base_add(s: usize) -> usize
++fn aligned_base_add(s: usize) -> (res: usize)
++    ensures
++        res == old(vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE)),
++        vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE)
++            == old(vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE)).wrapping_add(s),
+ {
+     ALIGNED_BASE.fetch_add(s, core::sync::atomic::Ordering::AcqRel)
+ }
+ 
+ #[inline]
+-#[verifier::external_body]
+ fn aligned_base_cas(s: usize, t: usize)
++    ensures
++        old(vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE)) == s
++            ==> vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE) == t,
++        old(vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE)) != s
++            ==> vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE) == old(vstd::std_specs::atomic::atomic_usize_value(&ALIGNED_BASE)),
+ {
+     let _ = ALIGNED_BASE.compare_exchange(s, t, core::sync::atomic::Ordering::AcqRel, core::sync::atomic::Ordering::Acquire);
+ }

@@ -1,0 +1,9 @@
+--- source:struct_LLData
++++ verus:struct_LLData
+@@ -6,4 +6,6 @@
+ 
+     ghost instance: Mim::Instance,
+     ghost len: nat,
++    ghost block_ids: Set<BlockId>,
++    ghost idx_bound: nat,
+ }

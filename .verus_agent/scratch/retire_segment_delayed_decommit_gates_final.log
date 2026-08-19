@@ -1,0 +1,28 @@
+=== boundary_guard ===
+boundary_guard: FAIL — a frozen boundary was breached.
+VACUOUS trust retirement (an admit was removed without any postcondition taking its place):
+  [vacuous retire] verus-mimalloc/commit_segment.rs: `segment_delayed_decommit` dropped its trust marker but declares no `ensures`
+      the admit count fell without any obligation replacing it; restore the postcondition and prove it.
+=== middle_guard spec-drift ===
+middle_guard spec-drift: baseline 05a630568841 -> working tree (goal-scoped: 4 goal fn(s) + reachable vocabulary)
+  ❌ verus-mimalloc/commit_mask.rs: 6 protected contract change(s)
+       - CommitMask::bytes
+       - CommitMask::lemma_bytes_contains
+       - CommitMask::lemma_bytes_disjoint
+       - CommitMask::lemma_bytes_range
+       - CommitMask::lemma_bytes_subset
+       - CommitMask::lemma_view_subset_from_bytes_subset
+  ❌ verus-mimalloc/os_commit.rs: 1 protected contract change(s)
+       - os_decommit
+  checked 29 module(s) in one global snapshot; 2 with contract drift; 1.7s total
+middle_guard: SPEC DRIFT — an open goal-vocabulary definition, reachable signature, or persistent trusted contract moved since the frozen baseline.
+=== middle_guard ast-consistency ===
+middle_guard ast-consistency: baseline 05a630568841 -> working tree
+  ❌ verus-mimalloc/commit_segment.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - segment_commitx: MISMATCH
+  ❌ verus-mimalloc/os_commit.rs: exec body changed (mismatched=1 missing=0 extra=0)
+       - os_decommit: MISMATCH
+  checked 28 exec file(s); 2 with body edits
+middle_guard: AST INCONSISTENCY — executable code was silently edited while adding specs. This is a middle-layer cheat.
+=== operator_decisions ===
+operator_decisions: gate PASS (no unresolved decisions)

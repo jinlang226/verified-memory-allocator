@@ -1,0 +1,15 @@
+### proof_state next
+proof_state: not available
+### boundary_guard
+boundary_guard: not available
+### spec_drift
+middle_guard: not available
+### ast_consistency
+middle_guard: not available
+### operator_decisions
+operator_decisions: not available
+### completion_gate
+completion_gate: not available
+### page_organization assume(false)
+0
+ASSUME_GREP_STATUS=1

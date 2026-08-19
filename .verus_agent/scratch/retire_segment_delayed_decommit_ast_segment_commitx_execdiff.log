@@ -1,0 +1,75 @@
+## segment_commitx (exec-only): MISMATCH
+
+--- source
++++ verus
+@@ -5,10 +5,13 @@
+     size: usize,
+     Tracked(local): Tracked<&mut Local>,
+ ) -> (success: bool)
++    
+ {
+-    let ghost sid = segment.segment_id@;
++    
++    
+ 
+     let mut mask: CommitMask = CommitMask::empty();
++    
+     let (start, full_size) = segment_commit_mask(
+         segment.segment_ptr as *mut u8, !commit, p, size, &mut mask);
+ 
+@@ -16,12 +19,15 @@
+         return true;
+     }
+ 
++    
++
+     if commit && !segment.get_commit_mask(Tracked(&*local)).all_set(&mask) {
+ 
+         let mut is_zero = false;
+         let mut cmask = CommitMask::empty();
+         segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
+ 
++        
+         let success;
+         segment_get_mut_local!(segment, local, l => {
+             let (_success, _is_zero) =
+@@ -39,15 +45,26 @@
+     else if !commit && segment.get_commit_mask(Tracked(&*local)).any_set(&mask) {
+         let mut cmask = CommitMask::empty();
+         segment.get_commit_mask(Tracked(&*local)).create_intersect(&mask, &mut cmask);
++        
+         if segment.get_allow_decommit(Tracked(&*local)) {
++            
+             segment_get_mut_local!(segment, local, l => {
+                 crate::os_commit::os_decommit(start, full_size, Tracked(&mut l.mem));
+             });
++            
++        } else {
++            
+         }
++        
++        
++        
+         segment_get_mut_main!(segment, local, main => {
+             main.commit_mask.clear(&mask);
+         });
++        
+     }
++
++    
+ 
+     if commit && segment.get_main_ref(Tracked(&*local)).decommit_mask.any_set(&mask) {
+         segment_get_mut_main!(segment, local, main => {
+@@ -55,10 +72,12 @@
+         });
+     }
+ 
++    
+     segment_get_mut_main!(segment, local, main => {
+         main.decommit_mask.clear(&mask);
+     });
+ 
++    
+ 
+     return true;
+ }

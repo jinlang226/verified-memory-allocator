@@ -1,0 +1,17 @@
+5ca4a3cc3232ea9c706a6bd9deefee5e054180317e322f7a054cc4d9722af81e  ./argus-file-manifest.tsv.zst
+4a2012cddc83d1d9285eac38cbdc2f4c8794dce0b0898c27f739fc1f114234ae  ./argus-project-37bc66d4d753.tar.zst.00.part
+e9bbb0131ce54a4dc6a448c0dc55d720da3cb32349efa3654097c5b5b01bafd0  ./argus-project-37bc66d4d753.tar.zst.01.part
+6d67a7f1875f2cf8877d9493f4dd99e83739cbe3475215268d4372cb546d00c2  ./argus-project-37bc66d4d753.tar.zst.02.part
+dbc9cd5d6c3647e3b7f0be29ef2a6cecd480273e1d04a3cd397e13a749ed429e  ./argus-project-37bc66d4d753.tar.zst.03.part
+d40b8a6e9e6f6ec312e19183b06f88f09b85b202d4f24b31959cb6e1a5de60a0  ./argus-project-37bc66d4d753.tar.zst.04.part
+483d8f847b6fdd679f56fa57cea89c1c9bd716c30e8288bd22a531c263ad1990  ./argus-project-37bc66d4d753.tar.zst.05.part
+318e702d146130f130b8204064ef23d9296e8fcd3df3f5bbf0e199f336b048e3  ./argus-project-37bc66d4d753.tar.zst.06.part
+a07bc6c474e1adb8e6286558e98234a09cef0fef4b0c909db3f3d1a5ca56f4af  ./ORIGINAL_SHA256SUMS
+0cdcd061b4bdc1309e463d5df4f0c59728c535093ea3eaf3887d9834cc298d61  ./README.txt
+f54b76c91fd70cc32cabae2868f9c0790a431f6dc6c97ddd4a0491f0460cac26  ./SNAPSHOT_METADATA.tsv
+64ab455ed4c265e4ffcca18517d55bcee8835529e132a1dcb5e43c366a014cbe  ./verification-process.tar.zst
+9981ef883aecb381938c588a05a1a0c97b464e1aae718a6e1538d3efdcaabf03  ./verified-memory-allocator-status.txt.zst
+31ba5932d5af5fd57982f277b3bcc46c2263b97c08a52a670d52b9d022ab12c1  ./verified-memory-allocator-working-tree.patch.zst
+3d063f9decf49aa28b023ecf9a220d75fc941c74d1e3471776b7ce779d37d600  ./verus-ai-source.tar.zst.00.part
+3d188364bc2dfebbbc5bd347dd7ff836a5a611c7e1cbbb68aa4bfbec427ef05b  ./verus-ai-source.tar.zst.01.part
+24c9c87332812811927fc76b09910687fbe29e74fd5baa0d731d4365102bd108  ./verus-ai-working-tree.patch.zst

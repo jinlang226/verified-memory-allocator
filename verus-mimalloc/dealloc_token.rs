@@ -70,14 +70,75 @@ impl MimDeallocInner {
 
 }
 
+#[verifier::rlimit(200)]
+proof fn lemma_join_user_padding_range(start: int, user_size: int, block_size: int)
+    requires
+        0 <= user_size,
+        user_size <= block_size,
+    ensures
+        set_int_range(start, start + user_size) + set_int_range(start + user_size, start + block_size)
+            =~= set_int_range(start, start + block_size),
+{
+    vstd::set_lib::lemma_int_range(start, start + user_size);
+    vstd::set_lib::lemma_int_range(start + user_size, start + block_size);
+    vstd::set_lib::lemma_int_range(start, start + block_size);
+
+    assert forall |addr: int|
+        #[trigger] (set_int_range(start, start + user_size)
+            + set_int_range(start + user_size, start + block_size)).contains(addr)
+    implies
+        set_int_range(start, start + block_size).contains(addr)
+    by {
+        if set_int_range(start, start + user_size).contains(addr) {
+            assert(start <= addr < start + user_size);
+            assert(addr < start + block_size) by(nonlinear_arith)
+                requires
+                    addr < start + user_size,
+                    user_size <= block_size;
+        } else {
+            assert(set_int_range(start + user_size, start + block_size).contains(addr));
+            assert(start + user_size <= addr < start + block_size);
+            assert(start <= addr) by(nonlinear_arith)
+                requires
+                    0 <= user_size,
+                    start + user_size <= addr;
+        }
+    };
+
+    assert forall |addr: int|
+        #[trigger] set_int_range(start, start + block_size).contains(addr)
+    implies
+        (set_int_range(start, start + user_size)
+            + set_int_range(start + user_size, start + block_size)).contains(addr)
+    by {
+        assert(start <= addr < start + block_size);
+        if addr < start + user_size {
+            assert(set_int_range(start, start + user_size).contains(addr));
+        } else {
+            assert(start + user_size <= addr) by(nonlinear_arith)
+                requires
+                    !(addr < start + user_size);
+            assert(set_int_range(start + user_size, start + block_size).contains(addr));
+        }
+    };
+}
+
 impl MimDealloc {
-    pub uninterp spec fn block_id(&self) -> BlockId;
+    pub closed spec fn block_id(&self) -> BlockId {
+        self.inner.block_id()
+    }
 
-    pub uninterp spec fn ptr(&self) -> *mut u8;
+    pub closed spec fn ptr(&self) -> *mut u8 {
+        self.inner.ptr
+    }
 
-    pub uninterp spec fn inst(&self) -> Mim::Instance;
+    pub closed spec fn inst(&self) -> Mim::Instance {
+        self.inner.mim_instance
+    }
 
-    pub uninterp spec fn size(&self) -> int;
+    pub closed spec fn size(&self) -> int {
+        self._size
+    }
 
     #[verifier::type_invariant]
     spec fn wf(&self) -> bool {
@@ -90,11 +151,84 @@ impl MimDealloc {
           && self.padding.provenance() == self.inner.ptr@.provenance
     }
 
-    #[verifier::external_body]
+
+
+    pub(crate) proof fn new(
+        tracked padding: PointsToRaw,
+        size: int,
+        tracked inner: MimDeallocInner,
+    ) -> (tracked dealloc: MimDealloc)
+        requires
+            inner.wf(),
+            0 <= size,
+            size <= inner.block_id().block_size,
+            padding.is_range(inner.ptr as int + size, inner.block_id().block_size as int - size),
+            padding.provenance() == inner.ptr@.provenance,
+        ensures
+            dealloc.ptr() == inner.ptr,
+            dealloc.inst() == inner.mim_instance,
+            dealloc.size() == size,
+    {
+        reveal(MimDealloc::wf);
+        reveal(MimDealloc::ptr);
+        reveal(MimDealloc::inst);
+        reveal(MimDealloc::size);
+        reveal(MimDealloc::block_id);
+        let tracked dealloc = MimDealloc {
+            padding,
+            _size: size,
+            inner,
+        };
+        assert(dealloc.wf());
+        assert(dealloc.ptr() == inner.ptr);
+        assert(dealloc.inst() == inner.mim_instance);
+        assert(dealloc.size() == size);
+        dealloc
+    }
+
+
+
     pub(crate) proof fn into_internal(tracked self, tracked points_to_raw: PointsToRaw)
         -> (tracked res: (MimDeallocInner, PointsToRaw))
+        requires
+            points_to_raw.is_range(self.ptr() as int, self.size()),
+            points_to_raw.provenance() == self.ptr()@.provenance,
+        ensures
+            res.0 == self.inner,
+            res.0.wf(),
+            res.0.ptr == self.ptr(),
+            res.0.mim_instance == self.inst(),
+            res.1.is_range(res.0.ptr as int, res.0.block_id().block_size as int),
+            res.1.provenance() == res.0.ptr@.provenance,
     {
-        unimplemented!();
+        use_type_invariant(&self);
+        reveal(MimDealloc::wf);
+        reveal(MimDealloc::ptr);
+        reveal(MimDealloc::size);
+        reveal(MimDealloc::block_id);
+        reveal(MimDealloc::inst);
+
+        assert(self.wf());
+        assert(self.inner.wf());
+        assert(0 <= self._size);
+        assert(self._size <= self.block_id().block_size);
+        assert(self.padding.provenance() == self.inner.ptr@.provenance);
+
+        let tracked MimDealloc { padding, _size, inner } = self;
+        let ghost start = inner.ptr as int;
+        let ghost block_size = inner.block_id().block_size as int;
+
+        assert(0 <= _size);
+        assert(_size <= block_size);
+        assert(points_to_raw.provenance() == padding.provenance());
+        assert(points_to_raw.dom() =~= set_int_range(start, start + _size));
+        assert(padding.dom() =~= set_int_range(start + _size, start + block_size));
+
+        lemma_join_user_padding_range(start, _size, block_size);
+        let tracked raw = points_to_raw.join(padding);
+        assert(raw.dom() =~= set_int_range(start, start + block_size));
+
+        (inner, raw)
     }
 }
 

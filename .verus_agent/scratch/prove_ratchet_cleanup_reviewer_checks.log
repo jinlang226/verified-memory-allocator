@@ -1,0 +1,14 @@
+2026-08-19T02:10:32-04:00
+direct verus_verify count=135
+
+free_generic header context:
+269-}
+270-
+271-verus!{
+272:fn free_generic(segment: *mut SegmentHeader, page: PagePtr, is_local: bool, p: *mut u8, Tracked(perm): Tracked<PointsToRaw>, Tracked(dealloc): Tracked<MimDeallocInner>, Tracked(local): Tracked<&mut Local>)
+273-    requires
+274-        old(local).wf(),
+275-        dealloc.wf(),
+
+operator_decisions gate:
+operator_decisions: gate PASS (no unresolved decisions)

@@ -1,0 +1,23 @@
+diff --git a/verus-mimalloc/types.rs b/verus-mimalloc/types.rs
+--- a/verus-mimalloc/types.rs
++++ b/verus-mimalloc/types.rs
+@@ -3329,14 +3329,18 @@
+ #[verus::trusted]
+ #[cfg(feature = "override_system_allocator")]
+ #[verifier::external_body]
+ pub fn todo()
++    ensures
++        false,
+ {
+     std::process::abort();
+ }
+ 
+ #[verus::trusted]
+ #[cfg(not(feature = "override_system_allocator"))]
+ #[verifier::external_body]
+ pub fn todo()
++    ensures
++        false,
+ {
+     panic!("todo");
+ }

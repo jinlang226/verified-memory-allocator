@@ -1,0 +1,28 @@
+Project dir: /users/jinlang/verified-memory-allocator-test
+Entries: ['verus-mimalloc/init.rs:heap_init', 'verus-mimalloc/alloc_fast.rs:heap_malloc', 'verus-mimalloc/free.rs:free']
+  seed: verus-mimalloc/init.rs:heap_init -> /users/jinlang/verified-memory-allocator-test/verus-mimalloc/init.rs:114:8
+  seed: verus-mimalloc/alloc_fast.rs:heap_malloc -> /users/jinlang/verified-memory-allocator-test/verus-mimalloc/alloc_fast.rs:31:8
+  seed: verus-mimalloc/free.rs:free -> /users/jinlang/verified-memory-allocator-test/verus-mimalloc/free.rs:111:8
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+  WARN: prepareCallHierarchy returned none for /users/jinlang/verified-memory-allocator-test/verus-mimalloc/free.rs:111:8
+  processed 10 fns, queue=9, files=10
+  processed 20 fns, queue=4, files=10
+  processed 30 fns, queue=8, files=13
+  processed 40 fns, queue=9, files=14
+  processed 50 fns, queue=8, files=16
+  processed 60 fns, queue=15, files=16
+  processed 70 fns, queue=10, files=18
+  processed 80 fns, queue=10, files=18
+  processed 90 fns, queue=9, files=18
+  processed 100 fns, queue=7, files=19
+  processed 110 fns, queue=12, files=19
+  processed 120 fns, queue=10, files=20
+  processed 130 fns, queue=22, files=22
+  processed 140 fns, queue=25, files=24
+  processed 150 fns, queue=17, files=24
+  processed 160 fns, queue=11, files=25
+  processed 170 fns, queue=2, files=25
+  processed 180 fns, queue=1, files=25
+
+Traversal complete: 189 fns, 25 files.

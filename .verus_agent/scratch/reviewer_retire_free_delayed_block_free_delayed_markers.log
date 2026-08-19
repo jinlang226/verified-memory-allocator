@@ -1,0 +1,15 @@
+939-#[verifier::spinoff_prover]
+940-#[verifier::rlimit(200)]
+941-#[verus_verify]
+942:pub fn free_delayed_block(ptr: *mut u8,
+943-    Tracked(perm): Tracked<PointsToRaw>,
+944-    Tracked(dealloc): Tracked<MimDeallocInner>,
+945-    Tracked(local): Tracked<&mut Local>,
+946-) -> (res: (bool, Tracked<Option<PointsToRaw>>, Tracked<Option<MimDeallocInner>>))
+947-    requires
+948-        old(local).wf(),
+949-        dealloc.wf(),
+950-        dealloc.mim_instance == old(local).inst(),
+
+proof_state mentions: 24
+completion mentions: 0

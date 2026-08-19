@@ -1,0 +1,12 @@
+### boundary_guard
+/bin/bash: line 3: boundary_guard: command not found
+BOUNDARY_STATUS=127
+### spec_drift
+/bin/bash: line 4: middle_guard: command not found
+SPEC_DRIFT_STATUS=127
+### ast_consistency
+/bin/bash: line 5: middle_guard: command not found
+AST_STATUS=127
+### operator_decisions
+/bin/bash: line 6: operator_decisions: command not found
+OP_DECISIONS_STATUS=127

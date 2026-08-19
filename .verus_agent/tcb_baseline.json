@@ -1,0 +1,2158 @@
+{
+  "src_roots": [
+    "verus-mimalloc"
+  ],
+  "marker_scope": "proof_state",
+  "resolver_mode": "tree-sitter",
+  "records": [
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_calloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_cfree",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_free",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_malloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_memalign",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_pvalloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_realloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__libc_valloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "__posix_memalign",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "_aligned_malloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "aligned_alloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "calloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "cfree",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "free",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "get_default_heap",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "malloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "malloc_good_size",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "malloc_size",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "malloc_usable_size",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "memalign",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "posix_memalign",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "pvalloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "realloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "reallocarr",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "reallocarray",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "reallocf",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "thread_id_helper",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "valloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "verus_mi_free",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "verus_mi_heap_malloc",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "verus_mi_thread_init_default_heap",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "vfree",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "_mmap_prot_none",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "_mmap_prot_read_write",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "_mprotect_prot_none",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "_mprotect_prot_read_write",
+      "line": "#[verifier::external]",
+      "count": 1
+    },
+    {
+      "marker": "external",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "impl IsThread",
+      "line": "#[verifier(external)]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "symbol": "heap_get_free_small_page",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "symbol": "heap_malloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "symbol": "heap_malloc_small_zero",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "symbol": "heap_malloc_zero",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "symbol": "heap_malloc_zero_ex",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_fast.rs",
+      "symbol": "page_malloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_generic.rs",
+      "symbol": "heap_delayed_free_partial",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_generic.rs",
+      "symbol": "malloc_generic",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_generic.rs",
+      "symbol": "page_extend_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_generic.rs",
+      "symbol": "page_free_collect",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_generic.rs",
+      "symbol": "page_free_list_extend",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/alloc_generic.rs",
+      "symbol": "page_thread_free_collect",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/arena.rs",
+      "symbol": "arena_alloc_aligned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/bin_sizes.rs",
+      "symbol": "bin",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/bin_sizes.rs",
+      "symbol": "slice_bin",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/bin_sizes.rs",
+      "symbol": "valid_sbin_idx_smallest_sbin_fitting_size",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::all_set",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::any_set",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::clear",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::committed_size",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::create",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::create_empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::create_full",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::create_intersect",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::is_empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::is_full",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::next_run",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::set",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_segment.rs",
+      "symbol": "clock_now",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_segment.rs",
+      "symbol": "segment_commit_mask",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_segment.rs",
+      "symbol": "segment_commitx",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_segment.rs",
+      "symbol": "segment_delayed_decommit",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_segment.rs",
+      "symbol": "segment_ensure_committed",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/commit_segment.rs",
+      "symbol": "segment_perhaps_decommit",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/config.rs",
+      "symbol": "option_allow_decommit",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/config.rs",
+      "symbol": "option_decommit_delay",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/config.rs",
+      "symbol": "option_decommit_extend_delay",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/config.rs",
+      "symbol": "option_eager_commit",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/config.rs",
+      "symbol": "option_eager_commit_delay",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/config.rs",
+      "symbol": "option_page_reset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/dealloc_token.rs",
+      "symbol": "MimDealloc::into_internal",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::get_has_aligned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::get_in_full",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::get_is_committed",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::get_is_reset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::get_is_zero",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::get_is_zero_init",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::get_retire_expire",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::not_full_nor_aligned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::set_has_aligned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::set_in_full",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::set_is_committed",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::set_is_reset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::set_is_zero_init",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "PageInner::set_retire_expire",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/free.rs",
+      "symbol": "free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/free.rs",
+      "symbol": "free_block",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/free.rs",
+      "symbol": "free_block_mt",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/free.rs",
+      "symbol": "free_delayed_block",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/free.rs",
+      "symbol": "free_generic",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "PageQueue::empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "current_thread_count",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "global_init",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "heap_init",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "increment_thread_count",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "init_empty_page_ptr",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "pages_free_direct_tmp",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "pages_tmp",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "span_queue_headers_tmp",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "thread_data_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "SegmentPtr::ptr_segment",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "align_down",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "align_up",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "calculate_page_block_at",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "calculate_page_ptr_subtract_offset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "calculate_page_start",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "calculate_segment_ptr_from_block",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "calculate_slice_page_ptr_from_block",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "calculate_start_offset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "segment_page_start_from_slice",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "big_test",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "count_size_overflow",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/lib.rs",
+      "symbol": "main",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::append",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::block_write_ptr",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::insert_block",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::is_empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::make_empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::new",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::pop_block",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::prepend_contiguous_blocks",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::reconvene_state",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::set_ghost_data",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "Node::clone",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLSimple::atomic_insert_block",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLSimple::empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLSimple::take",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLWithDelayBits::check_is_good",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLWithDelayBits::disable",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLWithDelayBits::empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLWithDelayBits::enable",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLWithDelayBits::take",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "ThreadLLWithDelayBits::try_use_delayed_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "atomic_yield",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "masked_ptr_delay_get_delay",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "masked_ptr_delay_get_is_use_delayed",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "masked_ptr_delay_get_ptr",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "masked_ptr_delay_set_delay",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "masked_ptr_delay_set_freeing",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "masked_ptr_delay_set_ptr",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "aligned_base_add",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "aligned_base_cas",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "os_alloc_aligned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "os_alloc_aligned_offset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "os_get_aligned_hint",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "os_good_alloc_size",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "os_mem_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "os_mem_alloc_aligned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "unix_mmap",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "unix_mmapx",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_alloc.rs",
+      "symbol": "use_large_os_page",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_commit.rs",
+      "symbol": "os_commit",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_commit.rs",
+      "symbol": "os_commitx",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_commit.rs",
+      "symbol": "os_decommit",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_commit.rs",
+      "symbol": "os_page_align_areax",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "OsMem",
+      "line": "#[verifier(external_body)]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "clock_gettime_monotonic",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "mmap_prot_none",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "mmap_prot_read_write",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "mprotect_prot_none",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "mprotect_prot_read_write",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem_util.rs",
+      "symbol": "MemChunk::empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem_util.rs",
+      "symbol": "MemChunk::split",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem_util.rs",
+      "symbol": "MemChunk::take_points_to_range",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/os_mem_util.rs",
+      "symbol": "MemChunk::take_points_to_set",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "find_free_page",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "find_page",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_fresh",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_fresh_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_init",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_queue_enqueue_from",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_queue_find_free_ex",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_queue_of",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_retire",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_to_full",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_try_use_delayed_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/page.rs",
+      "symbol": "page_unfull",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/queues.rs",
+      "symbol": "heap_queue_first_update",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/queues.rs",
+      "symbol": "page_queue_push",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/queues.rs",
+      "symbol": "page_queue_push_back",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/queues.rs",
+      "symbol": "page_queue_remove",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_calculate_slices",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_os_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_os_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_page_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_page_clear",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_page_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_reclaim_or_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_slice_split",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_span_allocate",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_span_free",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_span_free_coalesce",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segment_span_free_coalesce_before",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segments_page_alloc",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "segments_page_find_and_allocate",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/segment.rs",
+      "symbol": "span_queue_delete",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "IsThread",
+      "line": "#[verifier(external_body)]",
+      "count": 2
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "IsThread::agrees",
+      "line": "#[verifier(external_body)]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "IsThread::nonzero",
+      "line": "#[verifier(external_body)]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "ghost_thread_id",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "thread_id",
+      "line": "#[verifier::external_body]",
+      "count": 2
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "AtomicHeapPtr::disable",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "AtomicHeapPtr::empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::clone",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_arena_id",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_page_count",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_page_empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_page_retired_max",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_page_retired_min",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_pages",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_pages_free_direct",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::get_ref",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::set_page_count",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::set_page_retired_max",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "HeapPtr::set_page_retired_min",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "Local::take_checked_token",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "Local::take_thread_token",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::add_offset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::add_offset_and_check",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::clone",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_block_size",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_count",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_heap",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_index",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_inner_ref",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_inner_ref_maybe_empty",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_next",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_prev",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::get_ref",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::is_gt_0th_slice",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::is_null",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::null",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::slice_start",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PagePtr::sub_offset",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "PageQueue::clone",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::clone",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_abandoned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_allow_decommit",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_commit_mask",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_decommit_expire",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_decommit_mask",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_main2_ref",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_main_ref",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_mem_is_pinned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_page_after_end",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_page_header_ptr",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_ref",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_segment_kind",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::get_used",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::is_abandoned",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::is_kind_huge",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::is_null",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SegmentPtr::null",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "SpanQueueHeader::clone",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "TldPtr::clone",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "TldPtr::get_mut",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "TldPtr::get_ref",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "TldPtr::get_segments_count",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "print_hex",
+      "line": "#[verifier::external_body]",
+      "count": 1
+    },
+    {
+      "marker": "external_body",
+      "file": "verus-mimalloc/types.rs",
+      "symbol": "todo",
+      "line": "#[verifier::external_body]",
+      "count": 2
+    },
+    {
+      "marker": "external_fn_specification",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "ex_yield_now",
+      "line": "#[verifier::external_fn_specification]",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/bin_sizes.rs",
+      "symbol": "size_of_sbin",
+      "line": "pub uninterp spec fn size_of_sbin(sbin_idx: int) -> nat;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/commit_mask.rs",
+      "symbol": "CommitMask::view",
+      "line": "pub uninterp spec fn view(&self) -> Set<int>;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/dealloc_token.rs",
+      "symbol": "MimDealloc::block_id",
+      "line": "pub uninterp spec fn block_id(&self) -> BlockId;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/dealloc_token.rs",
+      "symbol": "MimDealloc::inst",
+      "line": "pub uninterp spec fn inst(&self) -> Mim::Instance;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/dealloc_token.rs",
+      "symbol": "MimDealloc::ptr",
+      "line": "pub uninterp spec fn ptr(&self) -> *mut u8;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/dealloc_token.rs",
+      "symbol": "MimDealloc::size",
+      "line": "pub uninterp spec fn size(&self) -> int;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "flags0_is_committed",
+      "line": "pub uninterp spec fn flags0_is_committed(u: u8) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "flags0_is_reset",
+      "line": "pub uninterp spec fn flags0_is_reset(u: u8) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "flags0_is_zero_init",
+      "line": "pub uninterp spec fn flags0_is_zero_init(u: u8) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "flags1_has_aligned",
+      "line": "pub uninterp spec fn flags1_has_aligned(u: u8) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "flags1_in_full",
+      "line": "pub uninterp spec fn flags1_in_full(u: u8) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "flags2_is_zero",
+      "line": "pub uninterp spec fn flags2_is_zero(u: u8) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/flags.rs",
+      "symbol": "flags2_retire_expire",
+      "line": "pub uninterp spec fn flags2_retire_expire(u: u8) -> int;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "EmptyPageStuff::wf",
+      "line": "pub uninterp spec fn wf(&self) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/init.rs",
+      "symbol": "Global::wf",
+      "line": "pub(crate) uninterp spec fn wf(&self) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "block_start",
+      "line": "pub uninterp spec fn block_start(block_id: BlockId) -> int;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "segment_start",
+      "line": "pub uninterp spec fn segment_start(segment_id: SegmentId) -> int;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/layout.rs",
+      "symbol": "start_offset",
+      "line": "pub uninterp spec fn start_offset(block_size: int) -> int;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::block_size",
+      "line": "pub uninterp spec fn block_size(&self) -> nat;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::fixed_page",
+      "line": "pub uninterp spec fn fixed_page(&self) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::heap_id",
+      "line": "pub uninterp spec fn heap_id(&self) -> Option<HeapId>;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::instance",
+      "line": "pub uninterp spec fn instance(&self) -> Mim::Instance;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::len",
+      "line": "pub uninterp spec fn len(&self) -> nat;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::next_ptr",
+      "line": "pub uninterp spec fn next_ptr(&self, i: nat) -> *mut Node;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::page_id",
+      "line": "pub uninterp spec fn page_id(&self) -> PageId;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::ptr",
+      "line": "pub uninterp spec fn ptr(&self) -> *mut Node;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::valid_node",
+      "line": "pub uninterp spec fn valid_node(&self, i: nat, next_ptr: *mut Node) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "LL::wf",
+      "line": "pub uninterp spec fn wf(&self) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "has_idx",
+      "line": "pub uninterp spec fn has_idx(map: Map<nat, (PointsToRaw, Mim::block)>, i: nat) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/linked_list.rs",
+      "symbol": "llgstr_wf",
+      "line": "pub uninterp spec fn llgstr_wf(llgstr: LLGhostStateToReconvene) -> bool;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/os_mem.rs",
+      "symbol": "OsMem::view",
+      "line": "pub uninterp spec fn view(self) -> OsMemData;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/os_mem_util.rs",
+      "symbol": "Local::segment_pages_range_total",
+      "line": "pub uninterp spec fn segment_pages_range_total(&self, segment_id: SegmentId) -> Set<int>;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/os_mem_util.rs",
+      "symbol": "Local::segment_pages_used_total",
+      "line": "pub uninterp spec fn segment_pages_used_total(&self, segment_id: SegmentId) -> Set<int>;",
+      "count": 1
+    },
+    {
+      "marker": "uninterp",
+      "file": "verus-mimalloc/thread.rs",
+      "symbol": "IsThread::view",
+      "line": "pub uninterp spec fn view(&self) -> ThreadId;",
+      "count": 1
+    }
+  ]
+}

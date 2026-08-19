@@ -1,0 +1,22 @@
+verus-mimalloc/free.rs:53:proof fn live_block_implies_page_used(tracked mim_block: &Mim::block, local: Local)
+verus-mimalloc/free.rs:64:proof fn page_inner_update_preserves_mem_chunk_good(old_local: Local, local: Local, segment_id: crate::tokens::SegmentId)
+verus-mimalloc/free.rs:74:#[verifier::external_body]
+verus-mimalloc/free.rs:371:#[verifier::external_body]
+verus-mimalloc/free.rs:372:fn free_generic(segment: *mut SegmentHeader, page: PagePtr, is_local: bool, p: *mut u8, Tracked(perm): Tracked<PointsToRaw>, Tracked(dealloc): Tracked<MimDeallocInner>, Tracked(local): Tracked<&mut Local>)
+verus-mimalloc/free.rs:382:#[verifier::external_body]
+verus-mimalloc/free.rs:414:#[verifier::external_body]
+verus-mimalloc/free.rs:634:#[verifier::external_body]
+verus-mimalloc/page.rs:27:#[verifier::external_body]
+verus-mimalloc/page.rs:43:#[verifier::external_body]
+verus-mimalloc/page.rs:62:#[verifier::external_body]
+verus-mimalloc/page.rs:123:#[verifier::external_body]
+verus-mimalloc/page.rs:130:#[verifier::external_body]
+verus-mimalloc/page.rs:150:#[verifier::external_body]
+verus-mimalloc/page.rs:238:#[verifier::external_body]
+verus-mimalloc/page.rs:257:#[verifier::external_body]
+verus-mimalloc/page.rs:258:pub fn page_retire(page: PagePtr, Tracked(local): Tracked<&mut Local>)
+verus-mimalloc/page.rs:289:#[verifier::external_body]
+verus-mimalloc/page.rs:303:#[verifier::external_body]
+verus-mimalloc/page.rs:312:#[verifier::external_body]
+verus-mimalloc/page.rs:322:#[verifier::external_body]
+verus-mimalloc/page.rs:329:#[verifier::external_body]

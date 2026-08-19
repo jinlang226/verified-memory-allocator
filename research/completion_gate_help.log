@@ -1,0 +1,11 @@
+usage: completion_gate [-h] [--crate-root CRATE_ROOT]
+                       [--baseline-dir BASELINE_DIR]
+
+Certify DONE from the source-derived reachable proof graph.
+
+options:
+  -h, --help            show this help message and exit
+  --crate-root CRATE_ROOT
+                        crate root (default: .)
+  --baseline-dir BASELINE_DIR
+                        dir holding frozen goals/TCB (default: .verus_agent)

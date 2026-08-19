@@ -1,0 +1,21 @@
+diff --git a/verus-mimalloc/types.rs b/verus-mimalloc/types.rs
+--- a/verus-mimalloc/types.rs
++++ b/verus-mimalloc/types.rs
+@@ -1217,13 +1217,14 @@
+         };
+     }
+ 
+     #[inline]
+-#[verifier::external_body]
+     pub fn get_page_after_end(&self) -> (page_ptr: *mut Page)
++        ensures
++            self.wf() ==> is_page_ptr(page_ptr, PageId { segment_id: self.segment_id@, idx: SLICES_PER_SEGMENT as nat }),
+     {
+         let j = self.segment_ptr.addr()
+-          + SIZEOF_SEGMENT_HEADER
+-          + SLICES_PER_SEGMENT as usize * SIZEOF_PAGE_HEADER;
++            .wrapping_add(SIZEOF_SEGMENT_HEADER)
++            .wrapping_add(SLICES_PER_SEGMENT as usize * SIZEOF_PAGE_HEADER);
+         self.segment_ptr.with_addr(j) as *mut Page
+     }
+ 

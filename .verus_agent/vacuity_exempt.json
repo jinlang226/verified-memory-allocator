@@ -1,0 +1,17 @@
+{
+  "_comment": "OPERATOR-ONLY. Agents must not edit this file; see MISSION.md.",
+  "_rationale": "Symbols whose honest postcondition is the empty one: their return value provably feeds no correctness argument. Retiring their trust marker with no `ensures` narrows the TCB (the body is verified instead of assumed) rather than hiding an obligation.",
+  "symbols": [
+    "increment_thread_count",
+    "current_thread_count",
+    "aligned_base_add",
+    "aligned_base_cas"
+  ],
+  "_evidence": {
+    "od": "od-5",
+    "upstream": "all four are plain verified exec fns upstream, with no external_body and no ensures; the markers were added by the skeleton stripper (which inflated external_body from 19 to 189 tree-wide)",
+    "statics": "THREAD_COUNT is a statistics counter never read by a proof; ALIGNED_BASE seeds os_get_aligned_hint, which is advisory by construction",
+    "measured": "removing the four markers with no contract added: 652 -> 656 verified, 0 errors",
+    "alternative_rejected": "a non-vacuous ensures would require an atomic value model that vstd std_specs deliberately does not expose, i.e. it would invent TCB rather than retire it"
+  }
+}

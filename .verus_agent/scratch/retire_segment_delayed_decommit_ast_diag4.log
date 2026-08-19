@@ -1,0 +1,4 @@
+usage: middle_guard [-h] [--crate-root CRATE_ROOT]
+                    [--baseline-dir BASELINE_DIR]
+                    {spec-drift,ast-consistency} ...
+middle_guard: error: unrecognized arguments: --check

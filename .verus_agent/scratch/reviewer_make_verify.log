@@ -1,0 +1,29 @@
+cd verus-mimalloc && VERUS_PATH=verus ./verify.sh
+verification results:: 955 verified, 0 errors
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:           60950 ms    (estimated total cpu time 176411 ms)
+    rust-time:                9828 ms
+        init-and-types:           6533 ms
+        trait-conflicts:            76 ms
+        compile-time:             3218 ms
+    verification-time:       50009 ms
+        vir-time:                 4650 ms
+            hir-time:                  620 ms
+            import-time:               206 ms
+            rust-to-vir:              1094 ms
+        verify-crate-time:       45358 ms
+    unaccounted-time:         1113 ms
+
+verify-crate-time-breakdown
+    total verify-time:         160468 ms   (63 threads)
+        total air-time:             36065 ms   (63 threads)
+        total smt-time:             79552 ms   (63 threads)
+            total smt-init:                26 ms,   342054 rlimit (63 threads)
+            total smt-run:              79526 ms, 428478413 rlimit (63 threads)

@@ -1,0 +1,5 @@
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (16s).
+completion_gate: PASS — mission is done-certifiable.
+  reachable source-derived graph is closed to sanctioned TCB; 0 net-new trust leaves.
+  (combine with a green `make verify` for the full DONE verdict.)

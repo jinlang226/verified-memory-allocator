@@ -68,6 +68,29 @@ global layout Page is size == 80, align == 8;
 global layout Heap is size == 2904, align == 8;
 global layout Tld is size == 552, align == 8;
 
+pub proof fn segment_layout_facts()
+    ensures
+        size_of::<SegmentHeader>() == SIZEOF_SEGMENT_HEADER,
+        align_of::<SegmentHeader>() == 8,
+{
+}
+
+pub proof fn page_layout_facts()
+    ensures
+        size_of::<Page>() == SIZEOF_PAGE_HEADER,
+        align_of::<Page>() == 8,
+{
+}
+
+pub proof fn heap_tld_layout_facts()
+    ensures
+        size_of::<Heap>() == SIZEOF_HEAP,
+        align_of::<Heap>() == 8,
+        size_of::<Tld>() == SIZEOF_TLD,
+        align_of::<Tld>() == 8,
+{
+}
+
 // commit mask
 
 pub const COMMIT_SIZE: u64 = SLICE_SIZE;
@@ -80,28 +103,46 @@ pub const HUGE_BLOCK_SIZE: u32 = 0x80000000; // 2 GiB
 
 // Helpers
 
+#[verifier::rlimit(200)]
+pub proof fn const_facts()
+    ensures
+        SEGMENT_SIZE as int == 33554432,
+        (SEGMENT_SIZE as usize) as int == SEGMENT_SIZE as int,
+        SEGMENT_SIZE as usize != 0,
+        (SEGMENT_SIZE as int) + (SEGMENT_SIZE as int) - 1 <= usize::MAX as int,
+{
+    assert(SEGMENT_SIZE == 33554432) by(compute_only);
+    assert(SEGMENT_SIZE as usize == 33554432) by(compute_only);
+}
+
 use crate::types::todo;
-#[verifier::external_body]
-pub fn option_eager_commit_delay() -> i64
+#[verus_verify]
+pub fn option_eager_commit_delay() -> (delay: i64)
+    ensures delay == 1,
 { 1 }
-#[verifier::external_body]
-pub fn option_eager_commit() -> bool
+#[verus_verify]
+pub fn option_eager_commit() -> (enabled: bool)
+    ensures enabled == true,
 { true }
-#[verifier::external_body]
-pub fn option_allow_decommit() -> bool
+#[verus_verify]
+pub fn option_allow_decommit() -> (enabled: bool)
+    ensures enabled == true,
 { true }
-#[verifier::external_body]
-pub fn option_page_reset() -> bool
+#[verus_verify]
+pub fn option_page_reset() -> (enabled: bool)
+    ensures enabled == false,
 { false }
 
 //pub fn option_decommit_delay() -> i64 { assume(false); 1 /*25*/ }
 //pub fn option_decommit_extend_delay() -> i64 { assume(false); 0 /*1*/ }
 
-#[verifier::external_body]
-pub fn option_decommit_delay() -> i64
+#[verus_verify]
+pub fn option_decommit_delay() -> (delay: i64)
+    ensures delay == 25,
 { 25 }
-#[verifier::external_body]
-pub fn option_decommit_extend_delay() -> i64
+#[verus_verify]
+pub fn option_decommit_extend_delay() -> (delay: i64)
+    ensures delay == 1,
 { 1 }
 
 }

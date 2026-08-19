@@ -1,0 +1,40 @@
+### boundary_guard --crate-root .
+boundary_guard: PASS — boundaries intact.
+  TCB leaves: no net growth over baseline
+  sanctioned permanent TCB: operator-committed manifest present
+  frozen top-spec files: 0 (all byte-identical)
+  frozen goal targets: 4 (contracts byte-identical)
+  retired trust leaves: all replaced by a postcondition
+STATUS=0
+### middle_guard spec-drift --crate-root .
+usage: middle_guard [-h] [--crate-root CRATE_ROOT]
+                    [--baseline-dir BASELINE_DIR]
+                    {spec-drift,ast-consistency} ...
+middle_guard: error: unrecognized arguments: --crate-root .
+STATUS=2
+### middle_guard ast-consistency --crate-root .
+usage: middle_guard [-h] [--crate-root CRATE_ROOT]
+                    [--baseline-dir BASELINE_DIR]
+                    {spec-drift,ast-consistency} ...
+middle_guard: error: unrecognized arguments: --crate-root .
+STATUS=2
+### operator_decisions gate --crate-root .
+usage: operator_decisions [-h] [--project-root PROJECT_ROOT]
+                          {record-attempt,add,list,show,audit,gate,needs-evidence,migrate-legacy,certify,supersede,resolve}
+                          ...
+operator_decisions: error: unrecognized arguments: --crate-root .
+STATUS=2
+### completion_gate --crate-root .
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (14s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  31 reachable proof-node obligation(s) remain:
+    wip_trust: page_free_list_extend (verus-mimalloc/alloc_generic.rs:99)
+    wip_trust: page_thread_free_collect (verus-mimalloc/alloc_generic.rs:77)
+    wip_trust: segment_delayed_decommit (verus-mimalloc/commit_segment.rs:456)
+    unknown: new (verus-mimalloc/linked_list.rs:1123)
+    wip_trust: os_alloc_aligned_offset (verus-mimalloc/os_alloc.rs:18)
+    wip_trust: os_commitx (verus-mimalloc/os_commit.rs:152)
+    wip_trust: page_try_use_delayed_free (verus-mimalloc/page.rs:833)
+    wip_trust: segment_span_allocate (verus-mimalloc/segment.rs:751)
+STATUS=1

@@ -1,0 +1,22 @@
+diff --git a/verus-mimalloc/layout.rs b/verus-mimalloc/layout.rs
+--- a/verus-mimalloc/layout.rs
++++ b/verus-mimalloc/layout.rs
+@@ -241,13 +241,16 @@
+ 
+ // Executable calculations
+ 
+-#[verifier::external_body]
+ pub fn calculate_segment_ptr_from_block(ptr: *mut u8, Ghost(block_id): Ghost<BlockId>) -> (res: *mut SegmentHeader)
+ {
+     let block_p = ptr.addr();
+ 
+     // Based on _mi_ptr_segment
+-    let segment_p = (block_p - 1) & (!((SEGMENT_SIZE - 1) as usize));
++    let segment_p = if block_p == 0 {
++        0
++    } else {
++        (block_p - 1) & (!((SEGMENT_SIZE - 1) as usize))
++    };
+ 
+     /*proof {
+         let s = block_id.page_id.segment_id.id;

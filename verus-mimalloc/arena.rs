@@ -17,7 +17,6 @@ verus!{
 pub type ArenaId = usize;
 pub type MemId = usize;
 
-#[verifier::external_body]
 pub fn arena_alloc_aligned(
     size: usize,
     alignment: usize,
@@ -26,6 +25,29 @@ pub fn arena_alloc_aligned(
     allow_large: bool,
     req_arena_id: ArenaId,
 ) -> (res: (*mut u8, Tracked<MemChunk>, bool, bool, bool, bool, usize))
+    requires
+        align_offset == 0 && size != 0 ==> size <= SEGMENT_SIZE as usize,
+        align_offset == 0 && size != 0 ==> (alignment as int) + page_size() - 1 <= usize::MAX as int,
+    ensures
+        res.2 == request_commit,
+        res.4 == res.3,
+        res.5 == true,
+        res.6 == 0,
+        align_offset > SEGMENT_SIZE as usize ==> res.0.addr() == 0,
+        align_offset > SEGMENT_SIZE as usize ==> res.3 == allow_large,
+        align_offset == 0 && size == 0 ==> res.0.addr() == 0,
+        align_offset == 0 && size == 0 ==> res.3 == allow_large,
+        align_offset == 0 && size != 0 && res.0.addr() != 0 ==> res.0 as int % page_size() == 0,
+        align_offset == 0 && size != 0 && res.0.addr() != 0 ==>
+            res.0 as int + size as int + page_size() - 1 <= usize::MAX as int,
+        align_offset == 0 && size != 0 && res.0.addr() != 0 ==> res.1@.wf(),
+        align_offset == 0 && size != 0 && res.0.addr() != 0 ==> res.1@.os_has_range(res.0 as int, size as int),
+        align_offset == 0 && size == SEGMENT_SIZE as usize && res.0.addr() != 0 && os_mem_alloc_alignment_ok(alignment) ==> res.1@.os_exact_range(res.0 as int, size as int),
+        align_offset == 0 && size != 0 && res.0.addr() != 0 && request_commit ==> res.1@.os_has_range_read_write(res.0 as int, size as int),
+        align_offset == 0 && size != 0 && res.0.addr() != 0 && request_commit ==> res.1@.has_pointsto_for_all_read_write(),
+        align_offset == 0 && size != 0 && res.0.addr() != 0 && !request_commit ==> res.1@.os_has_range_no_read_write(res.0 as int, size as int),
+        align_offset == 0 && size != 0 && res.0.addr() != 0 && os_mem_alloc_alignment_ok(alignment) ==> res.0.addr() % alignment == 0,
+        align_offset == 0 && size != 0 && res.0.addr() != 0 ==> res.0@.provenance == res.1@.points_to.provenance(),
 {
     // TODO arena allocation
     let (p, is_large, Tracked(mem)) = os_alloc_aligned_offset(size, alignment, align_offset, request_commit, allow_large);

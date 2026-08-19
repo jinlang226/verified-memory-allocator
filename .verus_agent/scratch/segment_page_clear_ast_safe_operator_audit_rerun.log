@@ -1,0 +1,15 @@
+trusted markers os_mem.rs          ok (18)
+trusted markers thread.rs          ok (12)
+trusted markers types.rs           ok (3)
+sanctioned paths                   ok (unmodified)
+vendored verus deps                ok (frozen)
+operator baseline files            ok (committed)
+admit()                            ok (0)
+assume()                           ok (6, all pre-existing)
+todo() call sites                  ok (48)
+todo() ensures false               ok (2/2 cfg arms)
+uninterp spec fn                   ok (2)
+external_body                      ok (90 <= ratchet 90, upstream 19)
+verus_verify                       ok (135 <= ratchet 135, inert)
+
+operator_audit: PASS

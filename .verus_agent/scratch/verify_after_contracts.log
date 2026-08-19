@@ -1,0 +1,1211 @@
+cd verus-mimalloc && VERUS_PATH=verus ./verify.sh
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:246:5
+    |
+246 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:290:1
+    |
+290 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:390:9
+    |
+390 |         reveal(size_of_bin);
+    |         ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:697:1
+    |
+697 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:836:1
+    |
+836 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> init.rs:878:1
+    |
+878 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1041:1
+     |
+1041 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> init.rs:1048:1
+     |
+1048 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> os_alloc.rs:45:1
+   |
+45 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:187:1
+    |
+187 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:224:1
+    |
+224 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:231:1
+    |
+231 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> os_alloc.rs:241:1
+    |
+241 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> os_commit.rs:68:1
+   |
+68 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> commit_segment.rs:82:1
+   |
+82 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:104:1
+    |
+104 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:289:1
+    |
+289 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_segment.rs:367:1
+    |
+367 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:134:1
+    |
+134 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:836:1
+    |
+836 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> segment.rs:983:1
+    |
+983 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> segment.rs:1061:1
+     |
+1061 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:373:5
+    |
+373 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:383:5
+    |
+383 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:400:5
+    |
+400 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:417:5
+    |
+417 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:448:5
+    |
+448 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:465:5
+    |
+465 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:707:5
+    |
+707 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:721:5
+    |
+721 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> commit_mask.rs:741:5
+    |
+741 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_mask.rs:1003:5
+     |
+1003 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> commit_mask.rs:1020:5
+     |
+1020 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:199:5
+    |
+199 |     #[verus_verify]
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> linked_list.rs:205:17
+    |
+205 |         proof { reveal(LL::first_addr); }
+    |                 ^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1137:1
+     |
+1137 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1155:1
+     |
+1155 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1173:1
+     |
+1173 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1191:1
+     |
+1191 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1215:1
+     |
+1215 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> linked_list.rs:1236:1
+     |
+1236 | #[verus_verify]
+     | ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> bin_sizes.rs:479:1
+    |
+479 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> bin_sizes.rs:699:1
+    |
+699 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> config.rs:96:1
+   |
+96 | #[verus_verify]
+   | ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:100:1
+    |
+100 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:104:1
+    |
+104 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:108:1
+    |
+108 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:116:1
+    |
+116 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+   --> config.rs:120:1
+    |
+120 | #[verus_verify]
+    | ^^^^^^^^^^^^^^^
+    |
+    = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected `,`
+   --> layout.rs:918:24
+    |
+918 |         x as int < res as int + y as int,
+    |                        ^^
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:36:5
+   |
+36 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:58:5
+   |
+58 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+  --> flags.rs:88:5
+   |
+88 |     #[verus_verify]
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1064:5
+     |
+1064 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1218:5
+     |
+1218 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1235:5
+     |
+1235 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1291:5
+     |
+1291 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1300:5
+     |
+1300 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1311:5
+     |
+1311 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1426:5
+     |
+1426 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1503:5
+     |
+1503 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1673:5
+     |
+1673 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1684:5
+     |
+1684 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1692:5
+     |
+1692 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1753:5
+     |
+1753 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1847:5
+     |
+1847 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:1977:5
+     |
+1977 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2097:5
+     |
+2097 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2117:5
+     |
+2117 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2180:5
+     |
+2180 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: #[verus_spec] is likely used inside a verus! block.
+                     Consider move it out of verus! or remove #[verus_spec].
+    --> types.rs:2262:5
+     |
+2262 |     #[verus_verify]
+     |     ^^^^^^^^^^^^^^^
+     |
+     = note: this warning originates in the attribute macro `verus_spec` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find function `is_segment_ptr` in this scope
+  --> dealloc_token.rs:36:9
+   |
+36 |     &&& is_segment_ptr(
+   |         ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `is_page_ptr` in this scope
+  --> dealloc_token.rs:45:9
+   |
+45 |     &&& is_page_ptr(
+   |         ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `is_block_ptr` in this scope
+  --> dealloc_token.rs:68:13
+   |
+68 |         &&& is_block_ptr(self.ptr, self.block_id())
+   |             ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `segment_start` in this scope
+  --> os_mem_util.rs:73:19
+   |
+73 |     set_int_range(segment_start(segment_id),
+   |                   ^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `segment_start` in this scope
+  --> os_mem_util.rs:74:9
+   |
+74 |         segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + SIZEOF_PAGE_HEADER * (SLICES_PER_SEGMENT + 1)
+   |         ^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `segment_start` in this scope
+  --> os_mem_util.rs:87:28
+   |
+87 |     &&& mem.os_exact_range(segment_start(segment_id), SEGMENT_SIZE as int)
+   |                            ^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `page_start` in this scope
+   --> os_mem_util.rs:106:17
+    |
+106 |                 page_start(page_id) + start_offset(self.block_size(page_id)),
+    |                 ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `start_offset` in this scope
+   --> os_mem_util.rs:106:39
+    |
+106 |                 page_start(page_id) + start_offset(self.block_size(page_id)),
+    |                                       ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `page_start` in this scope
+   --> os_mem_util.rs:107:17
+    |
+107 |                 page_start(page_id) + start_offset(self.block_size(page_id))
+    |                 ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `start_offset` in this scope
+   --> os_mem_util.rs:107:39
+    |
+107 |                 page_start(page_id) + start_offset(self.block_size(page_id))
+    |                                       ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `page_start` in this scope
+   --> os_mem_util.rs:129:17
+    |
+129 |                 page_start(page_id),
+    |                 ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `page_start` in this scope
+   --> os_mem_util.rs:130:17
+    |
+130 |                 page_start(page_id) + self.page_count(page_id) * SLICE_SIZE
+    |                 ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `page_start` in this scope
+   --> os_mem_util.rs:183:17
+    |
+183 |     let start = page_start(page_id);
+    |                 ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> commit_mask.rs:366:21
+    |
+366 |         let start = segment_start(segment_id);
+    |                     ^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calculate_page_start` in this scope
+   --> alloc_generic.rs:110:21
+    |
+110 |     let pag_start = calculate_page_start(page_ptr, bsize);
+    |                     ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calculate_page_block_at` in this scope
+   --> alloc_generic.rs:111:17
+    |
+111 |     let start = calculate_page_block_at(pag_start, bsize, capacity as usize,
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calculate_page_block_at` in this scope
+   --> alloc_generic.rs:118:16
+    |
+118 |     let last = calculate_page_block_at(pag_start, bsize, x,
+    |                ^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `block_start_at` in this scope
+   --> alloc_generic.rs:122:27
+    |
+122 |     let ghost rng_start = block_start_at(page_id, bsize as int, capacity as int);
+    |                           ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calculate_segment_ptr_from_block` in this scope
+  --> free.rs:79:23
+   |
+79 |     let segment_ptr = calculate_segment_ptr_from_block(ptr, Ghost(dealloc.block_id()));
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calculate_slice_page_ptr_from_block` in this scope
+   --> free.rs:114:26
+    |
+114 |     let slice_page_ptr = calculate_slice_page_ptr_from_block(ptr, segment_ptr, Ghost(dealloc.block_id()));
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `calculate_page_ptr_subtract_offset` in this scope
+   --> free.rs:129:20
+    |
+129 |     let page_ptr = calculate_page_ptr_subtract_offset(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `is_page_ptr` in this scope
+   --> free.rs:260:13
+    |
+260 |             is_page_ptr(page.page_ptr, dealloc.block_id().page_id),
+    |             ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `is_block_ptr_mult4` in this scope
+   --> free.rs:350:21
+    |
+350 |                     is_block_ptr_mult4(ptr as *mut u8, dealloc.block_id());
+    |                     ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> segment.rs:114:21
+    |
+114 |     let page_size = align_up(required, alignment);
+    |                     ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+114 -     let page_size = align_up(required, alignment);
+114 +     let page_size = align_of(required, alignment);
+    |
+
+error[E0425]: cannot find function `is_page_ptr_opt` in this scope
+   --> segment.rs:187:17
+    |
+187 |                 is_page_ptr_opt(slice_ptr, slice_page_id),
+    |                 ^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `segment_page_start_from_slice` in this scope
+   --> segment.rs:412:13
+    |
+412 |     let p = segment_page_start_from_slice(segment, slice, 0);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `is_page_ptr` in this scope
+   --> segment.rs:466:24
+    |
+466 |                     && is_page_ptr(local.unused_pages[page_id].points_to.ptr(), page_id))
+    |                        ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:621:9
+    |
+621 |         segment_start(segment_id), SIZEOF_SEGMENT_HEADER as int);
+    |         ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+621 -         segment_start(segment_id), SIZEOF_SEGMENT_HEADER as int);
+621 +         segment_state(segment_id), SIZEOF_SEGMENT_HEADER as int);
+    |
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:627:97
+    |
+627 |     let tracked mut seg_header_points_to = seg_header_points_to_raw.into_typed::<SegmentHeader>(segment_start(segment_id) as usize);
+    |                                                                                                 ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+627 -     let tracked mut seg_header_points_to = seg_header_points_to_raw.into_typed::<SegmentHeader>(segment_start(segment_id) as usize);
+627 +     let tracked mut seg_header_points_to = seg_header_points_to_raw.into_typed::<SegmentHeader>(segment_state(segment_id) as usize);
+    |
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:683:21
+    |
+683 |                     segment_start(segment_id) + SIZEOF_SEGMENT_HEADER,
+    |                     ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+683 -                     segment_start(segment_id) + SIZEOF_SEGMENT_HEADER,
+683 +                     segment_state(segment_id) + SIZEOF_SEGMENT_HEADER,
+    |
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:684:21
+    |
+684 |                     segment_start(segment_id) + COMMIT_SIZE) <= old_mem_chunk.points_to.dom(),
+    |                     ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+684 -                     segment_start(segment_id) + COMMIT_SIZE) <= old_mem_chunk.points_to.dom(),
+684 +                     segment_state(segment_id) + COMMIT_SIZE) <= old_mem_chunk.points_to.dom(),
+    |
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:687:21
+    |
+687 |                     segment_start(segment_id),
+    |                     ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+687 -                     segment_start(segment_id),
+687 +                     segment_state(segment_id),
+    |
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:688:21
+    |
+688 |                     segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER
+    |                     ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+688 -                     segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER
+688 +                     segment_state(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER
+    |
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:691:36
+    |
+691 |             cur_page_ptr as int == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER,
+    |                                    ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+691 -             cur_page_ptr as int == segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER,
+691 +             cur_page_ptr as int == segment_state(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER,
+    |
+
+error[E0425]: cannot find function `is_page_ptr` in this scope
+   --> segment.rs:718:25
+    |
+718 |                     &&& is_page_ptr(psa_map[page_id].points_to.ptr(), page_id)
+    |                         ^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+718 -                     &&& is_page_ptr(psa_map[page_id].points_to.ptr(), page_id)
+718 +                     &&& cur_page_ptr(psa_map[page_id].points_to.ptr(), page_id)
+    |
+
+error[E0425]: cannot find function `segment_start` in this scope
+   --> segment.rs:735:29
+    |
+735 |         let ghost phstart = segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER;
+    |                             ^^^^^^^^^^^^^
+    |
+help: a local variable with a similar name exists
+    |
+735 -         let ghost phstart = segment_start(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER;
+735 +         let ghost phstart = segment_state(segment_id) + SIZEOF_SEGMENT_HEADER + i * SIZEOF_PAGE_HEADER;
+    |
+
+error[E0425]: cannot find function `mk_segment_id` in this scope
+   --> segment.rs:922:31
+    |
+922 |             segment_id: Ghost(mk_segment_id(_segment as *mut SegmentHeader)),
+    |                               ^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `align_up` in this scope
+    --> segment.rs:1083:18
+     |
+1083 |     let i_size = align_up(SIZEOF_SEGMENT_HEADER, page_size);
+     |                  ^^^^^^^^
+     |
+    ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+     |
+ 527 | pub const fn align_of<T>() -> usize {
+     | ----------------------------------- similarly named function `align_of` defined here
+     |
+help: a function with a similar name exists
+     |
+1083 -     let i_size = align_up(SIZEOF_SEGMENT_HEADER, page_size);
+1083 +     let i_size = align_of(SIZEOF_SEGMENT_HEADER, page_size);
+     |
+
+error[E0425]: cannot find function `align_up` in this scope
+    --> segment.rs:1099:18
+     |
+1099 |     let j_size = align_up(i_size + guardsize, SLICE_SIZE as usize);
+     |                  ^^^^^^^^
+     |
+    ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+     |
+ 527 | pub const fn align_of<T>() -> usize {
+     | ----------------------------------- similarly named function `align_of` defined here
+     |
+help: a function with a similar name exists
+     |
+1099 -     let j_size = align_up(i_size + guardsize, SLICE_SIZE as usize);
+1099 +     let j_size = align_of(i_size + guardsize, SLICE_SIZE as usize);
+     |
+
+error[E0425]: cannot find function `lemma_round_multiple_le_cap` in this scope
+    --> segment.rs:1103:9
+     |
+1103 |         lemma_round_multiple_le_cap(j_size as int, i_size as int, SLICE_SIZE as int, SLICE_SIZE as int);
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `align_up` in this scope
+    --> segment.rs:1125:9
+     |
+1125 |         align_up(required + j_size + guardsize, SLICE_SIZE as usize)
+     |         ^^^^^^^^
+     |
+    ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+     |
+ 527 | pub const fn align_of<T>() -> usize {
+     | ----------------------------------- similarly named function `align_of` defined here
+     |
+help: a function with a similar name exists
+     |
+1125 -         align_up(required + j_size + guardsize, SLICE_SIZE as usize)
+1125 +         align_of(required + j_size + guardsize, SLICE_SIZE as usize)
+     |
+
+error[E0425]: cannot find function `calculate_page_ptr_subtract_offset` in this scope
+    --> segment.rs:1390:24
+     |
+1390 |         let page_ptr = calculate_page_ptr_subtract_offset(last.page_ptr, offset,
+     |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> commit_segment.rs:171:17
+    |
+171 |         start = align_up(pstart, COMMIT_SIZE as usize);
+    |                 ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+171 -         start = align_up(pstart, COMMIT_SIZE as usize);
+171 +         start = align_of(pstart, COMMIT_SIZE as usize);
+    |
+
+error[E0425]: cannot find function `align_down` in this scope
+   --> commit_segment.rs:172:15
+    |
+172 |         end = align_down(pstart + size, COMMIT_SIZE as usize);
+    |               ^^^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+172 -         end = align_down(pstart + size, COMMIT_SIZE as usize);
+172 +         end = align_of(pstart + size, COMMIT_SIZE as usize);
+    |
+
+error[E0425]: cannot find function `align_down` in this scope
+   --> commit_segment.rs:186:17
+    |
+186 |         start = align_down(pstart, COMMIT_SIZE as usize);
+    |                 ^^^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+186 -         start = align_down(pstart, COMMIT_SIZE as usize);
+186 +         start = align_of(pstart, COMMIT_SIZE as usize);
+    |
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> commit_segment.rs:187:15
+    |
+187 |         end = align_up(pstart + size, COMMIT_SIZE as usize);
+    |               ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+187 -         end = align_up(pstart + size, COMMIT_SIZE as usize);
+187 +         end = align_of(pstart + size, COMMIT_SIZE as usize);
+    |
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> os_commit.rs:98:9
+    |
+ 98 |         align_up(addr, get_page_size())
+    |         ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+ 98 -         align_up(addr, get_page_size())
+ 98 +         align_of(addr, get_page_size())
+    |
+
+error[E0425]: cannot find function `align_down` in this scope
+   --> os_commit.rs:100:9
+    |
+100 |         align_down(addr, get_page_size())
+    |         ^^^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+100 -         align_down(addr, get_page_size())
+100 +         align_of(addr, get_page_size())
+    |
+
+error[E0425]: cannot find function `align_down` in this scope
+   --> os_commit.rs:116:9
+    |
+116 |         align_down(addr + size, get_page_size())
+    |         ^^^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+116 -         align_down(addr + size, get_page_size())
+116 +         align_of(addr + size, get_page_size())
+    |
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> os_commit.rs:118:9
+    |
+118 |         align_up(addr + size, get_page_size())
+    |         ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+118 -         align_up(addr + size, get_page_size())
+118 +         align_of(addr + size, get_page_size())
+    |
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> os_alloc.rs:111:17
+    |
+111 |         let x = align_up(size, align_size);
+    |                 ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+111 -         let x = align_up(size, align_size);
+111 +         let x = align_of(size, align_size);
+    |
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> os_alloc.rs:131:22
+    |
+131 |     let alignment1 = align_up(alignment, get_page_size());
+    |                      ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+131 -     let alignment1 = align_up(alignment, get_page_size());
+131 +     let alignment1 = align_of(alignment, get_page_size());
+    |
+
+error[E0425]: cannot find function `align_up` in this scope
+   --> os_alloc.rs:263:16
+    |
+263 |     let size = align_up(size, SEGMENT_SIZE as usize);
+    |                ^^^^^^^^
+    |
+   ::: /users/jinlang/.rustup/toolchains/1.96.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:527:1
+    |
+527 | pub const fn align_of<T>() -> usize {
+    | ----------------------------------- similarly named function `align_of` defined here
+    |
+help: a function with a similar name exists
+    |
+263 -     let size = align_up(size, SEGMENT_SIZE as usize);
+263 +     let size = align_of(size, SEGMENT_SIZE as usize);
+    |
+
+error[E0425]: cannot find function `calculate_start_offset` in this scope
+   --> page.rs:202:26
+    |
+202 |         let start_offs = calculate_start_offset(block_size);
+    |                          ^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error: aborting due to 55 previous errors; 70 warnings emitted
+
+For more information about this error, try `rustc --explain E0425`.
+(use --output-json for machine-readable output)
+verus-build-info
+Verus
+  Version: 0.2026.06.28.1847ab3
+  Profile: release
+  Platform: linux_x86_64
+  Toolchain: 1.96.0-x86_64-unknown-linux-gnu
+
+total-time:            6134 ms
+    rust-time:                6033 ms
+        init-and-types:           6033 ms
+        trait-conflicts:             0 ms
+        compile-time:                0 ms
+    verification-time:           0 ms
+        vir-time:                    0 ms
+            hir-time:                    0 ms
+            import-time:                 0 ms
+            rust-to-vir:                 0 ms
+        verify-crate-time:           0 ms
+    unaccounted-time:          101 ms
+
+verify-crate-time-breakdown
+    total verify-time:              0 ms   (1 threads)
+        total air-time:                 0 ms   (1 threads)
+        total smt-time:                 0 ms   (1 threads)
+            total smt-init:                 0 ms,        0 rlimit (1 threads)
+            total smt-run:                  0 ms,        0 rlimit (1 threads)
+make: *** [Makefile:14: verify] Error 1

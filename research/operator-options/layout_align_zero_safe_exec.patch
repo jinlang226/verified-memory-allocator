@@ -1,0 +1,62 @@
+diff --git a/verus-mimalloc/layout.rs b/verus-mimalloc/layout.rs
+--- a/verus-mimalloc/layout.rs
++++ b/verus-mimalloc/layout.rs
+@@ -272,17 +272,20 @@ pub open spec fn calculate_inner_size(size: usize, capacity: usize) -> int {
+ #[verifier::spinoff_prover]
+ #[inline]
+-#[verifier::external_body]
+ pub fn align_down(x: usize, y: usize) -> (res: usize)
+     ensures
+         y > 0 ==> (res as int) <= (x as int),
+         y > 0 ==> (res as int) % (y as int) == 0,
+         y > 0 ==> (x as int) < (res as int) + (y as int),
+ {
+-    let mask = y - 1;
+-
+-    if ((y & mask) == 0) { // power of two?
+-        x & !mask
++    if y == 0 {
++        x
+     } else {
+-        (x / y) * y
++        let mask = y - 1;
++
++        if ((y & mask) == 0) { // power of two?
++            x & !mask
++        } else {
++            (x / y) * y
++        }
+     }
+ }
+@@ -290,20 +293,25 @@ pub fn align_down(x: usize, y: usize) -> (res: usize)
+ #[inline]
+-#[verifier::external_body]
+ pub fn align_up(x: usize, y: usize) -> (res: usize)
+     ensures
+         y > 0 && (x as int) + (y as int) - 1 <= (usize::MAX as int) ==> (x as int) <= (res as int),
+         y > 0 && (x as int) + (y as int) - 1 <= (usize::MAX as int) ==> (res as int) <= (x as int) + (y as int) - 1,
+         y > 0 && (x as int) + (y as int) - 1 <= (usize::MAX as int) ==> (res as int) % (y as int) == 0,
+         y == COMMIT_SIZE as usize
+             && (x as int) <= SEGMENT_SIZE as int
+             && (x as int) + (y as int) - 1 <= (usize::MAX as int)
+             ==> (res as int) <= SEGMENT_SIZE as int,
+ {
+-    let mask = y - 1;
+-
+-    if ((y & mask) == 0) { // power of two?
+-        (x + mask) & !mask
++    if y == 0 {
++        x
+     } else {
+-        ((x + mask) / y) * y
++        let mask = y - 1;
++
++        if ((y & mask) == 0) { // power of two?
++            x.wrapping_add(mask) & !mask
++        } else if x > usize::MAX - mask {
++            x.wrapping_add(mask)
++        } else {
++            ((x + mask) / y) * y
++        }
+     }
+ }

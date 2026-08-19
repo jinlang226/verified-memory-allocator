@@ -1,0 +1,3 @@
+completion_gate: NOT DONE — derived proof obligations remain.
+  5 reachable proof-node obligation(s) remain:
+    wip_trust: page_queue_find_free_ex (verus-mimalloc/page.rs:148)

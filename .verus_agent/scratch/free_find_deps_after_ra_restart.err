@@ -1,0 +1,11 @@
+Project dir: /users/jinlang/verified-memory-allocator-test
+Entries: ['verus-mimalloc/init.rs:heap_init', 'verus-mimalloc/alloc_fast.rs:heap_malloc', 'verus-mimalloc/free.rs:free']
+  seed: verus-mimalloc/init.rs:heap_init -> /users/jinlang/verified-memory-allocator-test/verus-mimalloc/init.rs:114:8
+  seed: verus-mimalloc/alloc_fast.rs:heap_malloc -> /users/jinlang/verified-memory-allocator-test/verus-mimalloc/alloc_fast.rs:31:8
+  seed: verus-mimalloc/free.rs:free -> /users/jinlang/verified-memory-allocator-test/verus-mimalloc/free.rs:111:8
+Connected to RA daemon (cached index).
+  WARN: prepareCallHierarchy returned none for /users/jinlang/verified-memory-allocator-test/verus-mimalloc/init.rs:114:8
+  WARN: prepareCallHierarchy returned none for /users/jinlang/verified-memory-allocator-test/verus-mimalloc/alloc_fast.rs:31:8
+  WARN: prepareCallHierarchy returned none for /users/jinlang/verified-memory-allocator-test/verus-mimalloc/free.rs:111:8
+
+Traversal complete: 0 fns, 0 files.

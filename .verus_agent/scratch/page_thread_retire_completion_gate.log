@@ -1,0 +1,7 @@
+Auto-starting RA daemon (first run indexes workspace)...
+RA daemon ready (16s).
+completion_gate: NOT DONE — derived proof obligations remain.
+  17 reachable proof-node obligation(s) remain:
+    wip_trust: page_free_collect (verus-mimalloc/alloc_generic.rs:316)
+    wip_trust: page_init (verus-mimalloc/page.rs:151)
+    wip_trust: segment_alloc (verus-mimalloc/segment.rs:1284)
